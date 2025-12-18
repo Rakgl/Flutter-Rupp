@@ -1,5 +1,5 @@
 import 'package:bloc_test/bloc_test.dart';
-import 'package:flutter_super_aslan_app/counter/counter.dart';
+import 'package:flutter_super_aslan_app/features/counter/cubit/counter_cubit.dart' show CounterCubit;
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

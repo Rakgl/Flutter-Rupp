@@ -9,13 +9,20 @@ environment:
 
 dependencies:
   bloc: ^9.0.1
+  equatable: ^2.0.7
   flutter:
     sdk: flutter
   flutter_bloc: ^9.1.1
   flutter_localizations:
     sdk: flutter
+  go_router: ^17.0.1
   intl: ^0.20.2
-
+  app_ui:
+    path: packages/app_ui
+  cached_network_image: ^3.4.1
+  shimmer: ^3.0.0
+  flutter_iconly: ^1.0.2
+  loading_indicator: ^3.1.1
 dev_dependencies:
   bloc_test: ^10.0.0
   flutter_test:

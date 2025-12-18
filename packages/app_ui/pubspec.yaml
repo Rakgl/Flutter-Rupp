@@ -1,0 +1,50 @@
+name: app_ui
+description: A Very Good Project created by Very Good CLI.
+version: 0.1.0+1
+publish_to: none
+
+environment:
+  sdk: ">=2.19.0 <4.0.0"
+  flutter: 3.7.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_svg: ^2.0.10+1
+  intl: ^0.20.0
+
+dev_dependencies:
+  build_runner: ^2.4.6
+  flutter_gen_runner: ^4.1.6
+  mocktail: ^0.3.0
+  very_good_analysis: ^4.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/fonts/
+    - assets/img/
+    - assets/svg/
+
+  fonts:
+    - family: Kantumruy Pro
+      fonts:
+        - asset: assets/fonts/kantumruy_pro/KantumruyPro-Light.ttf
+          weight: 300
+        - asset: assets/fonts/kantumruy_pro/KantumruyPro-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/kantumruy_pro/KantumruyPro-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/kantumruy_pro/KantumruyPro-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/kantumruy_pro/KantumruyPro-Bold.ttf
+          weight: 700
+
+
+flutter_gen:
+  assets:
+  output: lib/src/generated/
+  line_length: 80
+
+  integrations:
+    flutter_svg: true

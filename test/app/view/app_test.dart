@@ -2,7 +2,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter_super_aslan_app/app/app.dart';
-import 'package:flutter_super_aslan_app/counter/counter.dart';
+import 'package:flutter_super_aslan_app/features/counter/view/counter_page.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

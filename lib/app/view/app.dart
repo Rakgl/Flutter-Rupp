@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_super_aslan_app/counter/counter.dart';
+import 'package:flutter_super_aslan_app/features/counter/view/counter_page.dart';
 import 'package:flutter_super_aslan_app/l10n/l10n.dart';
 
 class App extends StatelessWidget {
