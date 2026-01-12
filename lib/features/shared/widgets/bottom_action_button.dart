@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 
 class BottomActionButton extends StatelessWidget {
   const BottomActionButton({
-    super.key,
     required this.title,
+    super.key,
     this.onPressed,
     this.child,
   });
@@ -28,7 +28,7 @@ class BottomActionButton extends StatelessWidget {
         ),
         child: Row(
           children: [
-            if (child != null) child!,
+            ?child,
             if (child != null) const SizedBox(width: 16),
             Expanded(
               child: ElevatedButton(
@@ -46,10 +46,10 @@ class BottomActionButton extends StatelessWidget {
                 child: Text(
                   title,
                   style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.white,
-                      ),
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ),

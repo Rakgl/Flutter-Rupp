@@ -5,8 +5,8 @@ import 'package:shimmer/shimmer.dart';
 
 class NetworkImageSource extends StatelessWidget {
   const NetworkImageSource({
-    super.key,
     required this.imagePath,
+    super.key,
     this.fit = BoxFit.cover,
     this.width,
     this.height,
@@ -71,8 +71,8 @@ class NetworkImageSource extends StatelessWidget {
 
 class ProfileNetworkImageSource extends StatelessWidget {
   const ProfileNetworkImageSource({
-    super.key,
     required this.imagePath,
+    super.key,
     this.fit = BoxFit.cover,
     this.width,
     this.height,
@@ -123,15 +123,7 @@ class ProfileNetworkImageSource extends StatelessWidget {
           height: height,
           decoration: BoxDecoration(
             borderRadius: borderRadius,
-            image: DecorationImage(
-              image: Assets.img.defaultProfile
-                  .image(
-                    width: width,
-                    height: width,
-                  )
-                  .image,
-              fit: BoxFit.cover,
-            ),
+            
           ),
         );
       },
@@ -141,8 +133,8 @@ class ProfileNetworkImageSource extends StatelessWidget {
 
 class CircleSpecialitySource extends StatelessWidget {
   const CircleSpecialitySource({
-    super.key,
     required this.imagePath,
+    super.key,
     this.fit = BoxFit.cover,
     this.width,
     this.height,
@@ -192,16 +184,7 @@ class CircleSpecialitySource extends StatelessWidget {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: AppColors.grey.shade100,
-            image: DecorationImage(
-              image: Assets.img.healthcare
-                  .image(
-                    width: width,
-                    height: width,
-                    color: AppColors.grey.shade300,
-                  )
-                  .image,
-              fit: BoxFit.cover,
-            ),
+      
           ),
         );
       },

@@ -4,8 +4,8 @@ import 'package:flutter/services.dart';
 
 class PhoneTextFieldWidget extends StatelessWidget {
   const PhoneTextFieldWidget({
-    super.key,
     required this.controller,
+    super.key,
     this.labelText,
     this.errorText,
     this.validator,
@@ -30,9 +30,9 @@ class PhoneTextFieldWidget extends StatelessWidget {
       child: TextFormField(
         controller: controller,
         style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-              fontSize: 14,
-              fontWeight: AppFontWeight.medium,
-            ),
+          fontSize: 14,
+          fontWeight: AppFontWeight.medium,
+        ),
         inputFormatters: [
           // allow digit only
           FilteringTextInputFormatter.digitsOnly,
@@ -45,10 +45,10 @@ class PhoneTextFieldWidget extends StatelessWidget {
           counterText: '',
           fillColor: AppColors.grey.shade50,
           hintStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                color: AppColors.grey,
-                fontSize: 14,
-                fontWeight: AppFontWeight.medium,
-              ),
+            color: AppColors.grey,
+            fontSize: 14,
+            fontWeight: AppFontWeight.medium,
+          ),
           contentPadding: const EdgeInsets.symmetric(
             horizontal: 18,
             vertical: 16,

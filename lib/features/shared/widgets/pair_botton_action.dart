@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 
 class PairButtonAction extends StatelessWidget {
   const PairButtonAction({
-    super.key,
     required this.leftTitle,
     required this.rightTitle,
     required this.onLeftPressed,
     required this.onRightPressed,
+    super.key,
   });
 
   final String leftTitle;
@@ -15,7 +15,7 @@ class PairButtonAction extends StatelessWidget {
   final VoidCallback? onLeftPressed;
   final VoidCallback? onRightPressed;
 
-  static const mainColor = AppColors.primaryColor;
+  static const Color mainColor = AppColors.primaryColor;
 
   @override
   Widget build(BuildContext context) {
@@ -74,9 +74,9 @@ class PairButtonAction extends StatelessWidget {
 
 class SingleButtonAction extends StatelessWidget {
   const SingleButtonAction({
-    super.key,
     required this.label,
     required this.onPressed,
+    super.key,
   });
 
   final String label;

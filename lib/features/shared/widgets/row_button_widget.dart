@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 
 class RowButtonWidget extends StatelessWidget {
   const RowButtonWidget({
-    super.key,
     required this.leftLabel,
     required this.rightLabel,
     required this.leftOnTap,
+    super.key,
     this.rightOnTap,
     this.centerOnTap,
     this.centerLabel,
@@ -21,7 +21,7 @@ class RowButtonWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final mainColor = AppColors.primaryColor;
+    const mainColor = AppColors.primaryColor;
 
     return Row(
       spacing: 8,
@@ -30,8 +30,12 @@ class RowButtonWidget extends StatelessWidget {
           child: OutlinedButton(
             onPressed: leftOnTap,
             style: OutlinedButton.styleFrom(
-              foregroundColor: leftOnTap == null ? AppColors.grey : AppColors.red,
-              side:  BorderSide(color:  leftOnTap == null ? AppColors.grey : AppColors.red),
+              foregroundColor: leftOnTap == null
+                  ? AppColors.grey
+                  : AppColors.red,
+              side: BorderSide(
+                color: leftOnTap == null ? AppColors.grey : AppColors.red,
+              ),
               padding: const EdgeInsets.symmetric(
                 vertical: 8,
                 horizontal: 10,
@@ -43,8 +47,8 @@ class RowButtonWidget extends StatelessWidget {
             child: Text(
               leftLabel,
               style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                    color: leftOnTap == null ? AppColors.grey : AppColors.red,
-                  ),
+                color: leftOnTap == null ? AppColors.grey : AppColors.red,
+              ),
             ),
           ),
         ),
@@ -54,7 +58,7 @@ class RowButtonWidget extends StatelessWidget {
               onPressed: centerOnTap,
               style: OutlinedButton.styleFrom(
                 foregroundColor: mainColor,
-                side: BorderSide(color: mainColor),
+                side: const BorderSide(color: mainColor),
                 padding: const EdgeInsets.symmetric(
                   vertical: 8,
                   horizontal: 8,
@@ -66,8 +70,8 @@ class RowButtonWidget extends StatelessWidget {
               child: Text(
                 centerLabel!,
                 style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                      color: mainColor,
-                    ),
+                  color: mainColor,
+                ),
               ),
             ),
           ),
@@ -83,10 +87,10 @@ class RowButtonWidget extends StatelessWidget {
               ),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(AppSpacing.xxxlg),
-                side: BorderSide(color: mainColor),
+                side: const BorderSide(color: mainColor),
               ),
             ),
-            child: Text(  
+            child: Text(
               rightLabel,
               style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                 color: rightOnTap == null ? AppColors.grey : AppColors.white,

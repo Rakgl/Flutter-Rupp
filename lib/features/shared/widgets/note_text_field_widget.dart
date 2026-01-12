@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 
 class NoteTextField extends StatelessWidget {
   const NoteTextField({
+    required this.hintText,
     super.key,
     this.controller,
-    required this.hintText,
     this.onTap,
     this.maxLines = 2,
     this.onChanged,
@@ -18,8 +18,8 @@ class NoteTextField extends StatelessWidget {
   final VoidCallback? onTap;
   final int maxLines;
   final void Function(String)? onChanged;
-  final Color? backgroundColor; 
-  final bool readOnly ;
+  final Color? backgroundColor;
+  final bool readOnly;
 
   @override
   Widget build(BuildContext context) {
@@ -31,15 +31,15 @@ class NoteTextField extends StatelessWidget {
       readOnly: readOnly,
       cursorColor: AppColors.primaryColor,
       style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-            fontWeight: AppFontWeight.medium,
-          ),
+        fontWeight: AppFontWeight.medium,
+      ),
       decoration: InputDecoration(
         hintText: hintText,
         hintStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(
-              fontWeight: AppFontWeight.medium,
-              fontSize: 13,
-              color: AppColors.grey.shade600,
-            ),
+          fontWeight: AppFontWeight.medium,
+          fontSize: 13,
+          color: AppColors.grey.shade600,
+        ),
         border: const OutlineInputBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(AppSpacing.sm),

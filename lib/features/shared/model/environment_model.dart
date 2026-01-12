@@ -32,7 +32,8 @@ class EnvironmentModel extends Equatable {
       apiVersion: apiVersion,
       color: color ?? Colors.red,
       environment: Environment.development,
-      baseUrl: baseUrl ??
+      baseUrl:
+          baseUrl ??
           'https://dev-tele-api.d.aditidemo.asia/api/$apiVersion/mobile',
     );
   }
@@ -49,7 +50,8 @@ class EnvironmentModel extends Equatable {
       apiVersion: apiVersion,
       color: color ?? Colors.pink,
       environment: Environment.qas,
-      baseUrl: baseUrl ??
+      baseUrl:
+          baseUrl ??
           'https://dev-tele-api.d.aditidemo.asia/api/$apiVersion/mobile',
     );
   }
@@ -66,7 +68,8 @@ class EnvironmentModel extends Equatable {
       apiVersion: apiVersion,
       color: color ?? Colors.pink,
       environment: Environment.uat,
-      baseUrl: baseUrl ??
+      baseUrl:
+          baseUrl ??
           'https://dev-tele-api.d.aditidemo.asia/api/$apiVersion/mobile',
     );
   }
@@ -83,7 +86,8 @@ class EnvironmentModel extends Equatable {
       apiVersion: apiVersion,
       color: color ?? Colors.pink,
       environment: Environment.demo,
-      baseUrl: baseUrl ??
+      baseUrl:
+          baseUrl ??
           'https://dev-tele-api.d.aditidemo.asia/api/$apiVersion/mobile',
     );
   }
@@ -100,7 +104,8 @@ class EnvironmentModel extends Equatable {
       apiVersion: apiVersion,
       color: color ?? Colors.orange,
       environment: Environment.staging,
-      baseUrl: baseUrl ??
+      baseUrl:
+          baseUrl ??
           'https://dev-tele-api.d.aditidemo.asia/api/$apiVersion/mobile',
     );
   }
@@ -117,7 +122,8 @@ class EnvironmentModel extends Equatable {
       apiVersion: apiVersion,
       color: color ?? Colors.green,
       environment: Environment.production,
-      baseUrl: baseUrl ??
+      baseUrl:
+          baseUrl ??
           'https://dev-tele-api.d.aditidemo.asia/api/$apiVersion/mobile',
     );
   }

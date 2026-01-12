@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 
 class DropDownFilterWidget extends StatefulWidget {
   const DropDownFilterWidget({
-    super.key,
     required this.title,
     required this.items,
     required this.onChanged,
+    super.key,
     this.titleTextColor = AppColors.black,
     this.backgroundColor,
     this.height = 46,
@@ -51,10 +51,10 @@ class _DropDownFilterWidgetState extends State<DropDownFilterWidget> {
             hint: Text(
               widget.title,
               style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                    color: AppColors.grey.shade600,
-                    fontWeight: AppFontWeight.medium,
-                    fontSize: 12,
-                  ),
+                color: AppColors.grey.shade600,
+                fontWeight: AppFontWeight.medium,
+                fontSize: 12,
+              ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),

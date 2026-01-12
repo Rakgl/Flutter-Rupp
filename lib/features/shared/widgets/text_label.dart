@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 
 class TextLabel extends StatelessWidget {
   const TextLabel({
-    super.key,
     required this.label,
+    super.key,
   });
 
   final String label;
@@ -14,9 +14,9 @@ class TextLabel extends StatelessWidget {
     return Text(
       label,
       style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-            fontWeight: AppFontWeight.medium,
-            fontSize: 14,
-          ),
+        fontWeight: AppFontWeight.medium,
+        fontSize: 14,
+      ),
     );
   }
 }

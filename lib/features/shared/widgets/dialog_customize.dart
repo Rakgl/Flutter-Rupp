@@ -1,7 +1,6 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 
-
 class DialogCustomize {
   static Future<void> customAnimatedDialog(
     BuildContext context,
@@ -32,8 +31,8 @@ class DialogCustomize {
             child: Text(
               title,
               style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                    fontWeight: AppFontWeight.medium,
-                  ),
+                fontWeight: AppFontWeight.medium,
+              ),
             ),
           ),
           content: Column(
@@ -43,8 +42,8 @@ class DialogCustomize {
                 bodyContent,
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                      height: 1.7,
-                    ),
+                  height: 1.7,
+                ),
               ),
               const SizedBox(height: AppSpacing.xlg),
               Row(
@@ -75,13 +74,11 @@ class DialogCustomize {
                     ),
                   ),
                 ],
-              )
+              ),
             ],
           ),
         );
       },
     );
   }
-
-
 }

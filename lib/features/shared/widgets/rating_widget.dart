@@ -4,8 +4,8 @@ import 'package:flutter_iconly/flutter_iconly.dart';
 
 class RatingWidget extends StatelessWidget {
   const RatingWidget({
-    super.key,
     required this.rate,
+    super.key,
   });
 
   final String rate;
@@ -16,16 +16,16 @@ class RatingWidget extends StatelessWidget {
       children: [
         const Icon(
           IconlyBold.star,
-          color: AppColors.yellow,
+          color: AppColors.ratingActive,
           size: 16,
         ),
         const SizedBox(width: 4),
         Text(
           rate,
           style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                fontSize: 12,
-                color: AppColors.grey.shade600,
-              ),
+            fontSize: 12,
+            color: AppColors.grey.shade600,
+          ),
         ),
         // const SizedBox(width: 8),
         // Text(

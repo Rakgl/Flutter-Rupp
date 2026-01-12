@@ -13,11 +13,11 @@ class LoadingFetchDataIndicator extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            "Loading...",
+            'Loading...',
             style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                  fontWeight: AppFontWeight.medium,
-                  color: AppColors.primaryColor,
-                ),
+              fontWeight: AppFontWeight.medium,
+              color: AppColors.primaryColor,
+            ),
           ),
           const SizedBox(width: AppSpacing.xxs),
           Container(

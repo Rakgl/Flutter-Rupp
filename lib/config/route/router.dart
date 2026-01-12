@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_super_aslan_app/features/counter/view/counter_page.dart';
+import 'package:flutter_super_aslan_app/app/view/main_view.dart';
+import 'package:flutter_super_aslan_app/splash/view/splash_page.dart';
 import 'package:go_router/go_router.dart';
 
 GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -8,31 +9,14 @@ class GlobalRouter {
   static final GoRouter instance = GoRouter(
     routes: [
       GoRoute(
-        path: '/',
-        builder: (context, state) => const CounterPage(),
+        path: MainView.path,
+        builder: (context, state) => const MainView(),
       ),
-      // GoRoute(
-      //   path: MainView.path,
-      //   builder: (context, state) => const MainView(),
-      // ),
-      //
-      // // sign in
-      // GoRoute(
-      //   path: SignInPage.path,
-      //   builder: (context, state) => const SignInPage(),
-      // ),
-      //
-      // // sign up
-      // GoRoute(
-      //   path: SignUpPage.path,
-      //   builder: (context, state) => const SignUpPage(),
-      // ),
-      //
-      // // verification
-      // GoRoute(
-      //   path: VerificationPage.path,
-      //   builder: (context, state) => const VerificationPage(),
-      // ),
+
+      GoRoute(
+        path: SplashPage.path,
+        builder: (context, state) => const SplashPage(),
+      ),
     ],
     errorBuilder: (context, state) {
       return Scaffold(

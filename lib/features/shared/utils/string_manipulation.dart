@@ -7,7 +7,7 @@ String? stringMani(String input) {
   return dosage;
 }
 
-// to capitalize 
+// to capitalize
 String capitalize(String input) {
   if (input.isEmpty) {
     return input;

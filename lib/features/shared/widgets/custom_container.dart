@@ -35,7 +35,7 @@ class CustomContainer extends StatelessWidget {
             borderRadius: BorderRadius.circular(AppSpacing.md),
           ),
           child: child,
-        )
+        ),
       ],
     );
   }

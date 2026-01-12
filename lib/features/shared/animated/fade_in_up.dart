@@ -33,12 +33,13 @@ class _FadeInUpState extends State<FadeInUp>
       CurvedAnimation(parent: _controller, curve: Curves.easeIn),
     );
 
-    _positionAnimation = Tween<Offset>(
-      begin: Offset(0, widget.offset),
-      end: Offset.zero,
-    ).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
-    );
+    _positionAnimation =
+        Tween<Offset>(
+          begin: Offset(0, widget.offset),
+          end: Offset.zero,
+        ).animate(
+          CurvedAnimation(parent: _controller, curve: Curves.easeOut),
+        );
 
     _controller.forward();
   }

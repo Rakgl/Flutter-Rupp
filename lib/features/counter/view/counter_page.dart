@@ -5,7 +5,7 @@ import 'package:flutter_super_aslan_app/l10n/l10n.dart';
 
 class CounterPage extends StatelessWidget {
   const CounterPage({super.key});
-   static String path = '/counter';
+  static String path = '/counter';
 
   @override
   Widget build(BuildContext context) {

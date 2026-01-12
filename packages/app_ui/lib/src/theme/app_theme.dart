@@ -54,7 +54,7 @@ class AppTheme {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppSpacing.sm),
       ),
-      actionTextColor: AppColors.lightBlue.shade300,
+      actionTextColor: Colors.lightBlue.shade300,
       backgroundColor: AppColors.black,
       elevation: 4,
       behavior: SnackBarBehavior.floating,
@@ -90,7 +90,7 @@ class AppTheme {
 
   DividerThemeData get _dividerTheme {
     return const DividerThemeData(
-      color: AppColors.outlineLight,
+      color: AppColors.borderOutline,
       space: AppSpacing.lg,
       thickness: AppSpacing.xxxs,
       indent: AppSpacing.lg,
@@ -222,7 +222,7 @@ class AppTheme {
 
   ListTileThemeData get _listTileTheme {
     return const ListTileThemeData(
-      iconColor: AppColors.onBackground,
+      iconColor: AppColors.black,
       contentPadding: EdgeInsets.all(AppSpacing.lg),
     );
   }
@@ -231,13 +231,13 @@ class AppTheme {
     return SwitchThemeData(
       thumbColor: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.selected)) {
-          return AppColors.darkAqua;
+          return AppColors.skyBlue;
         }
         return AppColors.eerieBlack;
       }),
       trackColor: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.selected)) {
-          return AppColors.primaryContainer;
+          return AppColors.blueLight;
         }
         return AppColors.paleSky;
       }),
@@ -246,7 +246,7 @@ class AppTheme {
 
   ProgressIndicatorThemeData get _progressIndicatorTheme {
     return const ProgressIndicatorThemeData(
-      color: AppColors.darkAqua,
+      color: AppColors.skyBlue,
       circularTrackColor: AppColors.borderOutline,
     );
   }
@@ -254,7 +254,7 @@ class AppTheme {
   TabBarTheme get _tabBarTheme {
     return TabBarTheme(
       labelStyle: UITextStyle.button,
-      labelColor: AppColors.darkAqua,
+      labelColor: AppColors.skyBlue,
       labelPadding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.lg,
         vertical: AppSpacing.md + AppSpacing.xxs,
@@ -264,7 +264,7 @@ class AppTheme {
       indicator: const UnderlineTabIndicator(
         borderSide: BorderSide(
           width: 3,
-          color: AppColors.darkAqua,
+          color: AppColors.skyBlue,
         ),
       ),
       indicatorSize: TabBarIndicatorSize.label,
@@ -291,7 +291,7 @@ InputBorder get _textFieldBorder => const OutlineInputBorder(
 
 BottomNavigationBarThemeData get _bottomAppBarTheme {
   return BottomNavigationBarThemeData(
-    backgroundColor: AppColors.darkBackground,
+    backgroundColor: AppColors.eerieBlack,
     selectedItemColor: AppColors.white,
     unselectedItemColor: AppColors.white.withAlpha(74),
   );
@@ -337,7 +337,7 @@ class AppDarkTheme extends AppTheme {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppSpacing.sm),
       ),
-      actionTextColor: AppColors.lightBlue.shade300,
+      actionTextColor: Colors.lightBlue.shade300,
       backgroundColor: AppColors.grey.shade300,
       elevation: 4,
       behavior: SnackBarBehavior.floating,
@@ -367,7 +367,7 @@ class AppDarkTheme extends AppTheme {
   @override
   DividerThemeData get _dividerTheme {
     return const DividerThemeData(
-      color: AppColors.onBackground,
+      color: AppColors.white,
       space: AppSpacing.lg,
       thickness: AppSpacing.xxxs,
       indent: AppSpacing.lg,

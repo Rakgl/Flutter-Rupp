@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 
 class TextFormFieldWidget extends StatelessWidget {
   const TextFormFieldWidget({
-    super.key,
     required this.controller,
+    super.key,
     this.labelText,
     this.errorText,
     this.onChanged,
@@ -46,9 +46,9 @@ class TextFormFieldWidget extends StatelessWidget {
         cursorColor: borderColor,
         obscureText: obscureText,
         style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-              fontSize: 14,
-              fontWeight: AppFontWeight.medium,
-            ),
+          fontSize: 14,
+          fontWeight: AppFontWeight.medium,
+        ),
         decoration: InputDecoration(
           errorText: errorText,
           hintText: labelText,
@@ -76,10 +76,10 @@ class TextFormFieldWidget extends StatelessWidget {
               : null,
           fillColor: AppColors.grey.shade50,
           hintStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                color: AppColors.grey,
-                fontSize: 14,
-                fontWeight: AppFontWeight.medium,
-              ),
+            color: AppColors.grey,
+            fontSize: 14,
+            fontWeight: AppFontWeight.medium,
+          ),
           contentPadding: const EdgeInsets.symmetric(
             horizontal: 18,
             vertical: 16,

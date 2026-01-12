@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 
 class ElevatedButtonWidget extends StatelessWidget {
   const ElevatedButtonWidget({
-    super.key,
     required this.text,
+    super.key,
     this.onPressed,
     this.backgroundColor = AppColors.primaryColor,
   });
@@ -30,10 +30,10 @@ class ElevatedButtonWidget extends StatelessWidget {
       child: Text(
         text,
         style: Theme.of(context).textTheme.titleMedium!.copyWith(
-              color: AppColors.white,
-              fontSize: 14,
-              fontWeight: AppFontWeight.medium,
-            ),
+          color: AppColors.white,
+          fontSize: 14,
+          fontWeight: AppFontWeight.medium,
+        ),
       ),
     );
   }

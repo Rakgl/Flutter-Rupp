@@ -12,12 +12,12 @@ class TextButtonWidget extends StatelessWidget {
     return TextButton(
       onPressed: onTap,
       child: Text(
-        title ?? "View all",
+        title ?? 'View all',
         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-              fontSize: 12,
-              fontWeight: AppFontWeight.medium,
-              decoration: TextDecoration.underline,
-            ),
+          fontSize: 12,
+          fontWeight: AppFontWeight.medium,
+          decoration: TextDecoration.underline,
+        ),
       ),
     );
   }

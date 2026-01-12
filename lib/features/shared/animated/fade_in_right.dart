@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 
 class FadeInRight extends StatefulWidget {
-  final Widget child;
-  final Duration duration;
-  final double offset;
-
   const FadeInRight({
-    super.key,
     required this.child,
+    super.key,
     this.duration = const Duration(milliseconds: 800),
     this.offset = 50.0,
   });
+  final Widget child;
+  final Duration duration;
+  final double offset;
 
   @override
   _FadeInRightState createState() => _FadeInRightState();
@@ -34,12 +33,13 @@ class _FadeInRightState extends State<FadeInRight>
       CurvedAnimation(parent: _controller, curve: Curves.easeIn),
     );
 
-    _positionAnimation = Tween<Offset>(
-      begin: Offset(widget.offset, 0),
-      end: Offset.zero,
-    ).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
-    );
+    _positionAnimation =
+        Tween<Offset>(
+          begin: Offset(widget.offset, 0),
+          end: Offset.zero,
+        ).animate(
+          CurvedAnimation(parent: _controller, curve: Curves.easeOut),
+        );
 
     _controller.forward();
   }

@@ -3,12 +3,12 @@ import 'package:intl/intl.dart';
 
 String formatBusinessHours(String opening, String closing) {
   final openTime = TimeOfDay(
-    hour: int.parse(opening.split(":")[0]),
-    minute: int.parse(opening.split(":")[1]),
+    hour: int.parse(opening.split(':')[0]),
+    minute: int.parse(opening.split(':')[1]),
   );
   final closeTime = TimeOfDay(
-    hour: int.parse(closing.split(":")[0]),
-    minute: int.parse(closing.split(":")[1]),
+    hour: int.parse(closing.split(':')[0]),
+    minute: int.parse(closing.split(':')[1]),
   );
 
   String format(TimeOfDay time) {
@@ -48,16 +48,14 @@ String formatDateTime(DateTime inputDate) {
   return formattedDate;
 }
 
-// convert from "2025-08-13T05:30:00.000000Z to 12:30 AM 
+// convert from "2025-08-13T05:30:00.000000Z to 12:30 AM
 String formatTime(DateTime inputTime) {
-
   // to local time
   final dateTime = inputTime.toLocal();
 
   final formattedTime = DateFormat('hh:mm a').format(dateTime);
   return formattedTime;
 }
-
 
 String formatDateTimeString(String inputDateTime) {
   // FIX: Use a pattern that matches the full input string.

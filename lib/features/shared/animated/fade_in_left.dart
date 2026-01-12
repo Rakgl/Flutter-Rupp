@@ -34,12 +34,13 @@ class _FadeInLeftState extends State<FadeInLeft>
       CurvedAnimation(parent: _controller, curve: Curves.easeIn),
     );
 
-    _positionAnimation = Tween<Offset>(
-      begin: Offset(-widget.offset, 0),
-      end: Offset.zero,
-    ).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
-    );
+    _positionAnimation =
+        Tween<Offset>(
+          begin: Offset(-widget.offset, 0),
+          end: Offset.zero,
+        ).animate(
+          CurvedAnimation(parent: _controller, curve: Curves.easeOut),
+        );
 
     _controller.forward();
   }

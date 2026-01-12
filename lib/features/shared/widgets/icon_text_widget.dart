@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 
 class IconTextWidget extends StatelessWidget {
   const IconTextWidget({
-    super.key,
     required this.icon,
     required this.value,
+    super.key,
   });
 
   final SvgGenImage icon;
@@ -27,9 +27,9 @@ class IconTextWidget extends StatelessWidget {
             child: Text(
               value,
               style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                    fontSize: 12,
-                    color: AppColors.grey.shade600,
-                  ),
+                fontSize: 12,
+                color: AppColors.grey.shade600,
+              ),
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
             ),

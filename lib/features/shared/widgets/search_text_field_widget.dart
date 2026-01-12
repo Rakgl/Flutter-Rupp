@@ -4,9 +4,9 @@ import 'package:flutter_iconly/flutter_iconly.dart';
 
 class SearchTextField extends StatelessWidget {
   const SearchTextField({
-    super.key,
     required this.controller,
     required this.hintText,
+    super.key,
   });
 
   final TextEditingController controller;
@@ -17,8 +17,8 @@ class SearchTextField extends StatelessWidget {
     return TextFormField(
       controller: controller,
       style: Theme.of(context).textTheme.bodySmall!.copyWith(
-            fontWeight: AppFontWeight.regular,
-          ),
+        fontWeight: AppFontWeight.regular,
+      ),
       decoration: InputDecoration(
         hintText: hintText,
         prefixIcon: const Icon(
@@ -27,7 +27,9 @@ class SearchTextField extends StatelessWidget {
         ),
         fillColor: AppColors.white,
         hintStyle: Theme.of(context).textTheme.bodySmall!.copyWith(
-            fontWeight: AppFontWeight.regular, color: AppColors.grey.shade500),
+          fontWeight: AppFontWeight.regular,
+          color: AppColors.grey.shade500,
+        ),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 18,
           vertical: 16,

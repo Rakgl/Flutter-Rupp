@@ -1,12 +1,6 @@
 import 'package:flutter/cupertino.dart';
 
 class DashedBorderPainter extends CustomPainter {
-  final Color color;
-  final double strokeWidth;
-  final double dashWidth;
-  final double gapWidth;
-  final double borderRadius;
-
   DashedBorderPainter({
     required this.color,
     this.strokeWidth = 1.0,
@@ -14,6 +8,11 @@ class DashedBorderPainter extends CustomPainter {
     this.gapWidth = 3.0,
     this.borderRadius = 6.0, // Default radius
   });
+  final Color color;
+  final double strokeWidth;
+  final double dashWidth;
+  final double gapWidth;
+  final double borderRadius;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -39,11 +38,14 @@ class DashedBorderPainter extends CustomPainter {
         if (tangent != null) {
           dashedPath.moveTo(tangent.position.dx, tangent.position.dy);
           if (distance + dashWidth < pathMetric.length) {
-            final nextTangent =
-                pathMetric.getTangentForOffset(distance + dashWidth);
+            final nextTangent = pathMetric.getTangentForOffset(
+              distance + dashWidth,
+            );
             if (nextTangent != null) {
               dashedPath.lineTo(
-                  nextTangent.position.dx, nextTangent.position.dy);
+                nextTangent.position.dx,
+                nextTangent.position.dy,
+              );
             }
           }
         }
