@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_super_aslan_app/app/view/main_view.dart';
+import 'package:flutter_super_aslan_app/features/login/view/login_page.dart';
+import 'package:flutter_super_aslan_app/features/signup/view/signup_page.dart';
+import 'package:flutter_super_aslan_app/features/welcome/view/welcome_page.dart';
 import 'package:flutter_super_aslan_app/splash/view/splash_page.dart';
 import 'package:go_router/go_router.dart';
 
@@ -16,6 +19,20 @@ class GlobalRouter {
       GoRoute(
         path: SplashPage.path,
         builder: (context, state) => const SplashPage(),
+      ),
+
+      GoRoute(
+        path: WelcomePage.path,
+        builder: (context, state) => const WelcomePage(),
+      ),
+
+      GoRoute(
+        path: '/login',
+        builder: (context, state) => const LoginPage(),
+      ),
+      GoRoute(
+        path: SignupPage.path,
+        builder: (context, state) => const SignupPage(),
       ),
     ],
     errorBuilder: (context, state) {

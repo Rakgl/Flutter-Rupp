@@ -1,6 +1,6 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_super_aslan_app/app/view/main_view.dart';
+import 'package:flutter_super_aslan_app/features/welcome/view/welcome_page.dart';
 import 'package:go_router/go_router.dart';
 
 class SplashPage extends StatelessWidget {
@@ -27,7 +27,7 @@ class _SplashViewState extends State<SplashView> {
     super.initState();
 
     Future.delayed(const Duration(seconds: 2), () async {
-      context.go(MainView.path);
+      context.go(WelcomePage.path);
     });
   }
 
@@ -43,7 +43,7 @@ class _SplashViewState extends State<SplashView> {
         Scaffold(
           backgroundColor: Colors.transparent,
           extendBodyBehindAppBar: true,
-          
+
           body: SafeArea(
             child: Center(
               child: Assets.img.appLogo.image(
