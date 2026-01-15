@@ -1,5 +1,3 @@
-
-
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,7 +8,6 @@ import 'package:flutter_super_aslan_app/features/request/view/request_page.dart'
 import 'package:flutter_super_aslan_app/features/schedule/view/schedule_page.dart';
 import 'package:flutter_super_aslan_app/navigation/cubit/navigation_cubit.dart';
 import 'package:flutter_super_aslan_app/navigation/view/bottom_nav_bar.dart';
-
 
 class MainView extends StatelessWidget {
   const MainView({super.key});
@@ -31,12 +28,9 @@ class _BodyView extends StatefulWidget {
 }
 
 class _BodyViewState extends State<_BodyView> {
-
-
   @override
   void initState() {
     super.initState();
-
   }
 
   @override
