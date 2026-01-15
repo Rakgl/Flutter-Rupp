@@ -1,7 +1,10 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
+import 'package:flutter_super_aslan_app/features/earning/view/earning_page.dart';
+import 'package:flutter_super_aslan_app/features/review/view/review_page.dart';
+import 'package:flutter_super_aslan_app/features/work/view/work_page.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter_super_aslan_app/features/home/home.dart';
 
 class HomePage extends StatelessWidget {
@@ -361,7 +364,7 @@ class _ProposalsGrid extends StatelessWidget {
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               ),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () => context.push(WorkPage.path),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.deepPurpleAccent,
                   shape: const StadiumBorder(),
@@ -378,6 +381,7 @@ class _ProposalsGrid extends StatelessWidget {
             ],
           ),
           GridView.count(
+            padding: const EdgeInsets.only(top: 12),
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             crossAxisCount: 2,
@@ -512,6 +516,7 @@ class _EarningsPerformanceSection extends StatelessWidget {
             ],
           ),
           GridView.count(
+            padding: const EdgeInsets.only(top: 12),
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             crossAxisCount: 2,
@@ -567,7 +572,7 @@ class _EarningsPerformanceSection extends StatelessWidget {
                 ],
               ),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () => context.push(EarningPage.path),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.deepPurpleAccent,
                   shape: const StadiumBorder(),
@@ -718,7 +723,7 @@ class _ReputationSection extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           ElevatedButton(
-            onPressed: () {},
+            onPressed: () => context.push(ReviewPage.path),
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.deepPurpleAccent,
               shape: const StadiumBorder(),
