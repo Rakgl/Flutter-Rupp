@@ -6,6 +6,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_super_aslan_app/app/view/main_view.dart';
 import 'package:flutter_super_aslan_app/features/login/login.dart';
 import 'package:flutter_super_aslan_app/features/signup/view/signup_page.dart';
+import 'package:flutter_super_aslan_app/features/shared/widgets/bottom_action_button.dart';
+import 'package:flutter_super_aslan_app/features/shared/widgets/text_form_field_widget.dart';
+import 'package:flutter_super_aslan_app/features/shared/widgets/text_label.dart';
 import 'package:go_router/go_router.dart';
 
 class LoginPage extends StatelessWidget {
@@ -67,44 +70,6 @@ class _LoginViewState extends State<LoginView> {
     }
   }
 
-  InputDecoration _inputDec({
-    required String hint,
-    Widget? suffixIcon,
-    bool isPassword = false,
-  }) {
-    final borderRadius = BorderRadius.circular(14);
-    return InputDecoration(
-      hintText: hint,
-      hintStyle: TextStyle(
-        color: AppColors.grey.shade500,
-        fontSize: isPassword ? 18 : 15,
-        letterSpacing: isPassword ? 3.5 : 0,
-      ),
-      filled: true,
-      fillColor: AppColors.inputEnabled,
-      border: OutlineInputBorder(
-        borderRadius: borderRadius,
-        borderSide: BorderSide.none,
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: borderRadius,
-        borderSide: BorderSide(
-          color: AppColors.grey.shade200,
-          width: 1,
-        ),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: borderRadius,
-        borderSide: const BorderSide(
-          color: _accent,
-          width: 2,
-        ),
-      ),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
-      suffixIcon: suffixIcon,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final view = View.of(context);
@@ -122,8 +87,9 @@ class _LoginViewState extends State<LoginView> {
     final cardTop = size.height * 0.26;
 
     // Logo position (sit just above the card)
-    final logoTop =
-        (cardTop - logoSize * 1.2).clamp(24.0, size.height).toDouble();
+    final logoTop = (cardTop - logoSize * 1.2)
+        .clamp(24.0, size.height)
+        .toDouble();
 
     return Stack(
       fit: StackFit.expand,
@@ -210,9 +176,7 @@ class _LoginViewState extends State<LoginView> {
                                 const SizedBox(height: 8),
                                 Text(
                                   'Login to continue with SuperAslan',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium
+                                  style: Theme.of(context).textTheme.bodyMedium
                                       ?.copyWith(
                                         color: AppColors.paleSky,
                                         fontSize: 15,
@@ -221,94 +185,42 @@ class _LoginViewState extends State<LoginView> {
                                 const SizedBox(height: 28),
                                 Align(
                                   alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    'Email or Phone Number',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyLarge
-                                        ?.copyWith(
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 15,
-                                          color: AppColors.black,
-                                        ),
+                                  child: const TextLabel(
+                                    label: 'Email or Phone Number',
                                   ),
                                 ),
                                 const SizedBox(height: 12),
-                                TextField(
+                                TextFormFieldWidget(
                                   controller: _emailController,
-                                  decoration: _inputDec(
-                                    hint: 'peterparker@gmail.com',
-                                  ),
+                                  labelText: 'peterparker@gmail.com',
+                                  icon: Icons.email_outlined,
                                 ),
-                                const SizedBox(height: 20),
                                 Align(
                                   alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    'Password',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyLarge
-                                        ?.copyWith(
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 15,
-                                          color: AppColors.black,
-                                        ),
+                                  child: const TextLabel(
+                                    label: 'Password',
                                   ),
                                 ),
                                 const SizedBox(height: 12),
-                                TextField(
+                                TextFormFieldWidget(
                                   controller: _passwordController,
                                   obscureText: _obscurePassword,
-                                  style: const TextStyle(
-                                    fontSize: 18,
-                                    letterSpacing: 3.5,
-                                  ),
-                                  decoration: _inputDec(
-                                    hint: '••••••••',
-                                    isPassword: true,
-                                    suffixIcon: IconButton(
-                                      icon: Icon(
-                                        _obscurePassword
-                                            ? Icons.visibility_off_outlined
-                                            : Icons.visibility_outlined,
-                                        color: AppColors.grey.shade500,
-                                      ),
-                                      onPressed: () => setState(
-                                        () => _obscurePassword =
-                                            !_obscurePassword,
-                                      ),
-                                    ),
+                                  labelText: '••••••••',
+                                  icon: Icons.lock_outline,
+                                  isPassword: true,
+                                  onToggleSuffix: () => setState(
+                                    () => _obscurePassword = !_obscurePassword,
                                   ),
                                 ),
                                 const SizedBox(height: 28),
-                                SizedBox(
-                                  width: double.infinity,
-                                  height: 56,
-                                  child: ElevatedButton(
-                                    onPressed: _isFormValid ? _submit : null,
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: _accent,
-                                      elevation: 0,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(28),
-                                      ),
-                                    ),
-                                    child: const Text(
-                                      'Log In',
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
+                                BottomActionButton(
+                                  title: 'Log In',
+                                  onPressed: _isFormValid ? _submit : null,
                                 ),
                                 const SizedBox(height: 16),
                                 Text(
                                   'Forgot password?',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyLarge
+                                  style: Theme.of(context).textTheme.bodyLarge
                                       ?.copyWith(
                                         fontWeight: FontWeight.w600,
                                         color: AppColors.black,
@@ -332,11 +244,12 @@ class _LoginViewState extends State<LoginView> {
                                 children: [
                                   Text(
                                     'Don’t have an account? ',
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.bodyMedium?.copyWith(
-                                      fontSize: 15,
-                                    ),
+                                    style:
+                                        Theme.of(
+                                          context,
+                                        ).textTheme.bodyMedium?.copyWith(
+                                          fontSize: 15,
+                                        ),
                                   ),
                                   Text(
                                     'Register',
