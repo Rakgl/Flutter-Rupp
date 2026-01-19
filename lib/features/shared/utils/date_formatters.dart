@@ -16,7 +16,7 @@ String formatDateString(String dateString) {
   try {
     final dateTime = DateTime.parse(dateString);
     return toApiDate(dateTime);
-  } catch (e) {
+  } on Exception {
     // Handle parsing error, maybe return the original string or a default.
     return dateString;
   }

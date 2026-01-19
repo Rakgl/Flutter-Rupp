@@ -251,25 +251,25 @@ class AppTheme {
     );
   }
 
-  TabBarTheme get _tabBarTheme {
-    return TabBarTheme(
-      labelStyle: UITextStyle.button,
-      labelColor: AppColors.skyBlue,
-      labelPadding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.lg,
-        vertical: AppSpacing.md + AppSpacing.xxs,
-      ),
-      unselectedLabelStyle: UITextStyle.button,
-      unselectedLabelColor: AppColors.mediumEmphasisSurface,
-      indicator: const UnderlineTabIndicator(
-        borderSide: BorderSide(
-          width: 3,
-          color: AppColors.skyBlue,
-        ),
-      ),
-      indicatorSize: TabBarIndicatorSize.label,
-    );
-  }
+  // TabBarTheme get _tabBarTheme {
+  //   return TabBarTheme(
+  //     labelStyle: UITextStyle.button,
+  //     labelColor: AppColors.skyBlue,
+  //     labelPadding: const EdgeInsets.symmetric(
+  //       horizontal: AppSpacing.lg,
+  //       vertical: AppSpacing.md + AppSpacing.xxs,
+  //     ),
+  //     unselectedLabelStyle: UITextStyle.button,
+  //     unselectedLabelColor: AppColors.mediumEmphasisSurface,
+  //     indicator: const UnderlineTabIndicator(
+  //       borderSide: BorderSide(
+  //         width: 3,
+  //         color: AppColors.skyBlue,
+  //       ),
+  //     ),
+  //     indicatorSize: TabBarIndicatorSize.label,
+  //   );
+  // }
 
   FloatingActionButtonThemeData get _floatingActionButtonTheme {
     return FloatingActionButtonThemeData(

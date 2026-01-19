@@ -104,8 +104,8 @@ class _HomeAppBar extends StatelessWidget {
                 end: Alignment.bottomRight,
               ),
             ),
-            child: Row(
-              children: const [
+            child: const Row(
+              children: [
                 Icon(
                   Icons.check_circle_outline,
                   size: 14,
@@ -195,7 +195,7 @@ class _HomeAppBar extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(4),
             decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
+              color: Colors.blue.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
             child: Icon(icon, color: color, size: 20),
@@ -224,7 +224,7 @@ class _NextAppointmentCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Color(0xFF2E2865),
+        color: const Color(0xFF2E2865),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
@@ -255,8 +255,8 @@ class _NextAppointmentCard extends StatelessWidget {
                     end: Alignment.bottomRight,
                   ),
                 ),
-                child: Row(
-                  children: const [
+                child: const Row(
+                  children: [
                     Icon(
                       Icons.check_circle_outline,
                       size: 14,
@@ -282,8 +282,8 @@ class _NextAppointmentCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: const [
+                const Row(
+                  children: [
                     CircleAvatar(radius: 12, child: Text('T')),
                     SizedBox(width: 8),
                     Text(
@@ -353,6 +353,10 @@ class _ProposalsGrid extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.white,
         borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: Colors.grey,
+          width: 0.5,
+        ),
       ),
       child: Column(
         children: [
@@ -441,19 +445,22 @@ class _ProposalsGrid extends StatelessWidget {
       decoration: BoxDecoration(
         color: bg,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: accent.withOpacity(0.1)),
+        border: Border.all(color: accent.withValues(alpha: 0.1)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(icon, size: 16, color: accent.withOpacity(0.6)),
+              Icon(icon, size: 16, color: accent.withValues(alpha: 0.6)),
               const SizedBox(width: 4),
               Expanded(
                 child: Text(
                   title,
-                  style: TextStyle(fontSize: 10, color: AppColors.paleSky),
+                  style: const TextStyle(
+                    fontSize: 10, 
+                    color: AppColors.paleSky,
+                  ),
                 ),
               ),
             ],
@@ -467,7 +474,10 @@ class _ProposalsGrid extends StatelessWidget {
             alignment: Alignment.bottomRight,
             child: Text(
               action,
-              style: TextStyle(fontSize: 10, color: AppColors.trendNegative),
+              style: const TextStyle(
+                fontSize: 10, 
+                color: AppColors.trendNegative
+              ),
             ),
           ),
         ],
@@ -486,18 +496,22 @@ class _EarningsPerformanceSection extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.white,
         borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: Colors.grey,
+          width: 0.5, // You can adjust the thickness here
+        ),
       ),
       child: Column(
         children: [
-          Row(
+          const Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
+              Text(
                 'Earnings & Performance',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               Row(
-                children: const [
+                children: [
                   Icon(
                     Icons.trending_up,
                     color: AppColors.trendPositive,
@@ -526,28 +540,28 @@ class _EarningsPerformanceSection extends StatelessWidget {
             children: [
               _earningsTile(
                 'Total Earnings',
-                '\$48,750.50',
+                r'$48,750.50',
                 'Lifetime',
                 AppColors.surface2,
                 AppColors.confirmedColor,
               ),
               _earningsTile(
                 'This Month',
-                '\$3,250.00',
+                r'$3,250.00',
                 'December 2025',
                 const Color(0xFFE8F5E9),
                 AppColors.trendPositive,
               ),
               _earningsTile(
                 'This Week',
-                '\$875.00',
+                r'$875.00',
                 'Last 7 days',
                 const Color(0xFFF3E5F5),
                 Colors.purple,
               ),
               _earningsTile(
                 'Pending Payout',
-                '\$450.00',
+                r'$450.00',
                 'Processing',
                 const Color(0xFFFFF3E0),
                 AppColors.warningAccent,
@@ -558,16 +572,16 @@ class _EarningsPerformanceSection extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
+              const Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     'Last Payout',
                     style: TextStyle(color: AppColors.paleSky, fontSize: 12),
                   ),
                   Text(
-                    '\$2,100.00 • Dec 6, 2025',
-                    style: const TextStyle(fontWeight: FontWeight.bold),
+                    r'$2,100.00 • Dec 6, 2025',
+                    style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
@@ -649,6 +663,10 @@ class _ReputationSection extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.white,
         borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: Colors.grey,
+          width: 0.5,
+        ),
       ),
       child: Column(
         children: [
@@ -698,7 +716,7 @@ class _ReputationSection extends StatelessWidget {
                     Row(
                       children: List.generate(
                         5,
-                        (i) => Icon(
+                        (i) => const Icon(
                           Icons.star,
                           color: AppColors.ratingPrimary,
                           size: 14,
@@ -708,10 +726,14 @@ class _ReputationSection extends StatelessWidget {
                   ],
                 ),
                 const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 8.0),
+                  padding: EdgeInsets.symmetric(vertical: 8),
                   child: Text(
-                    '"Excellent service! Fixed the issue quickly and professionally."',
-                    style: TextStyle(fontStyle: FontStyle.italic, fontSize: 13),
+                    '"Excellent service! Fixed the issue '
+                    'quickly and professionally."', 
+                    style: TextStyle(
+                      fontStyle: FontStyle.italic,
+                      fontSize: 13
+                    ),
                   ),
                 ),
                 const Text(
