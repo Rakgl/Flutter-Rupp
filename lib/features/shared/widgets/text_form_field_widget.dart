@@ -16,6 +16,8 @@ class TextFormFieldWidget extends StatelessWidget {
     this.obscureText = false,
     this.isPassword = false,
     this.onToggleSuffix,
+    this.keyboardType,
+    this.margin,
   });
 
   final TextEditingController controller;
@@ -34,17 +36,18 @@ class TextFormFieldWidget extends StatelessWidget {
   final bool obscureText;
   final bool isPassword;
   final VoidCallback? onToggleSuffix;
+  final TextInputType? keyboardType;
+  final EdgeInsetsGeometry? margin;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(
-        bottom: AppSpacing.lg,
-      ),
+      margin: margin ?? const EdgeInsets.only(bottom: AppSpacing.lg),
       child: TextFormField(
         controller: controller,
         cursorColor: borderColor,
         obscureText: obscureText,
+        keyboardType: keyboardType,
         style: Theme.of(context).textTheme.bodyLarge!.copyWith(
           fontSize: 14,
           fontWeight: AppFontWeight.medium,
@@ -52,17 +55,20 @@ class TextFormFieldWidget extends StatelessWidget {
         decoration: InputDecoration(
           errorText: errorText,
           hintText: labelText,
-          prefixIcon: Container(
-            padding: const EdgeInsets.all(AppSpacing.xxs),
-            decoration: BoxDecoration(
-              color: AppColors.primaryColor.withAlpha(10),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              icon,
-              color: AppColors.primaryColor,
-            ),
-          ),
+          filled: true,
+          prefixIcon: icon == null
+              ? null
+              : Container(
+                  padding: const EdgeInsets.all(AppSpacing.xxs),
+                  decoration: BoxDecoration(
+                    color: borderColor.withAlpha(10),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    icon,
+                    color: borderColor,
+                  ),
+                ),
           suffixIcon: isPassword
               ? IconButton(
                   onPressed: onToggleSuffix,
@@ -74,53 +80,47 @@ class TextFormFieldWidget extends StatelessWidget {
                   ),
                 )
               : null,
-          fillColor: AppColors.grey.shade50,
+          fillColor: AppColors.grey.shade100,
           hintStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
             color: AppColors.grey,
             fontSize: 14,
             fontWeight: AppFontWeight.medium,
           ),
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 18,
-            vertical: 16,
-          ),
+          contentPadding: icon == null
+              ? const EdgeInsets.symmetric(horizontal: 16, vertical: 14)
+              : const EdgeInsets.symmetric(horizontal: 8, vertical: 14),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(
-              AppSpacing.xxlg,
-            ),
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide.none,
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(
-              AppSpacing.xxlg,
-            ),
-            borderSide: const BorderSide(
-              color: AppColors.primaryColor,
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(
+              color: borderColor,
+              width: 1.5,
             ),
           ),
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(
-              AppSpacing.xxlg,
-            ),
-            borderSide: BorderSide(
-              color: AppColors.grey.shade50,
-            ),
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide.none,
           ),
           errorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(
-              AppSpacing.xxlg,
-            ),
+            borderRadius: BorderRadius.circular(12),
             borderSide: BorderSide(
-              color: AppColors.red.shade100,
+              color: AppColors.red.shade400,
+              width: 1.5,
             ),
           ),
           focusedErrorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(
-              AppSpacing.xxlg,
-            ),
+            borderRadius: BorderRadius.circular(12),
             borderSide: BorderSide(
-              color: AppColors.red.shade200,
+              color: AppColors.red.shade400,
+              width: 1.5,
             ),
           ),
+          errorStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: AppColors.red.shade400,
+              ),
         ),
         onChanged: onChanged,
         validator: validator,
