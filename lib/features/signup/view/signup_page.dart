@@ -1,10 +1,12 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
-
 import 'package:flutter_super_aslan_app/features/login/view/login_page.dart';
+import 'package:flutter_super_aslan_app/features/shared/widgets/phone_text_field.dart';
+import 'package:flutter_super_aslan_app/features/shared/widgets/text_form_field_widget.dart';
+import 'package:flutter_super_aslan_app/features/shared/widgets/text_label.dart';
 import 'package:flutter_super_aslan_app/features/signup/signup.dart';
+import 'package:go_router/go_router.dart';
 
 class SignupPage extends StatelessWidget {
   const SignupPage({super.key});
@@ -28,8 +30,7 @@ class SignupView extends StatefulWidget {
 }
 
 class _SignupViewState extends State<SignupView> {
-  static const Color _accent = Color(0xFFED6B65);
-
+  final _formKey = GlobalKey<FormState>();
   static const List<_CountryOption> _countries = [
     _CountryOption(name: 'France', dialCode: '+33', flag: '🇫🇷'),
     _CountryOption(name: 'United Kingdom', dialCode: '+44', flag: '🇬🇧'),
@@ -42,6 +43,8 @@ class _SignupViewState extends State<SignupView> {
   final _passwordController = TextEditingController();
 
   bool _obscurePassword = true;
+  bool _isFormValid = false;
+  bool _submitAttempted = false;
   _CountryOption _selectedCountry = _countries.first;
 
   @override
@@ -53,42 +56,21 @@ class _SignupViewState extends State<SignupView> {
     super.dispose();
   }
 
-  InputDecoration _inputDec({
-    required String hint,
-    Widget? suffixIcon,
-    bool isPassword = false,
-  }) {
-    final borderRadius = BorderRadius.circular(14);
-    return InputDecoration(
-      hintText: hint,
-      hintStyle: TextStyle(
-        color: AppColors.grey.shade500,
-        fontSize: isPassword ? 18 : 15,
-        letterSpacing: isPassword ? 3.5 : 0,
-      ),
-      filled: true,
-      fillColor: AppColors.inputEnabled,
-      border: OutlineInputBorder(
-        borderRadius: borderRadius,
-        borderSide: BorderSide.none,
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: borderRadius,
-        borderSide: BorderSide(
-          color: AppColors.grey.shade200,
-          width: 1,
-        ),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: borderRadius,
-        borderSide: const BorderSide(
-          color: _accent,
-          width: 2,
-        ),
-      ),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
-      suffixIcon: suffixIcon,
-    );
+  void _updateFormState() {
+    final hasInput =
+        _fullNameController.text.trim().isNotEmpty &&
+        _emailController.text.trim().isNotEmpty &&
+        _phoneController.text.trim().isNotEmpty &&
+        _passwordController.text.trim().isNotEmpty;
+    if (hasInput != _isFormValid) {
+      setState(() => _isFormValid = hasInput);
+    }
+  }
+
+  void _submit() {
+    setState(() => _submitAttempted = true);
+    final isValid = _formKey.currentState?.validate() ?? false;
+    if (!isValid) return;
   }
 
   Future<void> _showCountryPicker() async {
@@ -104,13 +86,16 @@ class _SignupViewState extends State<SignupView> {
             mainAxisSize: MainAxisSize.min,
             children: _countries.map((country) {
               return ListTile(
-                leading: Text(country.flag, style: const TextStyle(fontSize: 24)),
+                leading: Text(
+                  country.flag,
+                  style: const TextStyle(fontSize: 24),
+                ),
                 title: Text(country.name),
                 trailing: Text(
                   country.dialCode,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
                 onTap: () => Navigator.of(context).pop(country),
               );
@@ -146,7 +131,7 @@ class _SignupViewState extends State<SignupView> {
         ),
         Scaffold(
           backgroundColor: Colors.transparent,
-          resizeToAvoidBottomInset: false,
+          resizeToAvoidBottomInset: true,
           body: SafeArea(
             child: Stack(
               children: [
@@ -161,245 +146,276 @@ class _SignupViewState extends State<SignupView> {
                     ),
                   ),
                 ),
-                Positioned(
-                  left: 10,
-                  right: 10,
-                  top: cardTop,
-                  child: Container(
-                    padding: const EdgeInsets.fromLTRB(24, 24, 24, 24),
-                    decoration: BoxDecoration(
-                      color: AppColors.white,
-                      borderRadius: BorderRadius.circular(28),
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          'Welcome to SuperAslan!',
-                          style: Theme.of(context)
-                              .textTheme
-                              .headlineMedium
-                              ?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 24,
-                                color: AppColors.black,
-                              ),
-                        ),
-                        const SizedBox(height: 6),
-                        Text(
-                          'Signup to continue with SuperAslan',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium
-                              ?.copyWith(
-                                color: AppColors.paleSky,
-                                fontSize: 14,
-                              ),
-                        ),
-                        const SizedBox(height: 16),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Full name',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyLarge
-                                ?.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 15,
-                                  color: AppColors.black,
-                                ),
+                Positioned.fill(
+                  child: LayoutBuilder(
+                    builder: (context, viewport) {
+                      final minHeight = viewport.maxHeight - cardTop - 20;
+                      return SingleChildScrollView(
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                            top: cardTop,
+                            left: 10,
+                            right: 10,
+                            bottom: 20,
                           ),
-                        ),
-                        const SizedBox(height: 8),
-                        TextField(
-                          controller: _fullNameController,
-                          decoration: _inputDec(hint: 'Peter Parker'),
-                        ),
-                        const SizedBox(height: 16),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Email',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyLarge
-                                ?.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 15,
-                                  color: AppColors.black,
-                                ),
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        TextField(
-                          controller: _emailController,
-                          decoration: _inputDec(hint: 'peterparker@gmail.com'),
-                        ),
-                        const SizedBox(height: 16),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Phone number',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyLarge
-                                ?.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 15,
-                                  color: AppColors.black,
-                                ),
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Row(
-                          children: [
-                            GestureDetector(
-                              onTap: _showCountryPicker,
-                              child: Container(
-                                height: 56,
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 12),
-                                decoration: BoxDecoration(
-                                  color: AppColors.white,
-                                  borderRadius: BorderRadius.circular(14),
-                                  border: Border.all(
-                                    color: AppColors.grey.shade300,
-                                  ),
-                                ),
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      _selectedCountry.flag,
-                                      style: const TextStyle(fontSize: 20),
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(
+                              minHeight: minHeight > 0 ? minHeight : 0,
+                            ),
+                            child: IntrinsicHeight(
+                              child: Column(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.fromLTRB(
+                                      24,
+                                      24,
+                                      24,
+                                      24,
                                     ),
-                                    const SizedBox(width: 6),
-                                    Text(
-                                      _selectedCountry.dialCode,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium
-                                          ?.copyWith(
-                                            fontWeight: FontWeight.w600,
+                                    decoration: BoxDecoration(
+                                      color: AppColors.white,
+                                      borderRadius: BorderRadius.circular(28),
+                                    ),
+                                    child: Form(
+                                      key: _formKey,
+                                      autovalidateMode: _submitAttempted
+                                          ? AutovalidateMode.onUserInteraction
+                                          : AutovalidateMode.disabled,
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            'Welcome to SuperAslan!',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headlineMedium
+                                                ?.copyWith(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 24,
+                                                  color: AppColors.black,
+                                                ),
                                           ),
+                                          const SizedBox(height: 6),
+                                          Text(
+                                            'Signup to continue with SuperAslan',
+                                            style:
+                                                Theme.of(
+                                                      context,
+                                                    ).textTheme.bodyMedium
+                                                    ?.copyWith(
+                                                      color: AppColors.paleSky,
+                                                      fontSize: 14,
+                                                    ),
+                                          ),
+                                          const SizedBox(height: 28),
+                                          const Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: TextLabel(
+                                              label: 'Full name',
+                                            ),
+                                          ),
+                                          const SizedBox(height: 12),
+                                          TextFormFieldWidget(
+                                            controller: _fullNameController,
+                                            labelText: 'Peter Parker',
+                                            onChanged: (_) =>
+                                                _updateFormState(),
+                                          ),
+                                          const Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: TextLabel(
+                                              label: 'Email address',
+                                            ),
+                                          ),
+                                          const SizedBox(height: 12),
+                                          TextFormFieldWidget(
+                                            controller: _emailController,
+                                            labelText: 'Email address',
+                                            keyboardType:
+                                                TextInputType.emailAddress,
+                                            onChanged: (_) =>
+                                                _updateFormState(),
+                                            validator: (value) {
+                                              final text = value?.trim() ?? '';
+                                              if (text.isEmpty) return null;
+                                              final emailRegex = RegExp(
+                                                r'^[^@\s]+@[^@\s]+\.[^@\s]+$',
+                                              );
+                                              if (!emailRegex.hasMatch(text)) {
+                                                return 'Enter a valid email address';
+                                              }
+                                              return null;
+                                            },
+                                          ),
+                                          const Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: TextLabel(
+                                              label: 'Phone number',
+                                            ),
+                                          ),
+                                          const SizedBox(height: 12),
+                                          PhoneTextFieldWidget(
+                                            controller: _phoneController,
+                                            labelText: '01234',
+                                            onChanged: (_) =>
+                                                _updateFormState(),
+                                            validator: (value) {
+                                              final text = value?.trim() ?? '';
+                                              if (text.isEmpty) {
+                                                return null;
+                                              }
+                                              if (text.length < 6) {
+                                                return 'Enter a valid phone number';
+                                              }
+                                              return null;
+                                            },
+                                            prefix: GestureDetector(
+                                              onTap: _showCountryPicker,
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Text(
+                                                    _selectedCountry.flag,
+                                                    style: const TextStyle(
+                                                      fontSize: 20,
+                                                    ),
+                                                  ),
+                                                  const SizedBox(width: 6),
+                                                  Text(
+                                                    _selectedCountry.dialCode,
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodyMedium
+                                                        ?.copyWith(
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                        ),
+                                                  ),
+                                                  const SizedBox(width: 4),
+                                                  const Icon(
+                                                    Icons
+                                                        .keyboard_arrow_down_rounded,
+                                                    size: 20,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                          const Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: TextLabel(
+                                              label: 'Password',
+                                            ),
+                                          ),
+                                          const SizedBox(height: 12),
+                                          TextFormFieldWidget(
+                                            controller: _passwordController,
+                                            obscureText: _obscurePassword,
+                                            labelText: 'Password',
+                                            isPassword: true,
+                                            onToggleSuffix: () => setState(
+                                              () => _obscurePassword =
+                                                  !_obscurePassword,
+                                            ),
+                                            onChanged: (_) =>
+                                                _updateFormState(),
+                                          ),
+                                          const SizedBox(height: 16),
+                                          SizedBox(
+                                            width: double.infinity,
+                                            height: 56,
+                                            child: ElevatedButton(
+                                              onPressed: _isFormValid
+                                                  ? _submit
+                                                  : null,
+                                              style: ButtonStyle(
+                                                elevation:
+                                                    WidgetStateProperty.all(
+                                                      0,
+                                                    ),
+                                                backgroundColor:
+                                                    WidgetStateProperty.resolveWith(
+                                                      (states) {
+                                                        if (states.contains(
+                                                          WidgetState.disabled,
+                                                        )) {
+                                                          return AppColors
+                                                              .primaryColor
+                                                              .withOpacity(0.4);
+                                                        }
+                                                        return AppColors
+                                                            .primaryColor;
+                                                      },
+                                                    ),
+                                                foregroundColor:
+                                                    WidgetStateProperty.resolveWith(
+                                                      (states) {
+                                                        if (states.contains(
+                                                          WidgetState.disabled,
+                                                        )) {
+                                                          return AppColors.white
+                                                              .withOpacity(0.7);
+                                                        }
+                                                        return AppColors.white;
+                                                      },
+                                                    ),
+                                                shape: WidgetStateProperty.all(
+                                                  RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          28,
+                                                        ),
+                                                  ),
+                                                ),
+                                              ),
+                                              child: const Text(
+                                                'Get Started',
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                    const SizedBox(width: 6),
-                                    const Icon(
-                                      Icons.keyboard_arrow_down_rounded,
+                                  ),
+                                  const Spacer(),
+                                  GestureDetector(
+                                    onTap: () => context.go(LoginPage.path),
+                                    child: Wrap(
+                                      children: [
+                                        Text(
+                                          'Already have an account? ',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium
+                                              ?.copyWith(
+                                                fontSize: 15,
+                                              ),
+                                        ),
+                                        Text(
+                                          'Log In',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium
+                                              ?.copyWith(
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w600,
+                                                color: AppColors.primaryColor,
+                                              ),
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: SizedBox(
-                                height: 56,
-                                child: TextField(
-                                  controller: _phoneController,
-                                  keyboardType: TextInputType.phone,
-                                  decoration: _inputDec(hint: '01234'),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 16),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Password',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyLarge
-                                ?.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 15,
-                                  color: AppColors.black,
-                                ),
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        TextField(
-                          controller: _passwordController,
-                          obscureText: _obscurePassword,
-                          style: const TextStyle(
-                            fontSize: 18,
-                            letterSpacing: 3.5,
-                          ),
-                          decoration: _inputDec(
-                            hint: '••••••••',
-                            isPassword: true,
-                            suffixIcon: IconButton(
-                              icon: Icon(
-                                _obscurePassword
-                                    ? Icons.visibility_off_outlined
-                                    : Icons.visibility_outlined,
-                                color: AppColors.grey.shade500,
-                              ),
-                              onPressed: () => setState(
-                                () => _obscurePassword = !_obscurePassword,
+                                  ),
+                                ],
                               ),
                             ),
                           ),
                         ),
-                        const SizedBox(height: 20),
-                        SizedBox(
-                          width: double.infinity,
-                          height: 56,
-                          child: ElevatedButton(
-                            onPressed: () {},
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: _accent,
-                              elevation: 0,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(28),
-                              ),
-                            ),
-                            child: const Text(
-                              'Get Started',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Positioned(
-                  left: 0,
-                  right: 0,
-                  bottom: 24,
-                  child: Center(
-                    child: GestureDetector(
-                      onTap: () => context.go(LoginPage.path),
-                      child: Wrap(
-                        children: [
-                          Text(
-                            'Already have an account? ',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
-                                ?.copyWith(fontSize: 15),
-                          ),
-                          Text(
-                            'Log In',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
-                                ?.copyWith(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w600,
-                                  color: _accent,
-                                ),
-                          ),
-                        ],
-                      ),
-                    ),
+                      );
+                    },
                   ),
                 ),
               ],

@@ -10,7 +10,7 @@ abstract class AppColors {
   static const Color darkBackground = Color(0xFF191C1D);
 
   // --- Primary Aqua/Blue Palette ---
-  static const Color primaryColor = Color(0xFF47C2FF); // Bright Aqua
+  static const Color primaryColor = Color(0xFFED6B65); // Brand Red
   static const Color blueLight = Color(0xFF9ADDFE);
   static const Color skyBlue = Color(0xFF0175C2);
   static const Color oceanBlue = Color(0xFF02569B);

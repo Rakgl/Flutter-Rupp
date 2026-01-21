@@ -23,8 +23,6 @@ class WelcomeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-
     return Stack(
       fit: StackFit.expand,
       children: [
@@ -36,23 +34,24 @@ class WelcomeView extends StatelessWidget {
         Scaffold(
           backgroundColor: Colors.transparent,
           body: SafeArea(
+            bottom: false,
             child: Column(
               children: [
-                SizedBox(height: size.height * 0.25),
+                const Spacer(flex: 2),
 
-                /// App logo
+                /// Logo (floats naturally above the card)
                 Assets.img.appLogo.image(
-                  width: 160,
-                  height: 160,
+                  width: 150,
+                  height: 150,
                 ),
 
-                /// Push the card to the bottom
+                /// Push content to bottom
                 const Spacer(),
 
-                /// Bottom card
+                /// Bottom card (anchored)
                 Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 40),
                   decoration: const BoxDecoration(
                     color: AppColors.white,
                     borderRadius: BorderRadius.only(
@@ -60,74 +59,87 @@ class WelcomeView extends StatelessWidget {
                       topRight: Radius.circular(24),
                     ),
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        'Welcome!',
-                        style: Theme.of(context).textTheme.headlineMedium
-                            ?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.black,
-                            ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        "Let's get started with SuperAslan for Professional!",
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: AppColors.grey.shade600,
+                  child: SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'Welcome!',
+                          style: Theme.of(context).textTheme.headlineMedium
+                              ?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.black,
+                              ),
                         ),
-                      ),
-                      const SizedBox(height: 20),
-                      Text(
-                        'Select Language',
-                        style: Theme.of(context).textTheme.titleMedium
-                            ?.copyWith(
-                              fontWeight: FontWeight.w600,
-                              color: AppColors.black,
-                            ),
-                      ),
-                      const SizedBox(height: 16),
-
-                      BlocBuilder<WelcomeCubit, WelcomeState>(
-                        builder: (context, state) {
-                          return Column(
-                            children: [
-                              _LanguageOption(
-                                languageCode: 'ENGLISH',
-                                flag: '🇬🇧',
-                                isSelected:
-                                    state.selectedLanguage == Language.english,
-                                onTap: () => context
-                                    .read<WelcomeCubit>()
-                                    .selectLanguage(Language.english, context),
+                        const SizedBox(height: 4),
+                        Text(
+                          "Let's get started with SuperAslan for Professional!",
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(
+                                color: AppColors.grey.shade600,
                               ),
-                              const SizedBox(height: 8),
-                              _LanguageOption(
-                                languageCode: 'FRENCH (française)',
-                                flag: '🇫🇷',
-                                isSelected:
-                                    state.selectedLanguage == Language.french,
-                                onTap: () => context
-                                    .read<WelcomeCubit>()
-                                    .selectLanguage(Language.french, context),
+                        ),
+                        const SizedBox(height: 20),
+                        Text(
+                          'Select Language',
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.black,
                               ),
-                              const SizedBox(height: 8),
-                              _LanguageOption(
-                                languageCode: 'ARABIC (عربي)',
-                                flag: '🇸🇦',
-                                isSelected:
-                                    state.selectedLanguage == Language.arabic,
-                                onTap: () => context
-                                    .read<WelcomeCubit>()
-                                    .selectLanguage(Language.arabic, context),
-                              ),
-                            ],
-                          );
-                        },
-                      ),
-                    ],
+                        ),
+                        const SizedBox(height: 16),
+                        BlocBuilder<WelcomeCubit, WelcomeState>(
+                          builder: (context, state) {
+                            return Column(
+                              children: [
+                                _LanguageOption(
+                                  languageCode: 'ENGLISH',
+                                  flag: '🇬🇧',
+                                  isSelected:
+                                      state.selectedLanguage ==
+                                      Language.english,
+                                  onTap: () => context
+                                      .read<WelcomeCubit>()
+                                      .selectLanguage(
+                                        Language.english,
+                                        context,
+                                      ),
+                                ),
+                                const SizedBox(height: 8),
+                                _LanguageOption(
+                                  languageCode: 'FRENCH (française)',
+                                  flag: '🇫🇷',
+                                  isSelected:
+                                      state.selectedLanguage == Language.french,
+                                  onTap: () => context
+                                      .read<WelcomeCubit>()
+                                      .selectLanguage(
+                                        Language.french,
+                                        context,
+                                      ),
+                                ),
+                                const SizedBox(height: 8),
+                                _LanguageOption(
+                                  languageCode: 'ARABIC (عربي)',
+                                  flag: '🇸🇦',
+                                  isSelected:
+                                      state.selectedLanguage == Language.arabic,
+                                  onTap: () => context
+                                      .read<WelcomeCubit>()
+                                      .selectLanguage(
+                                        Language.arabic,
+                                        context,
+                                      ),
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],
