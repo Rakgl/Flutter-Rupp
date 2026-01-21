@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_super_aslan_app/features/home/view/home_page.dart';
 import 'package:flutter_super_aslan_app/features/message/view/message_page.dart';
 import 'package:flutter_super_aslan_app/features/profile/view/profile_page.dart';
+import 'package:flutter_super_aslan_app/features/profile/cubit/profile_cubit.dart';
 import 'package:flutter_super_aslan_app/features/request/view/request_page.dart';
 import 'package:flutter_super_aslan_app/features/schedule/view/schedule_page.dart';
 import 'package:flutter_super_aslan_app/navigation/cubit/navigation_cubit.dart';
@@ -16,7 +17,10 @@ class MainView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const _BodyView();
+    return BlocProvider(
+      create: (_) => ProfileCubit(),
+      child: const _BodyView(),
+    );
   }
 }
 
