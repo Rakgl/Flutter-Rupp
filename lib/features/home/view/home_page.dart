@@ -353,10 +353,6 @@ class _ProposalsGrid extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: Colors.grey,
-          width: 0.5,
-        ),
       ),
       child: Column(
         children: [
@@ -496,10 +492,6 @@ class _EarningsPerformanceSection extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: Colors.grey,
-          width: 0.5, // You can adjust the thickness here
-        ),
       ),
       child: Column(
         children: [
@@ -663,10 +655,6 @@ class _ReputationSection extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: Colors.grey,
-          width: 0.5,
-        ),
       ),
       child: Column(
         children: [
