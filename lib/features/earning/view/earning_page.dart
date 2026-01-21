@@ -344,21 +344,24 @@ class _PerformanceInsights extends StatelessWidget {
         SizedBox(height: 12),
         InsightCard(
           title: '🎉 Great Month!',
-          desc: 'Your earnings are up 12% compared to last month. Keep up the excellent work!',
+          desc: 'Your earnings are up 12% compared to last month. '
+              'Keep up the excellent work!',
           backgroundColor: Color(0xFFF0FDF4),
           accentColor: Colors.green,
         ),
         SizedBox(height: 12),
         InsightCard(
           title: '⭐ High Rating',
-          desc: 'Your 4.8 rating is above the platform average. Customers appreciate your service.',
+          desc: 'Your 4.8 rating is above the platform average. '
+                'Customers appreciate your service.',
           backgroundColor: Color(0xFFEFF6FF),
           accentColor: Colors.blue,
         ),
         SizedBox(height: 12),
         InsightCard(
           title: '📈 Growth Trend',
-          desc: "You've completed 48 jobs in the last 6 months with a 96% completion rate.",
+          desc: "You've completed 48 jobs in the last 6 months "
+                'with a 96% completion rate.',
           backgroundColor: Color(0xFFF5F3FF),
           accentColor: Colors.purple,
         ),

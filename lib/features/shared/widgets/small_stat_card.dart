@@ -16,6 +16,8 @@ class SmallStatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final parts = value.split('★');
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -35,9 +37,24 @@ class SmallStatCard extends StatelessWidget {
             child: Icon(icon, color: iconColor, size: 20),
           ),
           const Spacer(),
-          Text(
-            value,
-            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          RichText(
+            text: TextSpan(
+              style: const TextStyle(
+                fontSize: 20, 
+                fontWeight: FontWeight.bold, 
+                color: Colors.black,
+                fontFamily: 'Roboto',
+              ),
+              children: [
+                TextSpan(text: parts[0]),
+                if (value.contains('★'))
+                  const TextSpan(
+                    text: '★',
+                    style: TextStyle(color: Colors.orange),
+                  ),
+                if (parts.length > 1) TextSpan(text: parts[1]),
+              ],
+            ),
           ),
           Text(
             label,

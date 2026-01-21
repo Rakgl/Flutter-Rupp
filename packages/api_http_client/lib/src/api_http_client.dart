@@ -144,7 +144,7 @@ class ApiHttpClient {
       if (productResponse.success) {
         return Right(productResponse);
       } else {
-        return Left('No products found for this pharmacy');
+        return const Left('No products found for this pharmacy');
       }
     } on ApiRequestFailure catch (e) {
       return Left(e.body['message'] as String);
@@ -165,7 +165,7 @@ class ApiHttpClient {
       if (categoryResponse.success) {
         return Right(categoryResponse);
       } else {
-        return Left('No categories found');
+        return const Left('No categories found');
       }
     } on ApiRequestFailure catch (e) {
       return Left(e.body['message'] as String);

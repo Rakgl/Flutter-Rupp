@@ -1,12 +1,4 @@
-/// GENERATED CODE - DO NOT MODIFY BY HAND
-/// *****************************************************
-///  FlutterGen
-/// *****************************************************
-
 import 'package:flutter/services.dart';
-// coverage:ignore-file
-// ignore_for_file: type=lint
-// ignore_for_file: directives_ordering,unnecessary_import
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -20,6 +12,7 @@ class $AssetsImgGen {
 
   AssetGenImage get backgroundImage => const AssetGenImage('assets/img/background_image.png');
   AssetGenImage get spaceBg => const AssetGenImage('assets/img/space_bg.png');
+  AssetGenImage get spaceBg1 => const AssetGenImage('assets/img/space_bg.jpeg');
 
 }
 
