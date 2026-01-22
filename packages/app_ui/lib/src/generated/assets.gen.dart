@@ -1,4 +1,3 @@
-import 'package:flutter/services.dart';
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -13,7 +12,7 @@ class $AssetsImgGen {
   AssetGenImage get backgroundImage => const AssetGenImage('assets/img/background_image.png');
   AssetGenImage get spaceBg => const AssetGenImage('assets/img/space_bg.png');
   AssetGenImage get spaceBg1 => const AssetGenImage('assets/img/space_bg.jpeg');
-
+  
 }
 
 class $AssetsSvgGen {
@@ -22,7 +21,11 @@ class $AssetsSvgGen {
   /// File path: assets/svg/anatomical-heart.svg
   SvgGenImage get anatomicalHeart =>
       const SvgGenImage('assets/svg/anatomical-heart.svg');
-
+  SvgGenImage get businessLicense =>
+      const SvgGenImage('assets/svg/business_license.svg');
+  SvgGenImage get registrationProof =>
+      const SvgGenImage('assets/svg/registration_proof.svg');
+  SvgGenImage get lock => const SvgGenImage('assets/svg/lock.svg');
 }
 
 class Assets {

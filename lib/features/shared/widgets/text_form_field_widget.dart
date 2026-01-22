@@ -48,6 +48,7 @@ class TextFormFieldWidget extends StatelessWidget {
         cursorColor: borderColor,
         obscureText: obscureText,
         keyboardType: keyboardType,
+        onTapOutside: (_) => FocusScope.of(context).unfocus(),
         style: Theme.of(context).textTheme.bodyLarge!.copyWith(
           fontSize: 14,
           fontWeight: AppFontWeight.medium,
@@ -119,8 +120,8 @@ class TextFormFieldWidget extends StatelessWidget {
             ),
           ),
           errorStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: AppColors.red.shade400,
-              ),
+            color: AppColors.red.shade400,
+          ),
         ),
         onChanged: onChanged,
         validator: validator,

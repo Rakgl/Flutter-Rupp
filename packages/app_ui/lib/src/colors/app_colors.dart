@@ -26,27 +26,27 @@ abstract class AppColors {
   static const Color brightGrey = Color(0xFFEAEAEA); // Dividers/Progress tracks
   static const Color eerieBlack = Color(0xFF191C1D); // Main headings
   static const Color pastelGrey = Color(0xFFCCCCCC);
-  
+
   // --- Input & Interactive States ---
   static const Color inputHover = Color(0xFFE4E4E4);
   static const Color inputFocused = Color(0xFFD1D1D1);
   static const Color inputEnabled = Color(0xFFEDEDED);
 
   // --- Status & Semantic Colors ---
-/// Used for positive growth percentages and successful progress bars (Green)
-  static const Color growthSuccess = Color(0xFF28A745); 
+  /// Used for positive growth percentages and successful progress bars (Green)
+  static const Color growthSuccess = Color(0xFF28A745);
   static const Color trendPositive = growthSuccess;
 
   /// Used for stars and the overall rating breakdown (Yellow/Gold)
-  static const Color ratingActive = Color(0xFFFFC107);   
+  static const Color ratingActive = Color(0xFFFFC107);
   static const Color ratingPrimary = ratingActive;
 
   /// Used for warnings or caution indicators (Orange)
-  static const Color warningAccent = Color(0xFFFF9800);  
+  static const Color warningAccent = Color(0xFFFF9800);
 
   /// Used for negative growth trends and declined jobs (Red)
   static const Color trendNegative = Color(0xFFFF0000);
-  
+
   static const MaterialColor green = Colors.green;
   static const MaterialColor red = Colors.red;
   static const Color redWine = Color(0xFFC70025);

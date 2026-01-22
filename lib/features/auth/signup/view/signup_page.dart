@@ -1,11 +1,13 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_super_aslan_app/features/login/view/login_page.dart';
+import 'package:flutter_super_aslan_app/features/auth/login/view/login_page.dart';
+import 'package:flutter_super_aslan_app/features/auth/signup/signup.dart';
+import 'package:flutter_super_aslan_app/features/auth/signup/view/business_verification_page.dart';
+import 'package:flutter_super_aslan_app/features/shared/widgets/bottom_action_button.dart';
 import 'package:flutter_super_aslan_app/features/shared/widgets/phone_text_field.dart';
 import 'package:flutter_super_aslan_app/features/shared/widgets/text_form_field_widget.dart';
 import 'package:flutter_super_aslan_app/features/shared/widgets/text_label.dart';
-import 'package:flutter_super_aslan_app/features/signup/signup.dart';
 import 'package:go_router/go_router.dart';
 
 class SignupPage extends StatelessWidget {
@@ -71,6 +73,7 @@ class _SignupViewState extends State<SignupView> {
     setState(() => _submitAttempted = true);
     final isValid = _formKey.currentState?.validate() ?? false;
     if (!isValid) return;
+    context.go(BusinessVerificationPage.path);
   }
 
   Future<void> _showCountryPicker() async {
@@ -321,81 +324,32 @@ class _SignupViewState extends State<SignupView> {
                                                 _updateFormState(),
                                           ),
                                           const SizedBox(height: 16),
-                                          SizedBox(
-                                            width: double.infinity,
-                                            height: 56,
-                                            child: ElevatedButton(
-                                              onPressed: _isFormValid
-                                                  ? _submit
-                                                  : null,
-                                              style: ButtonStyle(
-                                                elevation:
-                                                    WidgetStateProperty.all(
-                                                      0,
-                                                    ),
-                                                backgroundColor:
-                                                    WidgetStateProperty.resolveWith(
-                                                      (states) {
-                                                        if (states.contains(
-                                                          WidgetState.disabled,
-                                                        )) {
-                                                          return AppColors
-                                                              .primaryColor
-                                                              .withOpacity(0.4);
-                                                        }
-                                                        return AppColors
-                                                            .primaryColor;
-                                                      },
-                                                    ),
-                                                foregroundColor:
-                                                    WidgetStateProperty.resolveWith(
-                                                      (states) {
-                                                        if (states.contains(
-                                                          WidgetState.disabled,
-                                                        )) {
-                                                          return AppColors.white
-                                                              .withOpacity(0.7);
-                                                        }
-                                                        return AppColors.white;
-                                                      },
-                                                    ),
-                                                shape: WidgetStateProperty.all(
-                                                  RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                          28,
-                                                        ),
-                                                  ),
-                                                ),
-                                              ),
-                                              child: const Text(
-                                                'Get Started',
-                                                style: TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w600,
-                                                ),
-                                              ),
-                                            ),
+                                          BottomActionButton(
+                                            title: 'Get Started',
+                                            onPressed: _isFormValid
+                                                ? _submit
+                                                : null,
+                                            horizontalPadding: 0,
                                           ),
                                         ],
                                       ),
                                     ),
                                   ),
                                   const Spacer(),
-                                  GestureDetector(
-                                    onTap: () => context.go(LoginPage.path),
-                                    child: Wrap(
-                                      children: [
-                                        Text(
-                                          'Already have an account? ',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyMedium
-                                              ?.copyWith(
-                                                fontSize: 15,
-                                              ),
-                                        ),
-                                        Text(
+                                  Wrap(
+                                    children: [
+                                      Text(
+                                        'Already have an account? ',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium
+                                            ?.copyWith(
+                                              fontSize: 15,
+                                            ),
+                                      ),
+                                      GestureDetector(
+                                        onTap: () => context.go(LoginPage.path),
+                                        child: Text(
                                           'Log In',
                                           style: Theme.of(context)
                                               .textTheme
@@ -406,8 +360,8 @@ class _SignupViewState extends State<SignupView> {
                                                 color: AppColors.primaryColor,
                                               ),
                                         ),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),
