@@ -92,7 +92,14 @@ class _LoginViewState extends State<LoginView> {
     return Stack(
       fit: StackFit.expand,
       children: [
-        Assets.img.spaceBg.image(fit: BoxFit.cover),
+        Positioned.fill(
+          child: Transform.translate(
+            offset: const Offset(0, -115),
+            child: Assets.img.backgroundImage.image(
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
         Positioned(
           left: 0,
           right: 0,

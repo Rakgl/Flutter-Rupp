@@ -123,7 +123,6 @@ class ProfileNetworkImageSource extends StatelessWidget {
           height: height,
           decoration: BoxDecoration(
             borderRadius: borderRadius,
-            
           ),
         );
       },
@@ -184,7 +183,6 @@ class CircleSpecialitySource extends StatelessWidget {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: AppColors.grey.shade100,
-      
           ),
         );
       },

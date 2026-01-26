@@ -26,7 +26,7 @@ class BottomActionButton extends StatelessWidget {
     return SafeArea(
       child: Container(
         padding: EdgeInsets.only(
-          top: 16,
+          top: 6,
           left: horizontalPadding,
           right: horizontalPadding,
           bottom: MediaQuery.of(context).viewInsets.bottom + 16,

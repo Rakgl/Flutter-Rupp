@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_super_aslan_app/app/view/main_view.dart';
 import 'package:flutter_super_aslan_app/features/auth/signup/view/business_verification_page.dart';
+import 'package:flutter_super_aslan_app/features/auth/signup/view/payment_setup_page.dart';
 import 'package:flutter_super_aslan_app/features/earning/view/earning_page.dart';
 import 'package:flutter_super_aslan_app/features/review/view/review_page.dart';
 import 'package:flutter_super_aslan_app/features/work/view/work_page.dart';
@@ -19,6 +20,7 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_super_aslan_app/features/profile/cubit/profile_cubit.dart';
 import 'package:flutter_super_aslan_app/features/message/message.dart';
+import 'package:flutter_super_aslan_app/features/auth/signup/view/insurance_information_page.dart';
 
 GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -112,6 +114,14 @@ class GlobalRouter {
       GoRoute(
         path: BusinessVerificationPage.path,
         builder: (context, state) => const BusinessVerificationPage(),
+      ),
+      GoRoute(
+        path: PaymentSetupPage.path,
+        builder: (context, state) => const PaymentSetupPage(),
+      ),
+      GoRoute(
+        path: InsuranceInformationPage.path,
+        builder: (context, state) => const InsuranceInformationPage(),
       ),
     ],
     errorBuilder: (context, state) {

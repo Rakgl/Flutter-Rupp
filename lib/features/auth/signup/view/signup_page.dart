@@ -119,12 +119,19 @@ class _SignupViewState extends State<SignupView> {
     final size = MediaQueryData.fromView(view).size;
     final fullHeight = view.physicalSize.height / view.devicePixelRatio;
     final whiteBgHeight = fullHeight * 0.54;
-    final cardTop = size.height * 0.22;
+    final cardTop = size.height * 0.16;
 
     return Stack(
       fit: StackFit.expand,
       children: [
-        Assets.img.spaceBg.image(fit: BoxFit.cover),
+        Positioned.fill(
+          child: Transform.translate(
+            offset: const Offset(0, -115),
+            child: Assets.img.backgroundImage.image(
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
         Positioned(
           left: 0,
           right: 0,
@@ -139,7 +146,7 @@ class _SignupViewState extends State<SignupView> {
             child: Stack(
               children: [
                 Positioned(
-                  top: 20,
+                  top: 0,
                   left: 0,
                   right: 0,
                   child: Center(
@@ -173,7 +180,7 @@ class _SignupViewState extends State<SignupView> {
                                       24,
                                       24,
                                       24,
-                                      24,
+                                      45,
                                     ),
                                     decoration: BoxDecoration(
                                       color: AppColors.white,
@@ -310,7 +317,7 @@ class _SignupViewState extends State<SignupView> {
                                               label: 'Password',
                                             ),
                                           ),
-                                          const SizedBox(height: 12),
+                                          const SizedBox(height: 8),
                                           TextFormFieldWidget(
                                             controller: _passwordController,
                                             obscureText: _obscurePassword,
@@ -323,7 +330,6 @@ class _SignupViewState extends State<SignupView> {
                                             onChanged: (_) =>
                                                 _updateFormState(),
                                           ),
-                                          const SizedBox(height: 16),
                                           BottomActionButton(
                                             title: 'Get Started',
                                             onPressed: _isFormValid
@@ -335,7 +341,7 @@ class _SignupViewState extends State<SignupView> {
                                       ),
                                     ),
                                   ),
-                                  const Spacer(),
+                                  const SizedBox(height: 12),
                                   Wrap(
                                     children: [
                                       Text(

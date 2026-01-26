@@ -1,7 +1,9 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_super_aslan_app/features/auth/signup/view/payment_setup_page.dart';
 import 'package:flutter_super_aslan_app/features/shared/widgets/bottom_action_button.dart';
+import 'package:go_router/go_router.dart';
 
 class BusinessVerificationPage extends StatelessWidget {
   const BusinessVerificationPage({super.key});
@@ -45,12 +47,17 @@ class _BusinessVerificationBodyState extends State<_BusinessVerificationBody> {
   Widget build(BuildContext context) {
     final view = View.of(context);
     final fullHeight = view.physicalSize.height / view.devicePixelRatio;
-    final whiteBgHeight = fullHeight * 0.58;
+    final whiteBgHeight = fullHeight * 0.5;
 
     return Stack(
       children: [
         Positioned.fill(
-          child: Assets.img.spaceBg.image(fit: BoxFit.cover),
+          child: Transform.translate(
+            offset: const Offset(0, -115),
+            child: Assets.img.backgroundImage.image(
+              fit: BoxFit.cover,
+            ),
+          ),
         ),
         Positioned(
           left: 0,
@@ -61,7 +68,7 @@ class _BusinessVerificationBodyState extends State<_BusinessVerificationBody> {
         ),
         SafeArea(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(8, 24, 8, 8),
+            padding: const EdgeInsets.fromLTRB(8, 40, 8, 8),
             child: Container(
               padding: const EdgeInsets.fromLTRB(16, 18, 16, 20),
               decoration: BoxDecoration(
@@ -92,10 +99,12 @@ class _BusinessVerificationBodyState extends State<_BusinessVerificationBody> {
                   ),
                   const SizedBox(height: 16),
                   const _SecurityCard(),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 12),
                   BottomActionButton(
                     title: 'Continue Verification',
-                    onPressed: _isFormComplete ? () {} : null,
+                    onPressed: _isFormComplete
+                        ? () => context.go(PaymentSetupPage.path)
+                        : null,
                     horizontalPadding: 0,
                   ),
                   const SizedBox(height: 12),
