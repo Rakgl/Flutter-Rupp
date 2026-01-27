@@ -16,8 +16,13 @@ class TextFormFieldWidget extends StatelessWidget {
     this.obscureText = false,
     this.isPassword = false,
     this.onToggleSuffix,
+    this.onTap,
+    this.readOnly = false,
     this.keyboardType,
     this.margin,
+    this.fillColor,
+    this.showBorder = false,
+    this.enabledBorderColor,
   });
 
   final TextEditingController controller;
@@ -36,8 +41,13 @@ class TextFormFieldWidget extends StatelessWidget {
   final bool obscureText;
   final bool isPassword;
   final VoidCallback? onToggleSuffix;
+  final VoidCallback? onTap;
+  final bool readOnly;
   final TextInputType? keyboardType;
   final EdgeInsetsGeometry? margin;
+  final Color? fillColor;
+  final bool showBorder;
+  final Color? enabledBorderColor;
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +58,9 @@ class TextFormFieldWidget extends StatelessWidget {
         cursorColor: borderColor,
         obscureText: obscureText,
         keyboardType: keyboardType,
+        readOnly: readOnly,
+        onTap: onTap,
+        onTapOutside: (_) => FocusScope.of(context).unfocus(),
         style: Theme.of(context).textTheme.bodyLarge!.copyWith(
           fontSize: 14,
           fontWeight: AppFontWeight.medium,
@@ -79,8 +92,13 @@ class TextFormFieldWidget extends StatelessWidget {
                     color: AppColors.grey,
                   ),
                 )
-              : null,
-          fillColor: AppColors.grey.shade100,
+              : suffixIcon == null
+                  ? null
+                  : Icon(
+                      suffixIcon,
+                      color: AppColors.grey,
+                    ),
+          fillColor: fillColor ?? AppColors.grey.shade100,
           hintStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
             color: AppColors.grey,
             fontSize: 14,
@@ -91,18 +109,30 @@ class TextFormFieldWidget extends StatelessWidget {
               : const EdgeInsets.symmetric(horizontal: 8, vertical: 14),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide.none,
+            borderSide: showBorder
+                ? BorderSide(
+                    color: enabledBorderColor ?? AppColors.inputFocused,
+                    width: 1,
+                  )
+                : BorderSide.none,
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(
-              color: borderColor,
-              width: 1.5,
-            ),
+            borderSide: showBorder
+                ? BorderSide(
+                    color: borderColor,
+                    width: 1.2,
+                  )
+                : BorderSide.none,
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide.none,
+            borderSide: showBorder
+                ? BorderSide(
+                    color: enabledBorderColor ?? AppColors.inputFocused,
+                    width: 1,
+                  )
+                : BorderSide.none,
           ),
           errorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
@@ -119,8 +149,8 @@ class TextFormFieldWidget extends StatelessWidget {
             ),
           ),
           errorStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: AppColors.red.shade400,
-              ),
+            color: AppColors.red.shade400,
+          ),
         ),
         onChanged: onChanged,
         validator: validator,

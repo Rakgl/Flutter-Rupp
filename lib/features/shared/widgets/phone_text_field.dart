@@ -29,6 +29,7 @@ class PhoneTextFieldWidget extends StatelessWidget {
         fontSize: 14,
         fontWeight: AppFontWeight.medium,
       ),
+      onTapOutside: (_) => FocusScope.of(context).unfocus(),
       inputFormatters: [
         // allow digit only
         FilteringTextInputFormatter.digitsOnly,
@@ -84,8 +85,8 @@ class PhoneTextFieldWidget extends StatelessWidget {
           ),
         ),
         errorStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: AppColors.red.shade400,
-            ),
+          color: AppColors.red.shade400,
+        ),
       ),
       validator: validator,
       onChanged: onChanged,
