@@ -2,8 +2,10 @@ import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_super_aslan_app/features/login/view/login_page.dart';
+import 'package:flutter_super_aslan_app/features/profile/profile.dart';
+import 'package:flutter_super_aslan_app/features/shared/widgets/widgets.dart';
+// import 'package:flutter_super_aslan_app/features/auth/login/view/login_page.dart';
 import 'package:go_router/go_router.dart';
-import '../profile.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -11,7 +13,7 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      backgroundColor: AppColors.scaffoldBackground,
+      backgroundColor: Colors.transparent,
       body: ProfileView(),
     );
   }
@@ -27,28 +29,42 @@ class ProfileView extends StatelessWidget {
         return CustomScrollView(
           physics: const BouncingScrollPhysics(),
           slivers: [
-            SliverAppBar(
-              expandedHeight: 100,
-              pinned: true,
-              stretch: true,
-              toolbarHeight: 150,
-              backgroundColor: AppColors.eerieBlack,
-              title: SafeArea(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.xlg,
-                    vertical: AppSpacing.md,
-                  ),
-                  child: _StickyHeader(state: state),
+            AppSliverAppBar(
+              title: Text(
+                'Profile',
+                style: UITextStyle.headline3.copyWith(
+                  color: AppColors.white,
                 ),
               ),
-              flexibleSpace: FlexibleSpaceBar(
-                stretchModes: const [StretchMode.zoomBackground],
-                background: Image.asset(
-                  Assets.img.spaceBg1.path,
-                  package: 'app_ui',
-                  fit: BoxFit.cover,
-                ),
+              expandedHeight: 150,
+              collapsedHeight: 150,
+              titlePadding: const EdgeInsets.only(
+                left: AppSpacing.lg,
+                bottom: 70 + 15,
+              ),
+              backgroundContent: Stack(
+                fit: StackFit.expand,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Colors.black.withValues(alpha: 0.2),
+                          Colors.black.withValues(alpha: 0.6),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.bottomLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.all(AppSpacing.lg),
+                      child: _ProfileHeaderContent(state: state),
+                    ),
+                  ),
+                ],
               ),
             ),
             SliverToBoxAdapter(
@@ -87,67 +103,53 @@ class ProfileView extends StatelessWidget {
   }
 }
 
-class _StickyHeader extends StatelessWidget {
+class _ProfileHeaderContent extends StatelessWidget {
   final ProfileState state;
-  const _StickyHeader({required this.state});
+  const _ProfileHeaderContent({required this.state});
 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
+    return Row(
       children: [
-        Text(
-          "Profile",
-          style: textTheme.headlineSmall?.copyWith(
-            fontWeight: FontWeight.bold,
-            color: AppColors.white,
+        Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(
+              color: AppColors.white.withValues(alpha: 0.24),
+              width: 2,
+            ),
+          ),
+          child: const CircleAvatar(
+            radius: 35,
+            backgroundColor: AppColors.grey,
+            backgroundImage: NetworkImage(
+              'https://static.wikia.nocookie.net/spiderman-films/images/b/be/Tom_Holland_Spidey_Suit.webp',
+            ),
           ),
         ),
-        const SizedBox(height: AppSpacing.md),
-        Row(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: AppColors.white.withValues(alpha: 0.24),
-                  width: 2,
+        const SizedBox(width: AppSpacing.lg),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                state.name,
+                style: textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.white,
                 ),
               ),
-              child: const CircleAvatar(
-                radius: 35,
-                backgroundColor: AppColors.grey,
-                backgroundImage: NetworkImage(
-                  'https://static.wikia.nocookie.net/spiderman-films/images/b/be/Tom_Holland_Spidey_Suit.webp',
+              Text(
+                state.email,
+                style: textTheme.bodyMedium?.copyWith(
+                  color: AppColors.white.withValues(alpha: 0.7),
                 ),
+                overflow: TextOverflow.ellipsis,
               ),
-            ),
-            const SizedBox(width: AppSpacing.lg),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    state.name,
-                    style: textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.white,
-                    ),
-                  ),
-                  Text(
-                    state.email,
-                    style: textTheme.bodyMedium?.copyWith(
-                      color: AppColors.white.withValues(alpha: 0.7),
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ],
     );
@@ -440,7 +442,6 @@ class _PreferencesSection extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.white,
         borderRadius: BorderRadius.circular(AppSpacing.lg),
-        border: Border.all(color: AppColors.grey.shade100),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
