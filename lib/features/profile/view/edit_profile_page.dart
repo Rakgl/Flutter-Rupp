@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 // import 'package:flutter_super_aslan_app/app/view/main_view.dart';
 import 'package:flutter_super_aslan_app/features/earning/view/earning_page.dart';
-import 'package:flutter_super_aslan_app/features/login/view/login_page.dart';
+import 'package:flutter_super_aslan_app/features/auth/login/view/login_page.dart';
 import 'package:go_router/go_router.dart';
 import '../profile.dart';
 

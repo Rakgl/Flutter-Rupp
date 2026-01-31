@@ -1,7 +1,7 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_super_aslan_app/features/login/view/login_page.dart';
+import 'package:flutter_super_aslan_app/features/auth/login/view/login_page.dart';
 import 'package:flutter_super_aslan_app/features/profile/profile.dart';
 import 'package:flutter_super_aslan_app/features/shared/widgets/widgets.dart';
 // import 'package:flutter_super_aslan_app/features/auth/login/view/login_page.dart';
