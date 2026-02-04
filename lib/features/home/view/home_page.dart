@@ -6,6 +6,8 @@ import 'package:flutter_super_aslan_app/features/review/view/review_page.dart';
 import 'package:flutter_super_aslan_app/features/work/view/work_page.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_super_aslan_app/features/home/home.dart';
+import 'package:flutter_super_aslan_app/features/shared/widgets/widgets.dart';
+import 'package:flutter_super_aslan_app/navigation/cubit/navigation_cubit.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -67,10 +69,13 @@ class _HomeAppBar extends StatelessWidget {
       backgroundColor: AppColors.darkBackground,
       title: Row(
         children: [
-          const CircleAvatar(
-            radius: 30,
-            backgroundImage: NetworkImage(
-              'https://static.wikia.nocookie.net/spiderman-films/images/b/be/Tom_Holland_Spidey_Suit.webp/revision/latest?cb=20230914135801',
+          GestureDetector(
+            onTap: () => context.read<NavigationCubit>().setTab(4),
+            child: const CircleAvatar(
+              radius: 30,
+              backgroundImage: NetworkImage(
+                'https://static.wikia.nocookie.net/spiderman-films/images/b/be/Tom_Holland_Spidey_Suit.webp/revision/latest?cb=20230914135801',
+              ),
             ),
           ),
           const SizedBox(width: 12),

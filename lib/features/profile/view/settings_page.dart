@@ -146,7 +146,6 @@ class SettingsPage extends StatelessWidget {
       decoration: BoxDecoration(
         color: const Color(0xFFF8F9FB),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade200),
       ),
       child: Center(
         child: Text(

@@ -37,13 +37,44 @@ class MessageCubit extends Cubit<MessageState> {
           lastMessage: 'Sounds good, see you then!',
           time: '2 days ago',
         ),
+         MessageGroup(
+          name: 'Sam Wilson',
+          service: 'Wiring & Rewiring',
+          lastMessage: 'Sounds good, see you then!',
+          time: '2 days ago',
+        ),
+         MessageGroup(
+          name: 'Sam Wilson',
+          service: 'Wiring & Rewiring',
+          lastMessage: 'Sounds good, see you then!',
+          time: '2 days ago',
+        ),
       ],
       activeChat: [
-        ChatMessage(text: 'Hi! I saw your proposal for the electrical panel upgrade.', time: '10:32 AM', isMe: false),
-        ChatMessage(text: 'Hello Sue! Yes, I can help with that. When would be a good time for you?', time: '10:33 AM', isMe: true, isRead: true),
-        ChatMessage(text: "I'm flexible this week. Do you have availability on Thursday or Friday?", time: '10:35 AM', isMe: false),
-        ChatMessage(text: "Thursday at 10 AM works perfectly for me. I'll bring all necessary equipment.", time: '10:36 AM', isMe: true, isRead: true),
-        ChatMessage(text: 'What time works best for you?', time: '10:38 AM', isMe: false),
+        ChatMessage(
+          text: 'Hi! I saw your proposal for the electrical panel upgrade.', 
+          time: '10:32 AM',
+        ),
+        ChatMessage(
+          text: 'Hello Sue! Yes, I can help with that. When would be a good time for you?', 
+          time: '10:33 AM', 
+          isMe: true, 
+          isRead: true,
+        ),
+        ChatMessage(
+          text: "I'm flexible this week. Do you have availability on Thursday or Friday?", 
+          time: '10:35 AM',
+        ),
+        ChatMessage(
+          text: "Thursday at 10 AM works perfectly for me. I'll bring all necessary equipment.", 
+          time: '10:36 AM', 
+          isMe: true, 
+          isRead: true,
+        ),
+        ChatMessage(
+          text: 'What time works best for you?', 
+          time: '10:38 AM',
+        ),
       ],
     ));
   }
@@ -53,6 +84,14 @@ class MessageCubit extends Cubit<MessageState> {
       groups: state.groups,
       activeChat: state.activeChat,
       searchQuery: query,
+    ));
+  }
+
+  void sendMessage(ChatMessage message) {
+    emit(MessageState(
+      groups: state.groups,
+      activeChat: [...state.activeChat, message],
+      searchQuery: state.searchQuery,
     ));
   }
 }

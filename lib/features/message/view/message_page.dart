@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:flutter_super_aslan_app/features/message/message.dart';
+import 'package:flutter_super_aslan_app/features/shared/widgets/widgets.dart';
 import 'package:go_router/go_router.dart';
 
 class MessagePage extends StatelessWidget {
@@ -23,16 +24,57 @@ class MessageView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.scaffoldBackground,
+      backgroundColor: Colors.transparent,
       body: BlocBuilder<MessageCubit, MessageState>(
         builder: (context, state) {
           final items = state.filteredGroups;
 
           return CustomScrollView(
             slivers: [
-              _MessageAppBar(
-                onSearchChanged: (val) =>
-                    context.read<MessageCubit>().updateSearch(val),
+              AppSliverAppBar(
+                title: Text(
+                  'Messages',
+                  style: UITextStyle.headline3.copyWith(
+                    color: AppColors.white,
+                  ),
+                ),
+                titlePadding: const EdgeInsets.only(
+                  left: AppSpacing.lg,
+                  bottom: 70 + 15, // Match Schedule page logic
+                ),
+                bottom: PreferredSize(
+                  preferredSize: const Size.fromHeight(70),
+                  child: Container(
+                    margin: const EdgeInsets.only(
+                      left: AppSpacing.lg,
+                      right: AppSpacing.lg,
+                      bottom: AppSpacing.lg,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.white.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: AppColors.white.withValues(alpha: 1),
+                      ),
+                    ),
+                    child: TextField(
+                      onChanged: (val) =>
+                          context.read<MessageCubit>().updateSearch(val),
+                      style: const TextStyle(color: AppColors.white),
+                      decoration: const InputDecoration(
+                        hintText: 'Search conversations...',
+                        hintStyle: TextStyle(color: AppColors.white),
+                        prefixIcon: Icon(
+                          IconlyLight.search,
+                          color: AppColors.white,
+                        ),
+                        suffixIcon: SizedBox(width: 48),
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.symmetric(vertical: 15),
+                      ),
+                    ),
+                  ),
+                ),
               ),
               if (items.isEmpty && state.searchQuery.isNotEmpty)
                 const SliverFillRemaining(
@@ -61,65 +103,6 @@ class MessageView extends StatelessWidget {
   }
 }
 
-class _MessageAppBar extends StatelessWidget {
-  const _MessageAppBar({required this.onSearchChanged});
-  final ValueChanged<String> onSearchChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    return SliverAppBar(
-      pinned: true,
-      expandedHeight: 180,
-      backgroundColor: AppColors.darkBackground,
-      flexibleSpace: FlexibleSpaceBar(
-        background: Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: Assets.img.spaceBg.image().image,
-              fit: BoxFit.cover,
-            ),
-          ),
-          child: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: AppSpacing.lg),
-                  Text(
-                    'Messages',
-                    style: UITextStyle.headline3.copyWith(color: AppColors.white),
-                  ),
-                  const SizedBox(height: AppSpacing.lg),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: AppColors.white.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: AppColors.white.withValues(alpha: 0.2),
-                      ),
-                    ),
-                    child: TextField(
-                      onChanged: onSearchChanged,
-                      style: const TextStyle(color: AppColors.white),
-                      decoration: const InputDecoration(
-                        hintText: 'Search conversations...',
-                        hintStyle: TextStyle(color: AppColors.paleSky),
-                        prefixIcon: Icon(IconlyLight.search, color: AppColors.white),
-                        border: InputBorder.none,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 class _MessageTile extends StatelessWidget {
   const _MessageTile({required this.group});
   final MessageGroup group;
@@ -139,7 +122,6 @@ class _MessageTile extends StatelessWidget {
         decoration: BoxDecoration(
           color: AppColors.white,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: AppColors.grey.shade300),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

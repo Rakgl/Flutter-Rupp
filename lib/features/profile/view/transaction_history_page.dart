@@ -13,7 +13,7 @@ class TransactionHistoryPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(
         0xFFF5F7FA,
-      ), // Match scaffold color from image
+      ),
       appBar: AppBar(
         backgroundColor: AppColors.white,
         elevation: 0,
@@ -184,21 +184,20 @@ class TransactionHistoryPage extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.sm),
 
-            // Transaction List
             const _TransactionItem(
-              title: "Panel Upgrade - Tony Stark",
+              title: "Panel Upgrade",
               date: "Dec 15, 2025",
               amount: r"+$1,200",
               status: "completed",
             ),
             const _TransactionItem(
-              title: "Lighting Installation - Peter Parker",
+              title: "Lighting Installation",
               date: "Dec 12, 2025",
               amount: r"+$450",
               status: "completed",
             ),
             const _TransactionItem(
-              title: "Circuit Repair - Natasha Romanoff",
+              title: "Circuit Repair",
               date: "Dec 10, 2025",
               amount: r"+$280",
               status: "completed",
@@ -212,7 +211,7 @@ class TransactionHistoryPage extends StatelessWidget {
               statusBgColor: Color(0xFFE0E0E0), // Light grey for payout
             ),
             const _TransactionItem(
-              title: "Wiring Work - Bruce Banner",
+              title: "Wiring Work",
               date: "Dec 5, 2025",
               amount: r"+$920",
               status: "completed",

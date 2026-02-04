@@ -1,5 +1,7 @@
 part of 'message_cubit.dart';
 
+enum ChatMessageType { text, image, file, audio }
+
 class MessageGroup extends Equatable {
   const MessageGroup({
     required this.name,
@@ -27,15 +29,19 @@ class ChatMessage extends Equatable {
     required this.time,
     this.isMe = false,
     this.isRead = false,
+    this.type = ChatMessageType.text,
+    this.attachmentPath,
   });
 
   final String text;
   final String time;
   final bool isMe;
   final bool isRead;
+  final ChatMessageType type;
+  final String? attachmentPath;
 
   @override
-  List<Object?> get props => [text, time, isMe, isRead];
+  List<Object?> get props => [text, time, isMe, isRead, type, attachmentPath];
 }
 
 class MessageState extends Equatable {

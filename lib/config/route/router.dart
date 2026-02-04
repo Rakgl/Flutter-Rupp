@@ -14,6 +14,7 @@ import 'package:flutter_super_aslan_app/features/profile/view/transaction_histor
 import 'package:flutter_super_aslan_app/features/profile/view/working_hours_page.dart';
 import 'package:flutter_super_aslan_app/features/profile/view/settings_page.dart';
 import 'package:flutter_super_aslan_app/features/auth/signup/view/signup_page.dart';
+import 'package:flutter_super_aslan_app/features/schedule/view/appointment_details_page.dart';
 import 'package:flutter_super_aslan_app/features/welcome/view/welcome_page.dart';
 import 'package:flutter_super_aslan_app/splash/view/splash_page.dart';
 import 'package:go_router/go_router.dart';
@@ -106,6 +107,10 @@ class GlobalRouter {
       GoRoute(
         path: '/login',
         builder: (context, state) => const LoginPage(),
+      ),
+      GoRoute(
+        path: AppointmentDetailsPage.path,
+        builder: (context, state) => const AppointmentDetailsPage(),
       ),
       GoRoute(
         path: SignupPage.path,
