@@ -12,6 +12,7 @@ class TokenStorage {
   static const String __accessToken__ = '__accessToken__';
   static const String __refreshToken__ = '__refreshToken__';
   static const String __expireIn__ = '__expireIn__';
+  static const String __deviceId__ = '__deviceId__';
 
   // streaming token
   final _accessTokenStream = StreamController<String?>.broadcast();
@@ -24,18 +25,22 @@ class TokenStorage {
   Future<void> writeToken({
     required String accessToken,
     required String refreshToken,
-    required String expireIn,
+    String? expireIn,
+    String? deviceId,
   }) async {
     final issuedAt = DateTime.now().millisecondsSinceEpoch.toString();
     await Future.wait([
       _storage.write(key: __accessToken__, value: accessToken),
       _storage.write(key: __refreshToken__, value: refreshToken),
-      _storage.write(key: __expireIn__, value: expireIn),
+      if (expireIn != null) _storage.write(key: __expireIn__, value: expireIn),
+      if (deviceId != null) _storage.write(key: __deviceId__, value: deviceId),
       _storage.write(key: '__issuedAt__', value: issuedAt),
     ]);
     _accessTokenStream.add(accessToken);
     _refreshTokenStream.add(refreshToken);
-    _expireInStream.add(expireIn);
+    if (expireIn != null) {
+      _expireInStream.add(expireIn);
+    }
   }
 
   // get token
@@ -58,6 +63,7 @@ class TokenStorage {
       _storage.delete(key: __refreshToken__),
       _storage.delete(key: __expireIn__),
       _storage.delete(key: '__issuedAt__'),
+      _storage.delete(key: __deviceId__),
     ]);
     _accessTokenStream.add(null);
     _refreshTokenStream.add(null);
@@ -97,5 +103,11 @@ class TokenStorage {
   Future<String?> getAccessToken() async {
     final token = await _storage.read(key: __accessToken__);
     return token;
+  }
+
+  // get device id
+  Future<String?> getDeviceId() async {
+    final deviceId = await _storage.read(key: __deviceId__);
+    return deviceId;
   }
 }
