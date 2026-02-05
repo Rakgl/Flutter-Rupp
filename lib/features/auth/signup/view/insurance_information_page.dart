@@ -2,9 +2,10 @@ import 'package:app_ui/app_ui.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_super_aslan_app/features/shared/widgets/bottom_action_button.dart';
-import 'package:flutter_super_aslan_app/features/shared/widgets/date_input_field_widget.dart';
+import 'package:flutter_super_aslan_app/features/shared/widgets/date_input_picker_field_widget.dart';
 import 'package:flutter_super_aslan_app/features/shared/widgets/text_form_field_widget.dart';
-import 'package:intl/intl.dart';
+import 'package:flutter_super_aslan_app/features/auth/signup/view/phone_verification_page.dart';
+import 'package:go_router/go_router.dart';
 
 class InsuranceInformationPage extends StatelessWidget {
   const InsuranceInformationPage({super.key});
@@ -29,19 +30,13 @@ class _InsuranceInformationBodyState extends State<_InsuranceInformationBody> {
   final _scrollController = ScrollController();
   final _companyController = TextEditingController();
   final _policyController = TextEditingController();
+  final _dobController = TextEditingController();
+  final _marriedDateController = TextEditingController();
   final _startDateController = TextEditingController();
   final _endDateController = TextEditingController();
-  final GlobalKey _pickerAnchorKey = GlobalKey();
-  final GlobalKey _startDateInputKey = GlobalKey();
-  final GlobalKey _endDateInputKey = GlobalKey();
 
-  final DateFormat _dateFormat = DateFormat('MM/dd/yyyy');
-  DateTime? _startDate;
-  DateTime? _endDate;
-  DateTime? _draftStartDate;
-  DateTime? _draftEndDate;
-  bool _showStartPicker = false;
-  bool _showEndPicker = false;
+  final ValueNotifier<DateTime?> _startDateNotifier = ValueNotifier(null);
+  final ValueNotifier<DateTime?> _endDateNotifier = ValueNotifier(null);
 
   String? _certificateFileName;
   String? _coverageFileName;
@@ -64,160 +59,17 @@ class _InsuranceInformationBodyState extends State<_InsuranceInformationBody> {
     onSelected(fileName);
   }
 
-  void _togglePicker({required bool isStartDate}) {
-    FocusScope.of(context).unfocus();
-    setState(() {
-      if (isStartDate) {
-        _showStartPicker = !_showStartPicker;
-        _showEndPicker = false;
-        if (_showStartPicker) {
-          _draftStartDate = _startDate ?? DateTime.now();
-        }
-      } else {
-        _showEndPicker = !_showEndPicker;
-        _showStartPicker = false;
-        if (_showEndPicker) {
-          _draftEndDate = _endDate ?? _startDate ?? DateTime.now();
-        }
-      }
-    });
-
-    if (_showStartPicker || _showEndPicker) {
-      _scrollToPicker();
-    }
-  }
-
-  void _applyDate(DateTime picked, {required bool isStartDate}) {
-    setState(() {
-      if (isStartDate) {
-        _startDate = picked;
-        _startDateController.text = _dateFormat.format(picked);
-        if (_endDate != null && _endDate!.isBefore(picked)) {
-          _endDate = null;
-          _endDateController.clear();
-        }
-        _draftStartDate = picked;
-      } else {
-        _endDate = picked;
-        _endDateController.text = _dateFormat.format(picked);
-        _draftEndDate = picked;
-      }
-      _showStartPicker = false;
-      _showEndPicker = false;
-    });
-  }
-
-  void _cancelPicker() {
-    setState(() {
-      _showStartPicker = false;
-      _showEndPicker = false;
-    });
-  }
-
-  void _hidePickersIfVisible() {
-    if (!_showStartPicker && !_showEndPicker) {
-      return;
-    }
-    setState(() {
-      _showStartPicker = false;
-      _showEndPicker = false;
-    });
-  }
-
-  void _handleTapOutside(Offset position) {
-    if (!_showStartPicker && !_showEndPicker) {
-      return;
-    }
-
-    final pickerContext = _pickerAnchorKey.currentContext;
-    final startInputContext = _startDateInputKey.currentContext;
-    final endInputContext = _endDateInputKey.currentContext;
-    if (_isPointInsideContext(position, pickerContext) ||
-        _isPointInsideContext(position, startInputContext) ||
-        _isPointInsideContext(position, endInputContext)) {
-      return;
-    }
-
-    _hidePickersIfVisible();
-  }
-
-  bool _isPointInsideContext(Offset position, BuildContext? context) {
-    if (context == null) {
-      return false;
-    }
-
-    final renderObject = context.findRenderObject();
-    if (renderObject is! RenderBox) {
-      return false;
-    }
-
-    final box = renderObject;
-    final topLeft = box.localToGlobal(Offset.zero);
-    final rect = topLeft & box.size;
-    return rect.contains(position);
-  }
-
-  void _scrollToPicker() {
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await _ensurePickerVisible();
-      Future.delayed(const Duration(milliseconds: 220), _ensurePickerVisible);
-    });
-  }
-
-  Future<void> _ensurePickerVisible() async {
-    final context = _pickerAnchorKey.currentContext;
-    if (context == null || !_scrollController.hasClients) {
-      return;
-    }
-
-    final renderObject = context.findRenderObject();
-    if (renderObject is! RenderBox) {
-      return;
-    }
-
-    final box = renderObject;
-    final boxTop = box.localToGlobal(Offset.zero).dy;
-    final boxBottom = box.localToGlobal(Offset(0, box.size.height)).dy;
-    final mediaQuery = MediaQuery.of(context);
-    final minVisibleY = mediaQuery.padding.top + 8;
-    const extraBottomPadding = 35.0;
-    final maxVisibleY =
-        mediaQuery.size.height -
-        mediaQuery.padding.bottom -
-        8 -
-        extraBottomPadding;
-
-    var targetOffset = _scrollController.offset;
-    if (boxBottom > maxVisibleY) {
-      targetOffset += boxBottom - maxVisibleY;
-    } else if (boxTop < minVisibleY) {
-      targetOffset -= minVisibleY - boxTop;
-    }
-
-    if ((targetOffset - _scrollController.offset).abs() < 1) {
-      return;
-    }
-
-    final position = _scrollController.position;
-    final clampedOffset = targetOffset.clamp(
-      position.minScrollExtent,
-      position.maxScrollExtent,
-    );
-
-    await _scrollController.animateTo(
-      clampedOffset,
-      duration: const Duration(milliseconds: 220),
-      curve: Curves.easeOut,
-    );
-  }
-
   @override
   void dispose() {
     _scrollController.dispose();
     _companyController.dispose();
     _policyController.dispose();
+    _dobController.dispose();
+    _marriedDateController.dispose();
     _startDateController.dispose();
     _endDateController.dispose();
+    _startDateNotifier.dispose();
+    _endDateNotifier.dispose();
     super.dispose();
   }
 
@@ -226,11 +78,19 @@ class _InsuranceInformationBodyState extends State<_InsuranceInformationBody> {
     final view = View.of(context);
     final fullHeight = view.physicalSize.height / view.devicePixelRatio;
     final whiteBgHeight = fullHeight * 0.5;
+    final today = DateUtils.dateOnly(DateTime.now());
 
     return Stack(
       fit: StackFit.expand,
       children: [
-        Assets.img.spaceBg.image(fit: BoxFit.cover),
+        Positioned.fill(
+          child: Transform.translate(
+            offset: const Offset(0, -115),
+            child: Assets.img.backgroundImage.image(
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
         Positioned(
           left: 0,
           right: 0,
@@ -241,210 +101,210 @@ class _InsuranceInformationBodyState extends State<_InsuranceInformationBody> {
         Scaffold(
           backgroundColor: Colors.transparent,
           body: SafeArea(
-            child: GestureDetector(
-              behavior: HitTestBehavior.translucent,
-              onTapDown: (details) => _handleTapOutside(details.globalPosition),
-              child: SingleChildScrollView(
-                controller: _scrollController,
-                padding: const EdgeInsets.fromLTRB(8, 24, 8, 8),
-                child: Container(
-                  padding: const EdgeInsets.fromLTRB(16, 18, 16, 20),
-                  decoration: BoxDecoration(
-                    color: AppColors.white,
-                    borderRadius: BorderRadius.circular(24),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Center(
-                        child: Text(
-                          'Insurance Information',
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.titleLarge
-                              ?.copyWith(
-                                fontWeight: FontWeight.w700,
-                                color: AppColors.eerieBlack,
-                              ),
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Professional liability insurance protects both you '
-                        "and your clients. It's mandatory for all service "
-                        'providers on SuperAslan to ensure quality and safety '
-                        'standards.',
+            child: SingleChildScrollView(
+              controller: _scrollController,
+              padding: const EdgeInsets.fromLTRB(8, 40, 8, 8),
+              child: Container(
+                padding: const EdgeInsets.fromLTRB(16, 18, 16, 20),
+                decoration: BoxDecoration(
+                  color: AppColors.white,
+                  borderRadius: BorderRadius.circular(24),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Center(
+                      child: Text(
+                        'Insurance Information',
                         textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: AppColors.paleSky,
-                          height: 1.4,
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.eerieBlack,
                         ),
                       ),
-                      const SizedBox(height: 14),
-                      const _AcceptedInsuranceCard(),
-                      const SizedBox(height: 16),
-                      const _SectionTitle(title: 'Insurance Details'),
-                      const SizedBox(height: 10),
-                      const _FieldLabel(text: 'Insurance Company Name *'),
-                      TextFormFieldWidget(
-                        controller: _companyController,
-                        labelText: 'e.g., State Farm, Allstate',
-                        fillColor: AppColors.white,
-                        showBorder: true,
-                        enabledBorderColor: AppColors.inputFocused,
-                        onTap: _hidePickersIfVisible,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Professional liability insurance protects both you '
+                      "and your clients. It's mandatory for all service "
+                      'providers on SuperAslan to ensure quality and safety '
+                      'standards.',
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: AppColors.paleSky,
+                        height: 1.4,
                       ),
-                      const _FieldLabel(text: 'Policy Number *'),
-                      TextFormFieldWidget(
-                        controller: _policyController,
-                        labelText: 'Enter your policy number',
-                        fillColor: AppColors.white,
-                        showBorder: true,
-                        enabledBorderColor: AppColors.inputFocused,
-                        onTap: _hidePickersIfVisible,
-                      ),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const _FieldLabel(text: 'Start Date *'),
-                                DateInputFieldWidget(
-                                  key: _startDateInputKey,
-                                  controller: _startDateController,
-                                  labelText: 'mm/dd/yyyy',
-                                  isActive: _showStartPicker,
-                                  inactiveBorderColor: AppColors.inputFocused,
-                                  onTap: () => _togglePicker(isStartDate: true),
-                                ),
-                              ],
-                            ),
+                    ),
+                    const SizedBox(height: 14),
+                    const _AcceptedInsuranceCard(),
+                    const SizedBox(height: 16),
+                    const _SectionTitle(title: 'Insurance Details'),
+                    const SizedBox(height: 10),
+                    const _FieldLabel(text: 'Insurance Company Name *'),
+                    TextFormFieldWidget(
+                      controller: _companyController,
+                      labelText: 'e.g., State Farm, Allstate',
+                      fillColor: AppColors.white,
+                      showBorder: true,
+                      enabledBorderColor: AppColors.inputFocused,
+                    ),
+                    const _FieldLabel(text: 'Policy Number *'),
+                    TextFormFieldWidget(
+                      controller: _policyController,
+                      labelText: 'Enter your policy number',
+                      fillColor: AppColors.white,
+                      showBorder: true,
+                      enabledBorderColor: AppColors.inputFocused,
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const _FieldLabel(text: 'Date of Birth *'),
+                              DateInputPickerFieldWidget(
+                                controller: _dobController,
+                                selectedDate: null,
+                                firstDate: DateTime(1900),
+                                lastDate: today,
+                                onDateSelected: (_) {},
+                                scrollController: _scrollController,
+                              ),
+                            ],
                           ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const _FieldLabel(text: 'End Date *'),
-                                DateInputFieldWidget(
-                                  key: _endDateInputKey,
-                                  controller: _endDateController,
-                                  labelText: 'mm/dd/yyyy',
-                                  isActive: _showEndPicker,
-                                  inactiveBorderColor: AppColors.inputFocused,
-                                  onTap: () => _togglePicker(isStartDate: false),
-                                ),
-                              ],
-                            ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const _FieldLabel(text: 'Married Date'),
+                              DateInputPickerFieldWidget(
+                                controller: _marriedDateController,
+                                selectedDate: null,
+                                firstDate: DateTime(1900),
+                                lastDate: today,
+                                onDateSelected: (_) {},
+                                scrollController: _scrollController,
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                      _InlineDatePicker(
-                        key: _pickerAnchorKey,
-                        isVisible: _showStartPicker || _showEndPicker,
-                        selectedDate: _showStartPicker
-                            ? (_draftStartDate ?? _startDate ?? DateTime.now())
-                            : (_draftEndDate ??
-                                  _endDate ??
-                                  _startDate ??
-                                  DateTime.now()),
-                        firstDate: _showStartPicker
-                            ? DateTime(2000)
-                            : (_startDate ?? DateTime(2000)),
-                        lastDate: DateTime(2100),
-                        onDateChanged: (date) => setState(() {
-                          if (_showStartPicker) {
-                            _draftStartDate = date;
-                          } else {
-                            _draftEndDate = date;
-                          }
-                        }),
-                        onCancel: _cancelPicker,
-                        onApply: () => _applyDate(
-                          _showStartPicker
-                              ? (_draftStartDate ??
-                                    _startDate ??
-                                    DateTime.now())
-                              : (_draftEndDate ??
-                                    _endDate ??
-                                    _startDate ??
-                                    DateTime.now()),
-                          isStartDate: _showStartPicker,
                         ),
-                      ),
-                      const SizedBox(height: 14),
-                      const _SectionTitle(title: 'Upload Documents'),
-                      const SizedBox(height: 10),
-                      const _FieldLabel(text: 'Insurance Certificate *'),
-                      _UploadTile(
-                        title: 'Tap to upload certificate',
-                        subtitle: 'PDF, JPG, PNG (Max 5MB)',
-                        icon: Icons.cloud_upload_outlined,
-                        fileName: _certificateFileName,
-                        onTap: () => _pickDocument(
-                          onSelected: (fileName) => setState(() {
-                            _certificateFileName = fileName;
-                          }),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const _FieldLabel(text: 'Start Date *'),
+                              DateInputPickerFieldWidget(
+                                controller: _startDateController,
+                                selectedDateNotifier: _startDateNotifier,
+                                firstDate: DateTime(2000),
+                                lastDate:
+                                    today.add(const Duration(days: 3650)),
+                                linkedController: _endDateController,
+                                linkedDateNotifier: _endDateNotifier,
+                                scrollController: _scrollController,
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 12),
-                      const _FieldLabel(text: 'Proof of Coverage'),
-                      _UploadTile(
-                        title: 'Additional coverage documents',
-                        subtitle: 'Optional - PDF, JPG, PNG',
-                        icon: Icons.description_outlined,
-                        fileName: _coverageFileName,
-                        onTap: () => _pickDocument(
-                          onSelected: (fileName) => setState(() {
-                            _coverageFileName = fileName;
-                          }),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const _FieldLabel(text: 'End Date *'),
+                              DateInputPickerFieldWidget(
+                                controller: _endDateController,
+                                selectedDateNotifier: _endDateNotifier,
+                                firstDate: DateTime(2000),
+                                minDateListenable: _startDateNotifier,
+                                lastDate:
+                                    today.add(const Duration(days: 3650)),
+                                scrollController: _scrollController,
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 14),
-                      const _StatusBanner(),
-                      const SizedBox(height: 14),
-                      const _RecommendationCard(),
-                      const SizedBox(height: 16),
-                      const _SectionTitle(title: 'Policy Validation Checklist'),
-                      const SizedBox(height: 8),
-                      _ChecklistItem(
-                        label: 'Policy is currently active',
-                        value: _checklist[0],
-                        onChanged: (value) => setState(() {
-                          _checklist[0] = value;
+                      ],
+                    ),
+                    const SizedBox(height: 14),
+                    const _SectionTitle(title: 'Upload Documents'),
+                    const SizedBox(height: 10),
+                    const _FieldLabel(text: 'Insurance Certificate *'),
+                    _UploadTile(
+                      title: 'Tap to upload certificate',
+                      subtitle: 'PDF, JPG, PNG (Max 5MB)',
+                      icon: Icons.cloud_upload_outlined,
+                      fileName: _certificateFileName,
+                      onTap: () => _pickDocument(
+                        onSelected: (fileName) => setState(() {
+                          _certificateFileName = fileName;
                         }),
                       ),
-                      _ChecklistItem(
-                        label: 'Minimum coverage amount met',
-                        value: _checklist[1],
-                        onChanged: (value) => setState(() {
-                          _checklist[1] = value;
+                    ),
+                    const SizedBox(height: 12),
+                    const _FieldLabel(text: 'Proof of Coverage'),
+                    _UploadTile(
+                      title: 'Additional coverage documents',
+                      subtitle: 'Optional - PDF, JPG, PNG',
+                      icon: Icons.description_outlined,
+                      fileName: _coverageFileName,
+                      onTap: () => _pickDocument(
+                        onSelected: (fileName) => setState(() {
+                          _coverageFileName = fileName;
                         }),
                       ),
-                      _ChecklistItem(
-                        label: 'Certificate matches policy details',
-                        value: _checklist[2],
-                        onChanged: (value) => setState(() {
-                          _checklist[2] = value;
-                        }),
-                      ),
-                      _ChecklistItem(
-                        label: 'Documents are legible and complete',
-                        value: _checklist[3],
-                        onChanged: (value) => setState(() {
-                          _checklist[3] = value;
-                        }),
-                      ),
-                      const SizedBox(height: 8),
-                      const _SecurityNote(),
-                      const SizedBox(height: 14),
-                      BottomActionButton(
-                        title: 'Verify Payment Account',
-                        onPressed: () {},
-                        horizontalPadding: 0,
-                      ),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: 14),
+                    const _StatusBanner(),
+                    const SizedBox(height: 14),
+                    const _RecommendationCard(),
+                    const SizedBox(height: 16),
+                    const _SectionTitle(title: 'Policy Validation Checklist'),
+                    const SizedBox(height: 8),
+                    _ChecklistItem(
+                      label: 'Policy is currently active',
+                      value: _checklist[0],
+                      onChanged: (value) => setState(() {
+                        _checklist[0] = value;
+                      }),
+                    ),
+                    _ChecklistItem(
+                      label: 'Minimum coverage amount met',
+                      value: _checklist[1],
+                      onChanged: (value) => setState(() {
+                        _checklist[1] = value;
+                      }),
+                    ),
+                    _ChecklistItem(
+                      label: 'Certificate matches policy details',
+                      value: _checklist[2],
+                      onChanged: (value) => setState(() {
+                        _checklist[2] = value;
+                      }),
+                    ),
+                    _ChecklistItem(
+                      label: 'Documents are legible and complete',
+                      value: _checklist[3],
+                      onChanged: (value) => setState(() {
+                        _checklist[3] = value;
+                      }),
+                    ),
+                    const SizedBox(height: 8),
+                    const _SecurityNote(),
+                    const SizedBox(height: 14),
+                    BottomActionButton(
+                      title: 'Verify Payment Account',
+                      onPressed: () => context.go(PhoneVerificationPage.path),
+                      horizontalPadding: 0,
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -687,142 +547,6 @@ class _SecurityNote extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-class _InlineDatePicker extends StatelessWidget {
-  const _InlineDatePicker({
-    super.key,
-    required this.isVisible,
-    required this.selectedDate,
-    required this.firstDate,
-    required this.lastDate,
-    required this.onDateChanged,
-    required this.onCancel,
-    required this.onApply,
-  });
-
-  final bool isVisible;
-  final DateTime selectedDate;
-  final DateTime firstDate;
-  final DateTime lastDate;
-  final ValueChanged<DateTime> onDateChanged;
-  final VoidCallback onCancel;
-  final VoidCallback onApply;
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedSwitcher(
-      duration: const Duration(milliseconds: 200),
-      transitionBuilder: (child, animation) => SizeTransition(
-        sizeFactor: animation,
-        child: child,
-      ),
-      child: isVisible
-          ? Container(
-              key: const ValueKey('inline-date-picker'),
-              margin: const EdgeInsets.only(top: 6),
-              padding: const EdgeInsets.fromLTRB(8, 0, 8, 4),
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: AppColors.white,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: AppColors.inputFocused),
-              ),
-              child: Column(
-                children: [
-                  ClipRect(
-                    child: Align(
-                      alignment: Alignment.topCenter,
-                      heightFactor: 0.92,
-                      child: Theme(
-                        data: Theme.of(context).copyWith(
-                          colorScheme: Theme.of(context).colorScheme.copyWith(
-                            primary: AppColors.primaryColor,
-                          ),
-                          datePickerTheme: DatePickerThemeData(
-                            todayForegroundColor:
-                                WidgetStateProperty.resolveWith(
-                                  (states) {
-                                    if (states.contains(WidgetState.selected)) {
-                                      return AppColors.white;
-                                    }
-                                    return AppColors.primaryColor;
-                                  },
-                                ),
-                            todayBorder: const BorderSide(
-                              color: AppColors.primaryColor,
-                              width: 1.5,
-                            ),
-                            dayForegroundColor: WidgetStateProperty.resolveWith(
-                              (states) {
-                                if (states.contains(WidgetState.selected)) {
-                                  return AppColors.white;
-                                }
-                                return null;
-                              },
-                            ),
-                            dayBackgroundColor: WidgetStateProperty.resolveWith(
-                              (states) {
-                                if (states.contains(WidgetState.selected)) {
-                                  return AppColors.primaryColor;
-                                }
-                                return null;
-                              },
-                            ),
-                          ),
-                        ),
-                        child: CalendarDatePicker(
-                          initialDate: selectedDate,
-                          firstDate: firstDate,
-                          lastDate: lastDate,
-                          onDateChanged: onDateChanged,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: OutlinedButton(
-                          onPressed: onCancel,
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: AppColors.eerieBlack,
-                            side: const BorderSide(
-                              color: AppColors.brightGrey,
-                            ),
-                            padding: const EdgeInsets.symmetric(vertical: 10),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                          child: const Text('Cancel'),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: onApply,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.confirmedColor,
-                            foregroundColor: AppColors.white,
-                            padding: const EdgeInsets.symmetric(vertical: 10),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                          child: const Text('Apply'),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            )
-          : const SizedBox.shrink(
-              key: ValueKey('inline-date-picker-hidden'),
-            ),
     );
   }
 }

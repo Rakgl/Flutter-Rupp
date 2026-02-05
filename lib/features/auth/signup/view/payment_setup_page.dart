@@ -3,6 +3,8 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_super_aslan_app/features/shared/widgets/bottom_action_button.dart';
 import 'package:flutter_super_aslan_app/features/shared/widgets/text_form_field_widget.dart';
+import 'package:flutter_super_aslan_app/features/auth/signup/view/insurance_information_page.dart';
+import 'package:go_router/go_router.dart';
 
 class PaymentSetupPage extends StatefulWidget {
   const PaymentSetupPage({super.key});
@@ -79,7 +81,14 @@ class _PaymentSetupPageState extends State<PaymentSetupPage> {
     return Stack(
       fit: StackFit.expand,
       children: [
-        Assets.img.spaceBg.image(fit: BoxFit.cover),
+        Positioned.fill(
+          child: Transform.translate(
+            offset: const Offset(0, -115),
+            child: Assets.img.backgroundImage.image(
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
         Positioned(
           left: 0,
           right: 0,
@@ -238,7 +247,9 @@ class _PaymentSetupPageState extends State<PaymentSetupPage> {
                     const SizedBox(height: 12),
                     BottomActionButton(
                       title: 'Verify Payment Account',
-                      onPressed: _isFormComplete ? () {} : null,
+                      onPressed: _isFormComplete
+                          ? () => context.go(InsuranceInformationPage.path)
+                          : null,
                       horizontalPadding: 0,
                     ),
                     const SizedBox(height: 4),

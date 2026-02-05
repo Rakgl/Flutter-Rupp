@@ -55,7 +55,7 @@ class AppTheme {
         borderRadius: BorderRadius.circular(AppSpacing.sm),
       ),
       actionTextColor: Colors.lightBlue.shade300,
-      backgroundColor: AppColors.black,
+      backgroundColor: AppColors.liver,
       elevation: 4,
       behavior: SnackBarBehavior.floating,
     );

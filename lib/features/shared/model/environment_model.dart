@@ -34,7 +34,7 @@ class EnvironmentModel extends Equatable {
       environment: Environment.development,
       baseUrl:
           baseUrl ??
-          'https://dev-tele-api.d.aditidemo.asia/api/$apiVersion/mobile',
+          'https://dev-api.superaslan.d.aditidemo.asia/api/$apiVersion',
     );
   }
 

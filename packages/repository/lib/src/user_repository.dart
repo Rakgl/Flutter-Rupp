@@ -25,6 +25,7 @@ class UserRepository {
           accessToken: data.accessToken,
           refreshToken: data.refreshToken,
           expireIn: data.expiresIn.toString(),
+          deviceId: request.deviceId,
         );
       },
       failure: (error) async {
@@ -148,7 +149,8 @@ class UserRepository {
   // sign out
   Future<bool> signOut() async {
     try {
-      await _apiClient.signOut();
+      final deviceId = await _tokenStorage.getDeviceId();
+      await _apiClient.signOut(deviceId: deviceId);
       await _tokenStorage.clearToken();
       return true;
     } catch (e) {

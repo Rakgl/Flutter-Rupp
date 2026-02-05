@@ -63,10 +63,11 @@ class ApiHttpClient {
   }
 
   // sign out
-  Response<String, SignInResponse> signOut() async {
+  Response<String, SignInResponse> signOut({String? deviceId}) async {
     try {
       final response = await _httpClient.post(
         '/auth/logout',
+        body: deviceId != null ? {'deviceId': deviceId} : null,
       );
       final signInResponse = SignInResponse.fromJson(response);
       if (signInResponse.success) {

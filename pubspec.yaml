@@ -19,6 +19,20 @@ dependencies:
   intl: ^0.20.2
   app_ui:
     path: packages/app_ui
+  repository:
+    path: packages/repository
+  api_http_client:
+    path: packages/api_http_client
+  http_client:
+    path: packages/http_client
+  storage:
+    path: packages/storage/storage
+  token_storage:
+    path: packages/storage/token_storage
+  persistent_storage:
+    path: packages/storage/persistent_storage
+  shared_preferences: ^2.3.4
+  dio: ^5.9.1
   cached_network_image: ^3.4.1
   shimmer: ^3.0.0
   flutter_iconly: ^1.0.2
