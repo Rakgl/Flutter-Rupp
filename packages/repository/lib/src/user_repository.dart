@@ -14,6 +14,9 @@ class UserRepository {
   final TokenStorage _tokenStorage;
   final ApiHttpClient _apiClient;
 
+  Future<List<String?>> readToken() => _tokenStorage.readToken();
+  Future<void> clearToken() => _tokenStorage.clearToken();
+
   // sign in
   Response<String, SignInResponse> signIn(SignInRequest request) async {
     final response = await _apiClient.signIn(request);
@@ -25,7 +28,7 @@ class UserRepository {
           accessToken: data.accessToken,
           refreshToken: data.refreshToken,
           expireIn: data.expiresIn.toString(),
-          deviceId: request.deviceId,
+          deviceId: '',
         );
       },
       failure: (error) async {

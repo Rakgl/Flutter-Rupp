@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_super_aslan_app/app/view/main_view.dart';
 import 'package:flutter_super_aslan_app/features/auth/signup/view/business_verification_page.dart';
 import 'package:flutter_super_aslan_app/features/auth/signup/view/payment_setup_page.dart';
-import 'package:flutter_super_aslan_app/features/earning/view/earning_page.dart';
-import 'package:flutter_super_aslan_app/features/review/view/review_page.dart';
-import 'package:flutter_super_aslan_app/features/work/view/work_page.dart';
 import 'package:flutter_super_aslan_app/features/auth/login/view/login_page.dart';
 import 'package:flutter_super_aslan_app/features/profile/view/business_info_page.dart';
 import 'package:flutter_super_aslan_app/features/profile/view/edit_profile_page.dart';
@@ -14,13 +11,11 @@ import 'package:flutter_super_aslan_app/features/profile/view/transaction_histor
 import 'package:flutter_super_aslan_app/features/profile/view/working_hours_page.dart';
 import 'package:flutter_super_aslan_app/features/profile/view/settings_page.dart';
 import 'package:flutter_super_aslan_app/features/auth/signup/view/signup_page.dart';
-import 'package:flutter_super_aslan_app/features/schedule/view/appointment_details_page.dart';
 import 'package:flutter_super_aslan_app/features/welcome/view/welcome_page.dart';
 import 'package:flutter_super_aslan_app/splash/view/splash_page.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_super_aslan_app/features/profile/cubit/profile_cubit.dart';
-import 'package:flutter_super_aslan_app/features/message/message.dart';
 import 'package:flutter_super_aslan_app/features/auth/signup/view/insurance_information_page.dart';
 
 GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -30,22 +25,6 @@ class GlobalRouter {
     initialLocation: SplashPage.path,
     navigatorKey: navigatorKey,
     routes: [
-      GoRoute(
-        path: '/messages',
-        builder: (context, state) => const MessagePage(),
-      ),
-      GoRoute(
-        path: '/chat',
-        builder: (context, state) {
-          final extra = state.extra as Map<String, dynamic>;
-          final user = extra['user'] as MessageGroup;
-          final cubit = extra['cubit'] as MessageCubit;
-          return BlocProvider.value(
-            value: cubit,
-            child: ChatDetailPage(user: user),
-          );
-        },
-      ),
       GoRoute(
         path: SplashPage.path,
         builder: (context, state) => const SplashPage(),
@@ -89,28 +68,12 @@ class GlobalRouter {
         builder: (context, state) => const TransactionHistoryPage(),
       ),
       GoRoute(
-        path: EarningPage.path,
-        builder: (context, state) => const EarningPage(),
-      ),
-      GoRoute(
-        path: WorkPage.path,
-        builder: (context, state) => const WorkPage(),
-      ),
-      GoRoute(
-        path: ReviewPage.path,
-        builder: (context, state) => const ReviewPage(),
-      ),
-      GoRoute(
         path: WelcomePage.path,
         builder: (context, state) => const WelcomePage(),
       ),
       GoRoute(
         path: '/login',
         builder: (context, state) => const LoginPage(),
-      ),
-      GoRoute(
-        path: AppointmentDetailsPage.path,
-        builder: (context, state) => const AppointmentDetailsPage(),
       ),
       GoRoute(
         path: SignupPage.path,

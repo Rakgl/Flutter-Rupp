@@ -224,28 +224,19 @@ class _LoginViewState extends State<LoginView> {
                                             const Align(
                                               alignment: Alignment.centerLeft,
                                               child: TextLabel(
-                                                label: 'Email address',
+                                                label: 'Username',
                                               ),
                                             ),
                                             const SizedBox(height: 12),
                                             TextFormFieldWidget(
                                               controller: _emailController,
-                                              labelText: 'Email address',
-                                              keyboardType:
-                                                  TextInputType.emailAddress,
+                                              labelText: 'Username',
+                                              keyboardType: TextInputType.text,
                                               validator: (value) {
                                                 final text =
                                                     value?.trim() ?? '';
                                                 if (text.isEmpty) {
-                                                  return 'Email is required';
-                                                }
-                                                final emailRegex = RegExp(
-                                                  r'^[^@\s]+@[^@\s]+\.[^@\s]+$',
-                                                );
-                                                if (!emailRegex.hasMatch(
-                                                  text,
-                                                )) {
-                                                  return 'Enter a valid email address';
+                                                  return 'Username is required';
                                                 }
                                                 return null;
                                               },

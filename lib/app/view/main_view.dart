@@ -2,11 +2,8 @@ import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_super_aslan_app/features/home/view/home_page.dart';
-import 'package:flutter_super_aslan_app/features/message/view/message_page.dart';
 import 'package:flutter_super_aslan_app/features/profile/view/profile_page.dart';
 import 'package:flutter_super_aslan_app/features/profile/cubit/profile_cubit.dart';
-import 'package:flutter_super_aslan_app/features/request/view/request_page.dart';
-import 'package:flutter_super_aslan_app/features/schedule/view/schedule_page.dart';
 import 'package:flutter_super_aslan_app/navigation/cubit/navigation_cubit.dart';
 import 'package:flutter_super_aslan_app/navigation/view/bottom_nav_bar.dart';
 
@@ -54,12 +51,20 @@ class _BodyViewState extends State<_BodyView> {
         alignment: Alignment.center,
         children: const [
           HomePage(),
-          RequestPage(),
-          SchedulePage(),
-          MessagePage(),
+          SizedBox(),
+          SizedBox(),
+          SizedBox(),
           ProfilePage(),
         ],
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        backgroundColor: const Color(0xFF3B82F6), // Methgo blue
+        elevation: 4,
+        shape: const CircleBorder(),
+        child: const Icon(Icons.add, color: Colors.white, size: 28),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomNavBar(
         currentIndex: selectedTab,
         onTap: (value) {

@@ -36,8 +36,8 @@ class BottomAppBarItem extends StatelessWidget {
                 Icon(
                   icon,
                   color: isSelected
-                      ? AppColors.primaryColor
-                      : AppColors.grey.shade500,
+                      ? Colors.white
+                      : Colors.white.withValues(alpha: 0.6),
                   size: iconSize,
                 ),
                 if (badgeCount > 0)
@@ -67,8 +67,8 @@ class BottomAppBarItem extends StatelessWidget {
               title,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                 color: isSelected
-                    ? AppColors.primaryColor
-                    : AppColors.grey.shade500,
+                    ? Colors.white
+                    : Colors.white.withValues(alpha: 0.6),
                 fontWeight: AppFontWeight.regular,
               ),
               maxLines: 1,

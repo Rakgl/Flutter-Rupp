@@ -19,11 +19,13 @@ class BottomNavBar extends StatelessWidget {
     return BottomAppBar(
       padding: EdgeInsets.zero,
       elevation: 0,
-      color: AppColors.white,
+      color: const Color(0xFF3B82F6), // Methgo blue
+      shape: const CircularNotchedRectangle(),
+      notchMargin: 8.0,
       child: Container(
-   
+        height: 60,
         decoration: BoxDecoration(
-          color: AppColors.white.withAlpha(0),
+          color: Colors.transparent,
           border: Border(
             top: BorderSide(
               color: AppColors.grey.withAlpha(20),
@@ -37,42 +39,35 @@ class BottomNavBar extends StatelessWidget {
             Expanded(
               child: BottomAppBarItem(
                 title: 'Home',
-                iconSize: 22,
-                icon: Icons.home,
+                iconSize: 24,
+                icon: Icons.home_filled,
                 isSelected: currentIndex == 0,
                 onPressed: () => onTap(0),
               ),
             ),
             Expanded(
               child: BottomAppBarItem(
-                title: 'Request',
-                icon: Icons.request_page,
+                title: 'Search',
+                icon: Icons.search,
                 isSelected: currentIndex == 1,
                 onPressed: () => onTap(1),
               ),
             ),
+            const SizedBox(width: 48), // Space for FAB
             Expanded(
               child: BottomAppBarItem(
-                title: 'Schedule',
-                icon:  Icons.schedule,
+                title: 'Messages',
+                icon: Icons.message_rounded,
                 isSelected: currentIndex == 2,
                 onPressed: () => onTap(2),
               ),
             ),
             Expanded(
               child: BottomAppBarItem(
-                title: 'Message',
-                icon:  Icons.message,
+                title: 'Favorites',
+                icon: Icons.favorite,
                 isSelected: currentIndex == 3,
                 onPressed: () => onTap(3),
-              ),
-            ),
-            Expanded(
-              child: BottomAppBarItem(
-                title: 'Profile',
-                icon: Icons.person,
-                isSelected: currentIndex == 4,
-                onPressed: () => onTap(4),
               ),
             ),
           ],

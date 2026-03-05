@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 // import 'package:flutter_super_aslan_app/app/view/main_view.dart';
-import 'package:flutter_super_aslan_app/features/earning/view/earning_page.dart';
 import 'package:flutter_super_aslan_app/features/auth/login/view/login_page.dart';
 import 'package:go_router/go_router.dart';
 import '../profile.dart';
@@ -85,13 +84,6 @@ class EditProfilePage extends StatelessWidget {
 
                 const SizedBox(height: AppSpacing.lg),
                 const AppSectionTitle(title: "FINANCIAL"),
-                _buildProfileTile(
-                  label: "Payouts & Earnings",
-                  subLabel: "\$${state.walletBalance}",
-                  caption: "Available balance",
-                  leadingIcon: IconlyLight.wallet,
-                  onTap: () => context.push(EarningPage.path),
-                ),
                 _buildProfileTile(
                   label: "Transaction History",
                   onTap: () => context.push(TransactionHistoryPage.path),

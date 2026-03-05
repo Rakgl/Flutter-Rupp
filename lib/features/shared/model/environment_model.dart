@@ -32,9 +32,7 @@ class EnvironmentModel extends Equatable {
       apiVersion: apiVersion,
       color: color ?? Colors.red,
       environment: Environment.development,
-      baseUrl:
-          baseUrl ??
-          'https://dev-api.superaslan.d.aditidemo.asia/api/$apiVersion',
+      baseUrl: baseUrl ?? 'http://192.168.1.9:8000/api/v1/admin',
     );
   }
 

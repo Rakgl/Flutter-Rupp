@@ -38,6 +38,8 @@ class ApiHttpClient {
 
   final HttpClient _httpClient;
 
+  get import => null;
+
   /// login with username and password
   Response<String, SignInResponse> signIn(SignInRequest request) async {
     try {
@@ -52,13 +54,14 @@ class ApiHttpClient {
         return Left(signInResponse.message);
       }
     } on ApiRequestFailure catch (e) {
-      return Left(e.body['message'] as String);
-    } on SocketException {
-      return const Left('no_internet');
+      final msg = e.body['message'];
+      return Left(msg is String ? msg : 'Login failed (${e.statusCode})');
+    } on SocketException catch (e) {
+      return Left('No internet connection: ${e.message}');
     } catch (e) {
-      return const Left(
-        'Something went wrong. Try again',
-      );
+      log('Login network error: $e');
+      return Left(
+          'Cannot connect to server. Check your connection or API URL (is $e reachable?).');
     }
   }
 
@@ -431,6 +434,7 @@ class ApiHttpClient {
       );
     }
   }
+
   // cancel appointment
   Response<String, String> cancelAppointment({
     required String appointmentId,
@@ -685,11 +689,13 @@ class ApiHttpClient {
       );
     }
   }
+
   Response<String, ServiceResponse> getServices() async {
     try {
       final response = await _httpClient.get('/services');
       final res = ServiceResponse.fromJson(response);
-      if (res.success) {        return Right(res);
+      if (res.success) {
+        return Right(res);
       } else {
         return Left(res.message);
       }
@@ -703,8 +709,4 @@ class ApiHttpClient {
       );
     }
   }
-
-
-  
-
 }

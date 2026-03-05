@@ -16,20 +16,13 @@ class LoginCubit extends Cubit<LoginState> {
   Future<void> login({
     required String username,
     required String password,
-    String appContext = 'professional',
   }) async {
     emit(state.copyWith(status: LoginStatus.loading));
 
     try {
-      // Generate a unique device ID (you might want to store this persistently)
-      final deviceId =
-          '${DateTime.now().millisecondsSinceEpoch}-${username.hashCode}';
-
       final request = SignInRequest(
         username: username,
         password: password,
-        appContext: appContext,
-        deviceId: deviceId,
       );
 
       final response = await _userRepository.signIn(request);

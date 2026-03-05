@@ -1,7 +1,9 @@
-import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_super_aslan_app/features/welcome/view/welcome_page.dart';
+import 'package:flutter_super_aslan_app/app/view/main_view.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:repository/user_repository.dart';
 
 class SplashPage extends StatelessWidget {
   const SplashPage({super.key});
@@ -27,33 +29,91 @@ class _SplashViewState extends State<SplashView> {
     super.initState();
 
     Future.delayed(const Duration(seconds: 2), () async {
-      context.go(WelcomePage.path);
+      if (!mounted) return;
+
+      final userRepository = context.read<UserRepository>();
+      final token = await userRepository.readToken();
+
+      if (!mounted) return;
+
+      if (token[0] != null && token[0]!.isNotEmpty) {
+        context.go(MainView.path);
+      } else {
+        context.go(WelcomePage.path);
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      fit: StackFit.expand,
-
-      children: [
-        Assets.img.backgroundImage.image(
-          fit: BoxFit.cover,
-        ),
-        Scaffold(
-          backgroundColor: Colors.transparent,
-          extendBodyBehindAppBar: true,
-
-          body: SafeArea(
-            child: Center(
-              child: Assets.img.appLogo.image(
-                width: 280,
-                height: 280,
+    return Scaffold(
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          // Background Gradient
+          Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Color(0xFF8BA5F8), // Lighter blue at top
+                  Color(0xFF1E32C4), // Darker blue at bottom
+                ],
               ),
             ),
           ),
-        ),
-      ],
+
+          // Bottom Image (Faded into background)
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            height: MediaQuery.of(context).size.height * 0.45,
+            child: ShaderMask(
+              shaderCallback: (Rect bounds) {
+                return const LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [Colors.transparent, Colors.white],
+                  stops: [0.0, 0.3],
+                ).createShader(bounds);
+              },
+              blendMode: BlendMode.dstIn,
+              child: Image.network(
+                'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?q=80&w=800&auto=format&fit=crop',
+                fit: BoxFit.cover,
+                alignment: Alignment.topCenter,
+              ),
+            ),
+          ),
+
+          // Centered Logo
+          Positioned(
+            top: MediaQuery.of(context).size.height * 0.35,
+            left: 0,
+            right: 0,
+            child: const Center(
+              child: Text(
+                'Methgo',
+                style: TextStyle(
+                  fontFamily: 'Pacifico', // Fallback to cursive if not loaded
+                  fontSize: 56,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w500,
+                  shadows: [
+                    Shadow(
+                      color: Colors.black26,
+                      offset: Offset(0, 4),
+                      blurRadius: 8,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
