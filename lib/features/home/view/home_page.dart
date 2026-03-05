@@ -111,15 +111,23 @@ class _SearchBar extends StatelessWidget {
       ),
       child: TextField(
         decoration: InputDecoration(
-          icon: Icon(Icons.search, color: Colors.grey.shade600),
+          prefixIcon: const Icon(Icons.search, color: Colors.black, size: 24),
           hintText: 'Search',
           hintStyle: TextStyle(
             color: Colors.grey.shade500,
             fontWeight: FontWeight.w500,
+            fontSize: 16,
           ),
           border: InputBorder.none,
+          focusedBorder: InputBorder.none,
+          enabledBorder: InputBorder.none,
+          errorBorder: InputBorder.none,
+          disabledBorder: InputBorder.none,
           isDense: true,
-          contentPadding: const EdgeInsets.symmetric(vertical: 14),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 0,
+            vertical: 12,
+          ),
         ),
       ),
     );
