@@ -47,8 +47,8 @@ class BottomNavBar extends StatelessWidget {
             ),
             Expanded(
               child: BottomAppBarItem(
-                title: 'Search',
-                icon: Icons.search,
+                title: 'Accessory',
+                icon: Icons.category_rounded,
                 isSelected: currentIndex == 1,
                 onPressed: () => onTap(1),
               ),
@@ -56,8 +56,8 @@ class BottomNavBar extends StatelessWidget {
             const SizedBox(width: 48), // Space for FAB
             Expanded(
               child: BottomAppBarItem(
-                title: 'Messages',
-                icon: Icons.message_rounded,
+                title: 'About',
+                icon: Icons.account_tree_rounded,
                 isSelected: currentIndex == 2,
                 onPressed: () => onTap(2),
               ),

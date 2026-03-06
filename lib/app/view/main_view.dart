@@ -1,6 +1,9 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_super_aslan_app/features/accessory/view/accessory_page.dart';
+import 'package:flutter_super_aslan_app/features/about/view/about_view.dart';
+import 'package:flutter_super_aslan_app/features/favorite/view/favorite_page.dart';
 import 'package:flutter_super_aslan_app/features/home/view/home_page.dart';
 import 'package:flutter_super_aslan_app/features/profile/view/profile_page.dart';
 import 'package:flutter_super_aslan_app/features/profile/cubit/profile_cubit.dart';
@@ -51,9 +54,9 @@ class _BodyViewState extends State<_BodyView> {
         alignment: Alignment.center,
         children: const [
           HomePage(),
-          SizedBox(),
-          SizedBox(),
-          SizedBox(),
+          AccessoryPage(),
+          AboutPage(),
+          FavoritePage(),
           ProfilePage(),
         ],
       ),
