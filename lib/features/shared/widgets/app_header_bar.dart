@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_super_aslan_app/features/account/view/view.dart';
 
 class AppHeaderBar extends StatelessWidget {
   const AppHeaderBar({super.key, required this.subtitle});
@@ -39,10 +40,17 @@ class AppHeaderBar extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 12),
-        const CircleAvatar(
-          radius: 24,
-          backgroundImage: NetworkImage(
-            'https://static.wikia.nocookie.net/spiderman-films/images/b/be/Tom_Holland_Spidey_Suit.webp/revision/latest?cb=20230914135801',
+        GestureDetector(
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const AccountPage()),
+            );
+          },
+          child: const CircleAvatar(
+            radius: 24,
+            backgroundImage: NetworkImage(
+              'https://static.wikia.nocookie.net/spiderman-films/images/b/be/Tom_Holland_Spidey_Suit.webp/revision/latest?cb=20230914135801',
+            ),
           ),
         ),
       ],

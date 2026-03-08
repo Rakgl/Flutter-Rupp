@@ -1,8 +1,9 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 
 class MainTitle extends StatelessWidget {
   final String title;
-  const MainTitle({super.key, required this.title});
+  final bool isBack;
+  const MainTitle({super.key, required this.title, required this.isBack});
 
   @override
   Widget build(BuildContext context) {
@@ -12,14 +13,31 @@ class MainTitle extends StatelessWidget {
         const SizedBox(
           height: 10,
         ),
-        Text(
-          title,
-          style: const TextStyle(
-            fontSize: 40,
-            fontWeight: FontWeight.bold,
-            color: Color(0xFF4A7BD6), // blue color
-            fontFamily: 'Cursive', // optional if you add custom font
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize: 40,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF4A7BD6),
+                fontFamily: 'Cursive',
+              ),
+            ),
+            if (isBack)
+              IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: const Icon(
+                  Icons.arrow_back_rounded,
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                  size: 28,
+                ),
+              ),
+          ],
         ),
         const SizedBox(height: 10),
         Container(

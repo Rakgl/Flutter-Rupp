@@ -66,10 +66,10 @@ class _SplashViewState extends State<SplashView> {
           ),
 
           Positioned(
-            left: 0,
+            left: -50,
             right: 0,
-            bottom: 0,
-            height: MediaQuery.of(context).size.height * 0.45,
+            bottom: -40,
+            height: MediaQuery.of(context).size.height * 0.55,
             child: ShaderMask(
               shaderCallback: (Rect bounds) {
                 return const LinearGradient(
@@ -83,7 +83,6 @@ class _SplashViewState extends State<SplashView> {
               child: Image.asset(
                 splashImg,
                 fit: BoxFit.cover,
-                alignment: Alignment.topCenter,
               ),
             ),
           ),
@@ -100,13 +99,6 @@ class _SplashViewState extends State<SplashView> {
                   fontSize: 56,
                   color: Colors.white,
                   fontWeight: FontWeight.w500,
-                  shadows: [
-                    Shadow(
-                      color: Colors.black26,
-                      offset: Offset(0, 4),
-                      blurRadius: 8,
-                    ),
-                  ],
                 ),
               ),
             ),

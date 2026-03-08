@@ -18,7 +18,7 @@ class _FavoritePageState extends State<FavoritePage> {
         child: Column(
           children: [
             AppHeaderBar(subtitle: "Order your favorite Pet!"),
-            MainTitle(title: "Favorite Pets"),
+            MainTitle(title: "Favorite Pets", isBack: false,),
           ],
         ),
       ),

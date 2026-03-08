@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_super_aslan_app/features/accessory/view/accessory_page.dart';
 import 'package:flutter_super_aslan_app/features/about/view/about_view.dart';
+import 'package:flutter_super_aslan_app/features/card/view/card_page.dart';
 import 'package:flutter_super_aslan_app/features/favorite/view/favorite_page.dart';
 import 'package:flutter_super_aslan_app/features/home/view/home_page.dart';
 import 'package:flutter_super_aslan_app/features/profile/view/profile_page.dart';
@@ -61,7 +62,11 @@ class _BodyViewState extends State<_BodyView> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => const CardPage()),
+          );
+        },
         backgroundColor: const Color(0xFF3B82F6), // Methgo blue
         elevation: 4,
         shape: const CircleBorder(),
