@@ -1,9 +1,9 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_super_aslan_app/features/shared/widgets/bottom_action_button.dart';
-import 'package:flutter_super_aslan_app/features/shared/widgets/text_form_field_widget.dart';
-import 'package:flutter_super_aslan_app/features/auth/signup/view/insurance_information_page.dart';
+import 'package:flutter_methgo_app/features/shared/widgets/bottom_action_button.dart';
+import 'package:flutter_methgo_app/features/shared/widgets/text_form_field_widget.dart';
+import 'package:flutter_methgo_app/features/auth/signup/view/insurance_information_page.dart';
 import 'package:go_router/go_router.dart';
 
 class PaymentSetupPage extends StatefulWidget {

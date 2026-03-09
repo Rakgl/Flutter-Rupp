@@ -2,9 +2,9 @@ import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
-import 'package:flutter_super_aslan_app/app/view/main_view.dart';
-import 'package:flutter_super_aslan_app/navigation/cubit/navigation_cubit.dart';
-import 'package:flutter_super_aslan_app/navigation/view/bottom_nav_bar.dart';
+import 'package:flutter_methgo_app/app/view/main_view.dart';
+import 'package:flutter_methgo_app/navigation/cubit/navigation_cubit.dart';
+import 'package:flutter_methgo_app/navigation/view/bottom_nav_bar.dart';
 import 'package:go_router/go_router.dart';
 
 class WorkingHoursPage extends StatelessWidget {

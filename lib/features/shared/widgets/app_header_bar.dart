@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_super_aslan_app/features/account/view/view.dart';
+import 'package:flutter_methgo_app/features/profile/view/profile_page.dart';
 
 class AppHeaderBar extends StatelessWidget {
   const AppHeaderBar({super.key, required this.subtitle});
@@ -43,7 +43,7 @@ class AppHeaderBar extends StatelessWidget {
         GestureDetector(
           onTap: () {
             Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const AccountPage()),
+              MaterialPageRoute<void>(builder: (_) => const ProfilePage()),
             );
           },
           child: const CircleAvatar(

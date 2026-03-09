@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_super_aslan_app/app/view/main_view.dart';
-import 'package:flutter_super_aslan_app/features/auth/signup/view/business_verification_page.dart';
-import 'package:flutter_super_aslan_app/features/auth/signup/view/payment_setup_page.dart';
-import 'package:flutter_super_aslan_app/features/auth/login/view/login_page.dart';
-import 'package:flutter_super_aslan_app/features/profile/view/business_info_page.dart';
-import 'package:flutter_super_aslan_app/features/profile/view/edit_profile_page.dart';
-import 'package:flutter_super_aslan_app/features/profile/view/portfolio_page.dart';
-import 'package:flutter_super_aslan_app/features/profile/view/services_pricing_page.dart';
-import 'package:flutter_super_aslan_app/features/profile/view/transaction_history_page.dart';
-import 'package:flutter_super_aslan_app/features/profile/view/working_hours_page.dart';
-import 'package:flutter_super_aslan_app/features/profile/view/settings_page.dart';
-import 'package:flutter_super_aslan_app/features/auth/signup/view/signup_page.dart';
-import 'package:flutter_super_aslan_app/features/welcome/view/welcome_page.dart';
-import 'package:flutter_super_aslan_app/splash/view/splash_page.dart';
+import 'package:flutter_methgo_app/app/view/main_view.dart';
+import 'package:flutter_methgo_app/features/auth/signup/view/business_verification_page.dart';
+import 'package:flutter_methgo_app/features/auth/signup/view/payment_setup_page.dart';
+import 'package:flutter_methgo_app/features/auth/login/view/login_page.dart';
+import 'package:flutter_methgo_app/features/profile/view/business_info_page.dart';
+import 'package:flutter_methgo_app/features/profile/view/edit_profile_page.dart';
+import 'package:flutter_methgo_app/features/profile/view/portfolio_page.dart';
+import 'package:flutter_methgo_app/features/profile/view/services_pricing_page.dart';
+import 'package:flutter_methgo_app/features/profile/view/transaction_history_page.dart';
+import 'package:flutter_methgo_app/features/profile/view/working_hours_page.dart';
+import 'package:flutter_methgo_app/features/profile/view/settings_page.dart';
+import 'package:flutter_methgo_app/features/auth/signup/view/signup_page.dart';
+import 'package:flutter_methgo_app/features/welcome/view/welcome_page.dart';
+import 'package:flutter_methgo_app/splash/view/splash_page.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_super_aslan_app/features/profile/cubit/profile_cubit.dart';
-import 'package:flutter_super_aslan_app/features/auth/signup/view/insurance_information_page.dart';
+import 'package:flutter_methgo_app/features/profile/cubit/profile_cubit.dart';
+import 'package:flutter_methgo_app/features/auth/signup/view/insurance_information_page.dart';
 
 GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 

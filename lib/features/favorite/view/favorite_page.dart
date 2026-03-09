@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter_super_aslan_app/features/shared/widgets/app_header_bar.dart';
-import 'package:flutter_super_aslan_app/features/shared/widgets/main_title.dart';
+import 'package:flutter_methgo_app/features/shared/widgets/app_header_bar.dart';
+import 'package:flutter_methgo_app/features/shared/widgets/main_title.dart';
 
 class FavoritePage extends StatefulWidget {
   const FavoritePage({super.key});

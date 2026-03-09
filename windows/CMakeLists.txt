@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.14)
-project(flutter_super_aslan_app LANGUAGES CXX)
+project(flutter_methgo_app LANGUAGES CXX)
 
-set(BINARY_NAME "flutter_super_aslan_app")
+set(BINARY_NAME "flutter_methgo_app")
 
 cmake_policy(SET CMP0063 NEW)
 

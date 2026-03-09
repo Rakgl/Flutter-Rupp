@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_super_aslan_app/features/welcome/view/welcome_page.dart';
-import 'package:flutter_super_aslan_app/app/view/main_view.dart';
+import 'package:flutter_methgo_app/features/welcome/view/welcome_page.dart';
+import 'package:flutter_methgo_app/app/view/main_view.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:repository/user_repository.dart';

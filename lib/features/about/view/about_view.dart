@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_super_aslan_app/features/shared/widgets/app_header_bar.dart';
+import 'package:flutter_methgo_app/features/shared/widgets/app_header_bar.dart';
 
 class AboutPage extends StatelessWidget {
   const AboutPage({super.key});

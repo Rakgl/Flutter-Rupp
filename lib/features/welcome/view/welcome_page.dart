@@ -2,7 +2,7 @@ import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:flutter_super_aslan_app/features/welcome/welcome.dart';
+import 'package:flutter_methgo_app/features/welcome/welcome.dart';
 
 class WelcomePage extends StatelessWidget {
   const WelcomePage({super.key});

@@ -3,10 +3,11 @@ import 'dart:async';
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_super_aslan_app/config/route/router.dart';
-import 'package:flutter_super_aslan_app/features/shared/export_shared.dart';
-import 'package:flutter_super_aslan_app/l10n/l10n.dart';
-import 'package:flutter_super_aslan_app/navigation/cubit/navigation_cubit.dart';
+import 'package:flutter_methgo_app/config/route/router.dart';
+import 'package:flutter_methgo_app/features/shared/export_shared.dart';
+import 'package:flutter_methgo_app/l10n/l10n.dart';
+import 'package:flutter_methgo_app/navigation/cubit/navigation_cubit.dart';
+import 'package:flutter_methgo_app/features/profile/cubit/profile_cubit.dart';
 import 'package:repository/user_repository.dart';
 import 'package:api_http_client/api_http_client.dart';
 import 'package:http_client/http_client.dart';
@@ -76,6 +77,9 @@ class _AppState extends State<App> {
         providers: [
           BlocProvider<NavigationCubit>(
             create: (context) => NavigationCubit(),
+          ),
+          BlocProvider<ProfileCubit>(
+            create: (context) => ProfileCubit(),
           ),
         ],
         child: MaterialApp.router(

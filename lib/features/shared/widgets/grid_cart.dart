@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_super_aslan_app/features/shared/widgets/product_cart.dart';
+import 'package:flutter_methgo_app/features/shared/widgets/product_cart.dart';
 
 class GridCart extends StatelessWidget {
   const GridCart({

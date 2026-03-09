@@ -507,7 +507,7 @@
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = H4GG68X57D;
 				ENABLE_BITCODE = NO;
-				FLAVOR_APP_NAME = "[DEV] Flutter Super Aslan App";
+				FLAVOR_APP_NAME = "[DEV] Flutter Method App";
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -607,7 +607,7 @@
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = H4GG68X57D;
 				ENABLE_BITCODE = NO;
-				FLAVOR_APP_NAME = "Flutter Super Aslan App";
+				FLAVOR_APP_NAME = "Flutter Method App";
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -704,7 +704,7 @@
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = H4GG68X57D;
 				ENABLE_BITCODE = NO;
-				FLAVOR_APP_NAME = "Flutter Super Aslan App";
+				FLAVOR_APP_NAME = "Flutter Method App";
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -796,7 +796,7 @@
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = H4GG68X57D;
 				ENABLE_BITCODE = NO;
-				FLAVOR_APP_NAME = "Flutter Super Aslan App";
+				FLAVOR_APP_NAME = "Flutter Method App";
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -892,7 +892,7 @@
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = H4GG68X57D;
 				ENABLE_BITCODE = NO;
-				FLAVOR_APP_NAME = "[DEV] Flutter Super Aslan App";
+				FLAVOR_APP_NAME = "[DEV] Flutter Method App";
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -987,7 +987,7 @@
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = H4GG68X57D;
 				ENABLE_BITCODE = NO;
-				FLAVOR_APP_NAME = "[DEV] Flutter Super Aslan App";
+				FLAVOR_APP_NAME = "[DEV] Flutter Method App";
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1081,7 +1081,7 @@
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = H4GG68X57D;
 				ENABLE_BITCODE = NO;
-				FLAVOR_APP_NAME = "[DEV] Flutter Super Aslan App";
+				FLAVOR_APP_NAME = "[DEV] Flutter Method App";
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1178,7 +1178,7 @@
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = H4GG68X57D;
 				ENABLE_BITCODE = NO;
-				FLAVOR_APP_NAME = "[STG] Flutter Super Aslan App";
+				FLAVOR_APP_NAME = "[STG] Flutter Method App";
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1275,7 +1275,7 @@
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = H4GG68X57D;
 				ENABLE_BITCODE = NO;
-				FLAVOR_APP_NAME = "[STG] Flutter Super Aslan App";
+				FLAVOR_APP_NAME = "[STG] Flutter Method App";
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1367,7 +1367,7 @@
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = H4GG68X57D;
 				ENABLE_BITCODE = NO;
-				FLAVOR_APP_NAME = "[STG] Flutter Super Aslan App";
+				FLAVOR_APP_NAME = "[STG] Flutter Method App";
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

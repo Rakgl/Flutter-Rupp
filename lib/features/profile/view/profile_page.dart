@@ -1,500 +1,252 @@
-import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_super_aslan_app/features/auth/login/view/login_page.dart';
-import 'package:flutter_super_aslan_app/features/profile/profile.dart';
-import 'package:flutter_super_aslan_app/features/shared/widgets/widgets.dart';
-// import 'package:flutter_super_aslan_app/features/auth/login/view/login_page.dart';
 import 'package:go_router/go_router.dart';
+import 'edit_profile_page.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(
-      backgroundColor: Colors.transparent,
-      body: ProfileView(),
-    );
-  }
-}
-
-class ProfileView extends StatelessWidget {
-  const ProfileView({super.key});
+  static const String path = '/profile'; // Updated path
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ProfileCubit, ProfileState>(
-      builder: (context, state) {
-        return CustomScrollView(
-          physics: const BouncingScrollPhysics(),
-          slivers: [
-            AppSliverAppBar(
-              title: Text(
-                'Profile',
-                style: UITextStyle.headline3.copyWith(
-                  color: AppColors.white,
+    return Scaffold(
+      backgroundColor: const Color(0xFFF5F7FA), // Light greyish-blue background
+      appBar: AppBar(
+        backgroundColor: const Color(0xFFF5F7FA),
+        elevation: 0,
+        centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Color(0xFF254EDB)),
+          onPressed: () {
+            if (context.canPop()) context.pop();
+          },
+        ),
+        title: const Text(
+          "Profile Settings",
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Avatar Section
+              Center(
+                child: Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: const Color(0xFF254EDB),
+                      width: 1.5,
+                    ),
+                  ),
+                  child: CircleAvatar(
+                    radius: 40,
+                    backgroundColor: const Color(0xFFD6E4FF),
+                    child: Image.network(
+                      'https://cdn-icons-png.flaticon.com/512/4140/4140048.png',
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 ),
               ),
-              expandedHeight: 150,
-              collapsedHeight: 150,
-              titlePadding: const EdgeInsets.only(
-                left: AppSpacing.lg,
-                bottom: 70 + 15,
-              ),
-              backgroundContent: Stack(
-                fit: StackFit.expand,
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          Colors.black.withValues(alpha: 0.2),
-                          Colors.black.withValues(alpha: 0.6),
-                        ],
-                      ),
+              const SizedBox(height: 16),
+
+              // Edit Profile Button
+              Center(
+                child: OutlinedButton(
+                  onPressed: () {
+                    context.push(EditProfilePage.path);
+                  },
+                  style: OutlinedButton.styleFrom(
+                    side: const BorderSide(color: Color(0xFF254EDB)),
+                    shape: const StadiumBorder(),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 8,
+                    ),
+                    minimumSize: Size.zero,
+                  ),
+                  child: const Text(
+                    "Edit Profile",
+                    style: TextStyle(
+                      color: Color(0xFF254EDB),
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
-                  Align(
-                    alignment: Alignment.bottomLeft,
-                    child: Padding(
-                      padding: const EdgeInsets.all(AppSpacing.lg),
-                      child: _ProfileHeaderContent(state: state),
-                    ),
-                  ),
-                ],
+                ),
               ),
-            ),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-                child: Column(
+              const SizedBox(height: 32),
+
+              // Phone Number Section
+              const Text(
+                "Registered phone number",
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 16,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Row(
                   children: [
-                    const SizedBox(height: AppSpacing.lg),
-                    _ContactInfoCard(state: state),
-                    const SizedBox(height: AppSpacing.lg),
-                    _CompletionCard(progress: state.completionProgress),
-                    const SizedBox(height: AppSpacing.lg),
-                    _QuickAccessGrid(state: state),
-                    const SizedBox(height: AppSpacing.lg),
-                    _PreferencesSection(state: state),
-                    const SizedBox(height: AppSpacing.lg),
-                    AppLogoutButton(
-                      onPressed: () => context.go(LoginPage.path),
+                    Icon(
+                      Icons.phone_outlined,
+                      size: 18,
+                      color: Colors.grey.shade600,
                     ),
-                    const SizedBox(height: AppSpacing.lg),
+                    const SizedBox(width: 12),
                     Text(
-                      "Version 1.0.0",
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: AppColors.grey,
+                      "phone number",
+                      style: TextStyle(
+                        color: Colors.grey.shade600,
+                        fontSize: 13,
                       ),
                     ),
-                    const SizedBox(height: AppSpacing.xxlg),
+                    const Spacer(),
+                    const Text(
+                      "+855(0) 12 456 237",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black,
+                        fontSize: 14,
+                      ),
+                    ),
                   ],
                 ),
               ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-}
+              const SizedBox(height: 24),
 
-class _ProfileHeaderContent extends StatelessWidget {
-  final ProfileState state;
-  const _ProfileHeaderContent({required this.state});
-
-  @override
-  Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-    return Row(
-      children: [
-        Container(
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(
-              color: AppColors.white.withValues(alpha: 0.24),
-              width: 2,
-            ),
-          ),
-          child: const CircleAvatar(
-            radius: 35,
-            backgroundColor: AppColors.grey,
-            backgroundImage: NetworkImage(
-              'https://static.wikia.nocookie.net/spiderman-films/images/b/be/Tom_Holland_Spidey_Suit.webp',
-            ),
-          ),
-        ),
-        const SizedBox(width: AppSpacing.lg),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                state.name,
-                style: textTheme.titleLarge?.copyWith(
+              // Personal Information Section
+              const Text(
+                "Personal Information",
+                style: TextStyle(
+                  fontSize: 14,
                   fontWeight: FontWeight.bold,
-                  color: AppColors.white,
+                  color: Colors.black,
                 ),
               ),
-              Text(
-                state.email,
-                style: textTheme.bodyMedium?.copyWith(
-                  color: AppColors.white.withValues(alpha: 0.7),
+              const SizedBox(height: 12),
+              Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
                 ),
-                overflow: TextOverflow.ellipsis,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildInfoRow(
+                      icon: Icons.person_outline,
+                      label: "Full name",
+                      value: "Kosal linnorak",
+                    ),
+                    const SizedBox(height: 20),
+                    _buildInfoRow(
+                      icon: Icons.calendar_today_outlined,
+                      label: "Delivery address",
+                      value: "123 Main St Apartment 4A,New York, NY",
+                    ),
+                    const SizedBox(height: 20),
+                    _buildInfoRow(
+                      icon: Icons.email_outlined,
+                      label: "Email",
+                      value: "N/A",
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 40),
+
+              // Log out Button
+              Center(
+                child: OutlinedButton(
+                  onPressed: () {
+                    // Handle Logout
+                  },
+                  style: OutlinedButton.styleFrom(
+                    side: const BorderSide(color: Color(0xFFD6E4FF)),
+                    shape: const StadiumBorder(),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 12,
+                    ),
+                  ),
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        "Log out",
+                        style: TextStyle(
+                          color: Color(0xFF254EDB),
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                      Icon(
+                        Icons.logout_rounded,
+                        size: 18,
+                        color: Color(0xFF254EDB),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ],
           ),
         ),
-      ],
-    );
-  }
-}
-
-class _ContactInfoCard extends StatelessWidget {
-  final ProfileState state;
-  const _ContactInfoCard({required this.state});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      elevation: 0,
-      color: AppColors.white,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppSpacing.lg),
-        side: BorderSide(color: AppColors.grey.shade200),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          vertical: AppSpacing.sm,
-          horizontal: AppSpacing.lg,
-        ),
-        child: Column(
-          children: [
-            _infoTile(context, Icons.location_on_outlined, state.location),
-            _infoTile(
-              context,
-              Icons.phone_outlined,
-              state.phone,
-              trailing: _verifiedBadge(context),
-            ),
-            _infoTile(context, Icons.email_outlined, state.email),
-          ],
-        ),
       ),
     );
   }
 
-  Widget _infoTile(
-    BuildContext context,
-    IconData icon,
-    String text, {
-    Widget? trailing,
+  Widget _buildInfoRow({
+    required IconData icon,
+    required String label,
+    required String value,
   }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
-      child: Row(
-        children: [
-          Icon(icon, size: 20, color: AppColors.grey.shade600),
-          const SizedBox(width: AppSpacing.md),
-          Text(
-            text,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: AppColors.black.withValues(alpha: 0.87),
-            ),
-          ),
-          const Spacer(),
-          trailing ?? const SizedBox.shrink(),
-        ],
-      ),
-    );
-  }
-
-  Widget _verifiedBadge(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.sm,
-        vertical: AppSpacing.xs,
-      ),
-      decoration: BoxDecoration(
-        color: AppColors.growthSuccess.withValues(alpha: 0.05),
-        borderRadius: BorderRadius.circular(AppSpacing.sm),
-        border: Border.all(
-          color: AppColors.growthSuccess.withValues(alpha: 0.4),
-        ),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Icon(
-            Icons.shield_outlined,
-            size: 14,
-            color: AppColors.growthSuccess,
-          ),
-          const SizedBox(width: AppSpacing.xs),
-          Text(
-            "Verified",
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: AppColors.growthSuccess,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _CompletionCard extends StatelessWidget {
-  final double progress;
-  const _CompletionCard({required this.progress});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.lg),
-      decoration: BoxDecoration(
-        color: const Color(0xFFE8F1FF).withValues(alpha: 0.5),
-        borderRadius: BorderRadius.circular(AppSpacing.lg),
-        border: Border.all(
-          color: AppColors.primaryColor.withValues(alpha: 0.1),
-        ),
-      ),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              const Icon(
-                Icons.info_outline,
-                color: AppColors.primaryColor,
-                size: 22,
-              ),
-              const SizedBox(width: AppSpacing.sm),
-              Text(
-                "Profile Completion",
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const Spacer(),
-              Text(
-                "${(progress * 100).toInt()}%",
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: AppColors.primaryColor,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.lg),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: LinearProgressIndicator(
-              value: progress,
-              backgroundColor: AppColors.grey.shade300,
-              color: AppColors.growthSuccess,
-              minHeight: 8,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.md),
-          Text(
-            "Complete your profile to unlock better recommendations and faster bookings",
-            textAlign: TextAlign.start,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: AppColors.black.withValues(alpha: 0.54),
-              height: 1.4,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _QuickAccessGrid extends StatelessWidget {
-  final ProfileState state;
-  const _QuickAccessGrid({required this.state});
-
-  @override
-  Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          "Quick Access",
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        GridView.count(
-          padding: const EdgeInsets.only(top: AppSpacing.lg),
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          crossAxisCount: 2,
-          mainAxisSpacing: AppSpacing.lg,
-          crossAxisSpacing: AppSpacing.lg,
-          childAspectRatio: 1.35,
+        Row(
           children: [
-            _gridItem(
-              context,
-              Icons.edit_outlined,
-              "Edit Profile",
-              "Update your information",
-              AppColors.primaryColor,
-              onTap: () => context.push(
-                EditProfilePage.path,
-                extra: context.read<ProfileCubit>(),
+            Icon(icon, size: 16, color: Colors.grey.shade400),
+            const SizedBox(width: 8),
+            Text(
+              label,
+              style: TextStyle(
+                color: Colors.grey.shade500,
+                fontSize: 12,
               ),
-            ),
-            _gridItem(
-              context,
-              Icons.account_balance_wallet_outlined,
-              "Wallet",
-              "\$${state.walletBalance} available",
-              AppColors.growthSuccess,
-            ),
-            _gridItem(
-              context,
-              Icons.notifications_none_outlined,
-              "Notifications",
-              "Edit your notification",
-              AppColors.secondary,
-            ),
-            _gridItem(
-              context,
-              Icons.settings_outlined,
-              "Settings",
-              "Preferences & security",
-              AppColors.paleSky,
-              onTap: () => context.push(SettingsPage.path),
             ),
           ],
         ),
+        const SizedBox(height: 8),
+        Text(
+          value,
+          style: const TextStyle(
+            fontSize: 14,
+            color: Colors.black,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
       ],
-    );
-  }
-
-  Widget _gridItem(
-    BuildContext context,
-    IconData icon,
-    String title,
-    String sub,
-    Color color, {
-    VoidCallback? onTap,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        decoration: BoxDecoration(
-          color: AppColors.white,
-          borderRadius: BorderRadius.circular(AppSpacing.lg),
-          border: Border.all(color: AppColors.grey.shade100),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.lg),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(AppSpacing.sm),
-                decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.1),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(icon, color: color, size: 20),
-              ),
-              const Spacer(),
-              Text(
-                title,
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                sub,
-                style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: AppColors.grey,
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _PreferencesSection extends StatelessWidget {
-  final ProfileState state;
-  const _PreferencesSection({required this.state});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(AppSpacing.lg),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(
-              left: AppSpacing.lg,
-              top: AppSpacing.lg,
-              bottom: AppSpacing.sm,
-            ),
-            child: Text(
-              "Preferences",
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          SwitchListTile(
-            activeTrackColor: AppColors.primaryColor,
-            title: Text(
-              "Push Notifications",
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            subtitle: Text(
-              "Receive booking updates",
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
-            value: state.isPushEnabled,
-            onChanged: (val) {
-              context.read<ProfileCubit>().togglePush(val);
-            },
-          ),
-          SwitchListTile(
-            activeTrackColor: AppColors.primaryColor,
-            title: Text(
-              "Dark Mode",
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            subtitle: Text(
-              "Switch to dark theme",
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
-            value: state.isDarkMode,
-            onChanged: (val) {
-              context.read<ProfileCubit>().toggleDarkMode(val);
-            },
-          ),
-        ],
-      ),
     );
   }
 }

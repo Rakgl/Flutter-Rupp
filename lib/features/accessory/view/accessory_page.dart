@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_super_aslan_app/features/shared/widgets/app_header_bar.dart';
-import 'package:flutter_super_aslan_app/features/shared/widgets/category_list.dart';
-import 'package:flutter_super_aslan_app/features/shared/widgets/grid_cart.dart';
-import 'package:flutter_super_aslan_app/features/shared/widgets/search_bar.dart';
+import 'package:flutter_methgo_app/features/shared/widgets/app_header_bar.dart';
+import 'package:flutter_methgo_app/features/shared/widgets/category_list.dart';
+import 'package:flutter_methgo_app/features/shared/widgets/grid_cart.dart';
+import 'package:flutter_methgo_app/features/shared/widgets/search_bar.dart';
 
 class AccessoryPage extends StatefulWidget {
   const AccessoryPage({super.key});

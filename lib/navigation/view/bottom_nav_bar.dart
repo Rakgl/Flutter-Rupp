@@ -1,7 +1,7 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 
-import 'package:flutter_super_aslan_app/navigation/widgets/bottom_nav_bar_item.dart';
+import 'package:flutter_methgo_app/navigation/widgets/bottom_nav_bar_item.dart';
 
 @visibleForTesting
 class BottomNavBar extends StatelessWidget {

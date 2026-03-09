@@ -90,11 +90,11 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.example.verygoodcore.flutter-super-aslan-app" "\0"
-            VALUE "FileDescription", "flutter_super_aslan_app" "\0"
+            VALUE "FileDescription", "flutter_methgo_app" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "flutter_super_aslan_app" "\0"
+            VALUE "InternalName", "flutter_methgo_app" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2025 com.example.verygoodcore.flutter-super-aslan-app. All rights reserved." "\0"
-            VALUE "OriginalFilename", "flutter_super_aslan_app.exe" "\0"
+            VALUE "OriginalFilename", "flutter_methgo_app.exe" "\0"
             VALUE "ProductName", "Flutter Super Aslan App" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END

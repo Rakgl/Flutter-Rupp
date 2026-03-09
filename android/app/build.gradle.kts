@@ -14,7 +14,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace = "com.example.verygoodcore.flutter_super_aslan_app"
+    namespace = "com.example.verygoodcore.flutter_methgo_app"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -29,7 +29,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.verygoodcore.flutter_super_aslan_app"
+        applicationId = "com.example.verygoodcore.flutter_methgo_app"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
@@ -60,17 +60,17 @@ android {
         create("production") {
             dimension = "default"
             applicationIdSuffix = ""
-            manifestPlaceholders["appName"] = "Flutter Super Aslan App"
+            manifestPlaceholders["appName"] = "Flutter Method App"
         }
         create("staging") {
             dimension = "default"
             applicationIdSuffix = ".stg"
-            manifestPlaceholders["appName"] = "[STG] Flutter Super Aslan App"
+            manifestPlaceholders["appName"] = "[STG] Flutter Method App"
         }
         create("development") {
             dimension = "default"
             applicationIdSuffix = ".dev"
-            manifestPlaceholders["appName"] = "[DEV] Flutter Super Aslan App"
+            manifestPlaceholders["appName"] = "[DEV] Flutter Method App"
         }
     }
 

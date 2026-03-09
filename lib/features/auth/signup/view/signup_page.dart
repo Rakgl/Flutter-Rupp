@@ -1,13 +1,13 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_super_aslan_app/features/auth/login/view/login_page.dart';
-import 'package:flutter_super_aslan_app/features/auth/signup/signup.dart';
-import 'package:flutter_super_aslan_app/features/auth/signup/view/business_verification_page.dart';
-import 'package:flutter_super_aslan_app/features/shared/widgets/bottom_action_button.dart';
-import 'package:flutter_super_aslan_app/features/shared/widgets/phone_text_field.dart';
-import 'package:flutter_super_aslan_app/features/shared/widgets/text_form_field_widget.dart';
-import 'package:flutter_super_aslan_app/features/shared/widgets/text_label.dart';
+import 'package:flutter_methgo_app/features/auth/login/view/login_page.dart';
+import 'package:flutter_methgo_app/features/auth/signup/signup.dart';
+import 'package:flutter_methgo_app/features/auth/signup/view/business_verification_page.dart';
+import 'package:flutter_methgo_app/features/shared/widgets/bottom_action_button.dart';
+import 'package:flutter_methgo_app/features/shared/widgets/phone_text_field.dart';
+import 'package:flutter_methgo_app/features/shared/widgets/text_form_field_widget.dart';
+import 'package:flutter_methgo_app/features/shared/widgets/text_label.dart';
 import 'package:go_router/go_router.dart';
 
 class SignupPage extends StatelessWidget {
