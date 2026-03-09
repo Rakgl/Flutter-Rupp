@@ -24,11 +24,13 @@ class SplashView extends StatefulWidget {
 }
 
 class _SplashViewState extends State<SplashView> {
+  final String splashImg = "assets/images/splash_img.png";
+
   @override
   void initState() {
     super.initState();
 
-    Future.delayed(const Duration(seconds: 2), () async {
+    Future.delayed(const Duration(seconds: 3), () async {
       if (!mounted) return;
 
       final userRepository = context.read<UserRepository>();
@@ -36,7 +38,7 @@ class _SplashViewState extends State<SplashView> {
 
       if (!mounted) return;
 
-      if (token[0] != null && token[0]!.isNotEmpty) {
+      if (token.isNotEmpty && token[0] != null && token[0]!.isNotEmpty) {
         context.go(MainView.path);
       } else {
         context.go(WelcomePage.path);
@@ -50,26 +52,24 @@ class _SplashViewState extends State<SplashView> {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          // Background Gradient
           Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  Color(0xFF8BA5F8), // Lighter blue at top
-                  Color(0xFF1E32C4), // Darker blue at bottom
+                  Color(0xFF8BA5F8),
+                  Color(0xFF1E32C4),
                 ],
               ),
             ),
           ),
 
-          // Bottom Image (Faded into background)
           Positioned(
-            left: 0,
+            left: -50,
             right: 0,
-            bottom: 0,
-            height: MediaQuery.of(context).size.height * 0.45,
+            bottom: -40,
+            height: MediaQuery.of(context).size.height * 0.55,
             child: ShaderMask(
               shaderCallback: (Rect bounds) {
                 return const LinearGradient(
@@ -80,15 +80,13 @@ class _SplashViewState extends State<SplashView> {
                 ).createShader(bounds);
               },
               blendMode: BlendMode.dstIn,
-              child: Image.network(
-                'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?q=80&w=800&auto=format&fit=crop',
+              child: Image.asset(
+                splashImg,
                 fit: BoxFit.cover,
-                alignment: Alignment.topCenter,
               ),
             ),
           ),
 
-          // Centered Logo
           Positioned(
             top: MediaQuery.of(context).size.height * 0.35,
             left: 0,
@@ -97,17 +95,10 @@ class _SplashViewState extends State<SplashView> {
               child: Text(
                 'Methgo',
                 style: TextStyle(
-                  fontFamily: 'Pacifico', // Fallback to cursive if not loaded
+                  fontFamily: 'Pacifico',
                   fontSize: 56,
                   color: Colors.white,
                   fontWeight: FontWeight.w500,
-                  shadows: [
-                    Shadow(
-                      color: Colors.black26,
-                      offset: Offset(0, 4),
-                      blurRadius: 8,
-                    ),
-                  ],
                 ),
               ),
             ),
