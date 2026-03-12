@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_methgo_app/features/products/cubit/products_cubit.dart';
 import 'package:flutter_methgo_app/features/shared/widgets/product_cart.dart';
 
-class GridCart extends StatelessWidget {
+class GridCart extends StatefulWidget {
   const GridCart({
     super.key,
     this.isAdd = false,
@@ -9,70 +11,72 @@ class GridCart extends StatelessWidget {
 
   final bool isAdd;
 
-  static const List<_ProductItem> _products = [
-    _ProductItem(
-      type: 'Dogs',
-      name: 'Pug',
-      price: 124.9,
-      image: 'assets/images/rakrak.png',
-    ),
-    _ProductItem(
-      type: 'Dogs',
-      name: 'Bulldog',
-      price: 210.5,
-      image: 'assets/images/ferry.png',
-    ),
-    _ProductItem(
-      type: 'Dogs',
-      name: 'Shiba',
-      price: 300,
-      image: 'assets/images/splash_img.png',
-    ),
-    _ProductItem(
-      type: 'Dogs',
-      name: 'Husky',
-      price: 450,
-      image: 'assets/images/rakrak.png',
-    ),
-  ];
+  @override
+  State<GridCart> createState() => _GridCartState();
+}
+
+class _GridCartState extends State<GridCart> {
+  @override
+  void initState() {
+    super.initState();
+    // Fetch products if they are empty
+    final cubit = context.read<ProductsCubit>();
+    if (cubit.state.products.isEmpty && cubit.state.status != ProductStatus.loading) {
+      cubit.fetchProducts();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: _products.length,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: 16,
-        mainAxisSpacing: 16,
-        childAspectRatio: 0.75,
-      ),
-      itemBuilder: (context, index) {
-        final product = _products[index];
+    return BlocBuilder<ProductsCubit, ProductsState>(
+      builder: (context, state) {
+        if (state.status == ProductStatus.loading && state.products.isEmpty) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
-        return ProductCart(
-          isAdd: isAdd,
-          type: product.type,
-          name: product.name,
-          price: product.price,
-          image: product.image,
+        if (state.status == ProductStatus.failure && state.products.isEmpty) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(state.errorMessage ?? 'Failed to load products'),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () => context.read<ProductsCubit>().fetchProducts(),
+                  child: const Text('Retry'),
+                ),
+              ],
+            ),
+          );
+        }
+
+        if (state.products.isEmpty) {
+          return const Center(child: Text('No products available.'));
+        }
+
+        return GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: state.products.length,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 16,
+            mainAxisSpacing: 16,
+            childAspectRatio: 0.75,
+          ),
+          itemBuilder: (context, index) {
+            final product = state.products[index];
+
+            return ProductCart(
+              isAdd: widget.isAdd,
+              type: product.categoryName ?? '',
+              name: product.name,
+              price: product.price,
+              image: product.imageUrl ?? '',
+            );
+          },
         );
       },
     );
   }
-}
-
-class _ProductItem {
-  const _ProductItem({
-    required this.type,
-    required this.name,
-    required this.price,
-    required this.image,
-  });
-
-  final String type;
-  final String name;
-  final double price;
-  final String image;
 }

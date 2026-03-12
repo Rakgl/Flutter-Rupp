@@ -17,7 +17,7 @@ class MedicalRecordService extends ApiHttpClient {
       if (res.success) {
         return Right(res);
       } else {
-        return Left(res.message);
+        return Left(res.message ?? 'Failed to fetch medical records');
       }
     } on ApiRequestFailure catch (e) {
       return Left(e.body['message'] as String);
@@ -37,7 +37,7 @@ class MedicalRecordService extends ApiHttpClient {
       if (res.success) {
         return Right(res);
       } else {
-        return Left(res.message);
+        return Left(res.message ?? 'Failed to fetch document types');
       }
     } on ApiRequestFailure catch (e) {
       return Left(e.body['message'] as String);
@@ -60,7 +60,7 @@ class MedicalRecordService extends ApiHttpClient {
       if (res.success) {
         return Right(res);
       } else {
-        return Left(res.message);
+        return Left(res.message ?? 'Failed to fetch medical record details');
       }
     } on ApiRequestFailure catch (e) {
       return Left(e.body['message'] as String);

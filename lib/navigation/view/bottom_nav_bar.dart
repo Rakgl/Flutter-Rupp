@@ -21,7 +21,7 @@ class BottomNavBar extends StatelessWidget {
       elevation: 0,
       color: const Color(0xFF3B82F6), // Methgo blue
       shape: const CircularNotchedRectangle(),
-      notchMargin: 8.0,
+      notchMargin: 8,
       child: Container(
         height: 60,
         decoration: BoxDecoration(
@@ -39,7 +39,6 @@ class BottomNavBar extends StatelessWidget {
             Expanded(
               child: BottomAppBarItem(
                 title: 'Home',
-                iconSize: 24,
                 icon: Icons.home_filled,
                 isSelected: currentIndex == 0,
                 onPressed: () => onTap(0),

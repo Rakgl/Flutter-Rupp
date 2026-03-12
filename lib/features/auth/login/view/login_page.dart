@@ -10,7 +10,7 @@ import 'package:flutter_methgo_app/features/shared/widgets/text_label.dart';
 import 'package:flutter_methgo_app/features/shared/widgets/bottom_action_button.dart';
 import 'package:flutter_methgo_app/features/auth/signup/view/signup_page.dart';
 import 'package:go_router/go_router.dart';
-import 'package:repository/user_repository.dart';
+import 'package:repository/repository.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -36,7 +36,7 @@ class LoginView extends StatefulWidget {
 
 class _LoginViewState extends State<LoginView> {
   final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController();
+  final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
 
   bool _obscurePassword = true;
@@ -48,7 +48,7 @@ class _LoginViewState extends State<LoginView> {
     super.initState();
 
     // Keep button enabled/disabled in sync with the text fields
-    _emailController.addListener(_updateFormState);
+    _phoneController.addListener(_updateFormState);
     _passwordController.addListener(_updateFormState);
 
     // Initial state
@@ -57,7 +57,7 @@ class _LoginViewState extends State<LoginView> {
 
   @override
   void dispose() {
-    _emailController
+    _phoneController
       ..removeListener(_updateFormState)
       ..dispose();
     _passwordController
@@ -68,7 +68,7 @@ class _LoginViewState extends State<LoginView> {
 
   void _updateFormState() {
     final hasInput =
-        _emailController.text.trim().isNotEmpty &&
+        _phoneController.text.trim().isNotEmpty &&
         _passwordController.text.trim().isNotEmpty;
 
     if (hasInput != _isFormValid) {
@@ -84,7 +84,7 @@ class _LoginViewState extends State<LoginView> {
 
     unawaited(
       context.read<LoginCubit>().login(
-        username: _emailController.text.trim(),
+        phone: _phoneController.text.trim(),
         password: _passwordController.text.trim(),
       ),
     );
@@ -224,19 +224,19 @@ class _LoginViewState extends State<LoginView> {
                                             const Align(
                                               alignment: Alignment.centerLeft,
                                               child: TextLabel(
-                                                label: 'Username',
+                                                label: 'Phone Number',
                                               ),
                                             ),
                                             const SizedBox(height: 12),
                                             TextFormFieldWidget(
-                                              controller: _emailController,
-                                              labelText: 'Username',
-                                              keyboardType: TextInputType.text,
+                                              controller: _phoneController,
+                                              labelText: 'Phone Number',
+                                              keyboardType: TextInputType.phone,
                                               validator: (value) {
                                                 final text =
                                                     value?.trim() ?? '';
                                                 if (text.isEmpty) {
-                                                  return 'Username is required';
+                                                  return 'Phone Number is required';
                                                 }
                                                 return null;
                                               },

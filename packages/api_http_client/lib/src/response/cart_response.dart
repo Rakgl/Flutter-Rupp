@@ -12,75 +12,75 @@ class CartResponse extends BaseResponse {
 
 class CartModel {
   final String id;
-  final String patientId;
+  final String status;
   final double grandTotal;
-  final List<PharmacyCartModel> pharmacies;
+  final String currency;
+  final List<CartItemModel> items;
+  
   CartModel({
     required this.id,
-    required this.patientId,
+    required this.status,
     required this.grandTotal,
-    required this.pharmacies,
+    required this.currency,
+    required this.items,
   });
+  
   factory CartModel.fromJson(Map<String, dynamic> json) {
     return CartModel(
       id: json.getStringOrDefault('id'),
-      patientId: json.getStringOrDefault('patient_id'),
-      grandTotal: json.getDoubleOrDefault('grand_total'),
-      pharmacies: (json['pharmacies'] as List)
-          .map((e) => PharmacyCartModel.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      status: json.getStringOrDefault('status'),
+      grandTotal: json.getDoubleOrDefault('subtotal'), // Default to subtotal since grand_total is missing
+      currency: json.getStringOrDefault('currency', defaultValue: '\$'),
+      items: json['items'] != null
+          ? (json['items'] as List)
+              .map((e) => CartItemModel.fromJson(e as Map<String, dynamic>))
+              .toList()
+          : [],
     );
   }
 }
 
-class PharmacyCartModel {
-  final PharmacyModel pharmacy;
-  final List<CartItemModel> items;
-  final double subtotal;
 
-  PharmacyCartModel({
-    required this.pharmacy,
-    required this.items,
-    required this.subtotal,
-  });
-
-  factory PharmacyCartModel.fromJson(Map<String, dynamic> json) {
-    return PharmacyCartModel(
-      pharmacy:
-          PharmacyModel.fromJson(json['pharmacy'] as Map<String, dynamic>),
-      items: (json['items'] as List)
-          .map((e) => CartItemModel.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      subtotal: json.getDoubleOrDefault('subtotal'),
-    );
-  }
-}
 
 class CartItemModel {
   final String id;
   final String cartId;
-  final String pharmacyProductId;
+  final String? itemType;
   final int quantity;
-  final PharmacyProductModel pharmacyProduct;
+  final Map<String, dynamic> item;
 
   CartItemModel({
     required this.id,
     required this.cartId,
-    required this.pharmacyProductId,
+    this.itemType,
     required this.quantity,
-    required this.pharmacyProduct,
+    required this.item,
   });
 
   factory CartItemModel.fromJson(Map<String, dynamic> json) {
     return CartItemModel(
       id: json.getStringOrDefault('id'),
       cartId: json.getStringOrDefault('cart_id'),
-      pharmacyProductId: json.getStringOrDefault('pharmacy_product_id'),
+      itemType: json.getStringOrDefault('item_type'),
       quantity: json.getIntOrDefault('quantity'),
-      pharmacyProduct: PharmacyProductModel.fromJson(
-        json.getMapOrDefault('pharmacy_product'),
-      ),
+      item: json.getMapOrDefault('item'),
     );
+  }
+
+  // Helpers for UI display
+  String get name {
+    final n = item['name'];
+    if (n == null) return 'Unknown';
+    if (n is Map) {
+      return n['en']?.toString() ?? n.values.firstOrNull?.toString() ?? 'Unknown';
+    }
+    return n.toString();
+  }
+  String get imageUrl => item['image_url']?.toString() ?? '';
+  double get price {
+    final p = item['price'];
+    if (p == null) return 0.0;
+    return double.tryParse(p.toString()) ?? 0.0;
   }
 }
 

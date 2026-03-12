@@ -165,7 +165,6 @@ class _InsuranceInformationBodyState extends State<_InsuranceInformationBody> {
                               const _FieldLabel(text: 'Date of Birth *'),
                               DateInputPickerFieldWidget(
                                 controller: _dobController,
-                                selectedDate: null,
                                 firstDate: DateTime(1900),
                                 lastDate: today,
                                 onDateSelected: (_) {},
@@ -182,7 +181,6 @@ class _InsuranceInformationBodyState extends State<_InsuranceInformationBody> {
                               const _FieldLabel(text: 'Married Date'),
                               DateInputPickerFieldWidget(
                                 controller: _marriedDateController,
-                                selectedDate: null,
                                 firstDate: DateTime(1900),
                                 lastDate: today,
                                 onDateSelected: (_) {},

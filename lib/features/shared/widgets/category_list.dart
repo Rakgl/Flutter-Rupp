@@ -4,9 +4,11 @@ class CategoryList extends StatefulWidget {
   const CategoryList({
     super.key,
     required this.categories,
+    this.onCategoryTap,
   });
 
   final List<String> categories;
+  final void Function(int index)? onCategoryTap;
 
   @override
   State<CategoryList> createState() => CategoryListState();
@@ -25,7 +27,10 @@ class CategoryListState extends State<CategoryList> {
           (index) => _buildChip(
             widget.categories[index],
             isSelected: index == _selectedIndex,
-            onTap: () => setState(() => _selectedIndex = index),
+            onTap: () {
+              setState(() => _selectedIndex = index);
+              widget.onCategoryTap?.call(index);
+            },
           ),
         ),
       ),

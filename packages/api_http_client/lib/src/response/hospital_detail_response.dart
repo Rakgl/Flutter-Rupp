@@ -68,7 +68,7 @@ class HospitalDetail {
       description: json['description'],
       latitude: json['latitude'],
       longitude: json['longitude'] ?? 0.0,
-      rating: json['rating'] != null ? json['rating'].toString() : null,
+      rating: json['rating']?.toString(),
       reviewCount: json['review_count'],
       isVerified: json['is_verified'] ?? false,
       status: json['status'],

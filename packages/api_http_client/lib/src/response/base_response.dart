@@ -9,19 +9,21 @@ extension JsonValueCast on Map<String, dynamic> {
   }
 
   int getIntOrDefault(String key, {int defaultValue = 0}) {
-    if (this[key] is int) {
-      return this[key] as int;
-    } else {
-      return defaultValue;
-    }
+    final value = this[key];
+    if (value is int) return value;
+    if (value is double) return value.toInt();
+    if (value is num) return value.toInt();
+    if (value is String) return int.tryParse(value) ?? defaultValue;
+    return defaultValue;
   }
 
   double getDoubleOrDefault(String key, {double defaultValue = 0}) {
-    if (this[key] is double) {
-      return this[key] as double;
-    } else {
-      return defaultValue;
-    }
+    final value = this[key];
+    if (value is double) return value;
+    if (value is int) return value.toDouble();
+    if (value is num) return value.toDouble();
+    if (value is String) return double.tryParse(value) ?? defaultValue;
+    return defaultValue;
   }
 
   bool getBoolOrDefault(String key, {bool defaultValue = false}) {
@@ -76,10 +78,10 @@ extension JsonValueCast on Map<String, dynamic> {
 
 class BaseResponse {
   BaseResponse.fromJson(Map<String, dynamic> json) {
-    success = json.getBoolOrDefault('success');
-    message = json.getStringOrDefault('message');
+    success = json.getBoolOrDefault('success', defaultValue: true);
+    message = json.getStringOrNull('message');
   }
 
   late bool success;
-  late String message;
+  String? message;
 }

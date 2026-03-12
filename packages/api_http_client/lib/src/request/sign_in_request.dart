@@ -1,15 +1,15 @@
 class SignInRequest {
   SignInRequest({
-    required this.username,
+    required this.phone,
     required this.password,
   });
 
-  final String username;
+  final String phone;
   final String password;
 
   Map<String, dynamic> toJson() {
     return {
-      'username': username,
+      'phone': phone,
       'password': password,
     };
   }

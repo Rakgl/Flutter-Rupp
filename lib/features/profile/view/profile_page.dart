@@ -1,4 +1,7 @@
+import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_methgo_app/features/profile/cubit/profile_cubit.dart';
 import 'package:go_router/go_router.dart';
 import 'edit_profile_page.dart';
 
@@ -9,210 +12,214 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF5F7FA), // Light greyish-blue background
-      appBar: AppBar(
-        backgroundColor: const Color(0xFFF5F7FA),
-        elevation: 0,
-        centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Color(0xFF254EDB)),
-          onPressed: () {
-            if (context.canPop()) context.pop();
-          },
-        ),
-        title: const Text(
-          "Profile Settings",
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
+    return BlocBuilder<ProfileCubit, ProfileState>(
+      builder: (context, state) {
+        return Scaffold(
+          backgroundColor: AppColors.scaffoldBackground,
+          appBar: AppBar(
+            backgroundColor: AppColors.scaffoldBackground,
+            elevation: 0,
+            centerTitle: true,
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back, color: Color(0xFF254EDB)),
+              onPressed: () {
+                if (context.canPop()) context.pop();
+              },
+            ),
+            title: const Text(
+              "Profile Settings",
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           ),
-        ),
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Avatar Section
-              Center(
-                child: Container(
-                  padding: const EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: const Color(0xFF254EDB),
-                      width: 1.5,
-                    ),
-                  ),
-                  child: CircleAvatar(
-                    radius: 40,
-                    backgroundColor: const Color(0xFFD6E4FF),
-                    child: Image.network(
-                      'https://cdn-icons-png.flaticon.com/512/4140/4140048.png',
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-
-              // Edit Profile Button
-              Center(
-                child: OutlinedButton(
-                  onPressed: () {
-                    context.push(EditProfilePage.path);
-                  },
-                  style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: Color(0xFF254EDB)),
-                    shape: const StadiumBorder(),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 8,
-                    ),
-                    minimumSize: Size.zero,
-                  ),
-                  child: const Text(
-                    "Edit Profile",
-                    style: TextStyle(
-                      color: Color(0xFF254EDB),
-                      fontSize: 13,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 32),
-
-              // Phone Number Section
-              const Text(
-                "Registered phone number",
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-              const SizedBox(height: 12),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 16,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.phone_outlined,
-                      size: 18,
-                      color: Colors.grey.shade600,
-                    ),
-                    const SizedBox(width: 12),
-                    Text(
-                      "phone number",
-                      style: TextStyle(
-                        color: Colors.grey.shade600,
-                        fontSize: 13,
+          body: SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Avatar Section
+                  Center(
+                    child: Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: const Color(0xFF254EDB),
+                          width: 1.5,
+                        ),
+                      ),
+                      child: CircleAvatar(
+                        radius: 40,
+                        backgroundColor: const Color(0xFFD6E4FF),
+                        child: Image.network(
+                          'https://cdn-icons-png.flaticon.com/512/4140/4140048.png',
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
-                    const Spacer(),
-                    const Text(
-                      "+855(0) 12 456 237",
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        color: Colors.black,
-                        fontSize: 14,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 24),
-
-              // Personal Information Section
-              const Text(
-                "Personal Information",
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-              const SizedBox(height: 12),
-              Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildInfoRow(
-                      icon: Icons.person_outline,
-                      label: "Full name",
-                      value: "Kosal linnorak",
-                    ),
-                    const SizedBox(height: 20),
-                    _buildInfoRow(
-                      icon: Icons.calendar_today_outlined,
-                      label: "Delivery address",
-                      value: "123 Main St Apartment 4A,New York, NY",
-                    ),
-                    const SizedBox(height: 20),
-                    _buildInfoRow(
-                      icon: Icons.email_outlined,
-                      label: "Email",
-                      value: "N/A",
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 40),
-
-              // Log out Button
-              Center(
-                child: OutlinedButton(
-                  onPressed: () {
-                    // Handle Logout
-                  },
-                  style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: Color(0xFFD6E4FF)),
-                    shape: const StadiumBorder(),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 12,
-                    ),
                   ),
-                  child: const Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        "Log out",
+                  const SizedBox(height: 16),
+
+                  // Edit Profile Button
+                  Center(
+                    child: OutlinedButton(
+                      onPressed: () {
+                        context.push(EditProfilePage.path);
+                      },
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(color: Color(0xFF254EDB)),
+                        shape: const StadiumBorder(),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 24,
+                          vertical: 8,
+                        ),
+                        minimumSize: Size.zero,
+                      ),
+                      child: const Text(
+                        "Edit Profile",
                         style: TextStyle(
                           color: Color(0xFF254EDB),
+                          fontSize: 13,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      SizedBox(width: 8),
-                      Icon(
-                        Icons.logout_rounded,
-                        size: 18,
-                        color: Color(0xFF254EDB),
-                      ),
-                    ],
+                    ),
                   ),
-                ),
+                  const SizedBox(height: 32),
+
+                  // Phone Number Section
+                  const Text(
+                    "Registered phone number",
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 16,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.phone_outlined,
+                          size: 18,
+                          color: Colors.grey.shade600,
+                        ),
+                        const SizedBox(width: 12),
+                        Text(
+                          "phone number",
+                          style: TextStyle(
+                            color: Colors.grey.shade600,
+                            fontSize: 13,
+                          ),
+                        ),
+                        const Spacer(),
+                        Text(
+                          state.phone,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w500,
+                            color: Colors.black,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+
+                  // Personal Information Section
+                  const Text(
+                    "Personal Information",
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildInfoRow(
+                          icon: Icons.person_outline,
+                          label: "Full name",
+                          value: state.name,
+                        ),
+                        const SizedBox(height: 20),
+                        _buildInfoRow(
+                          icon: Icons.location_on_outlined,
+                          label: "Delivery address",
+                          value: state.location,
+                        ),
+                        const SizedBox(height: 20),
+                        _buildInfoRow(
+                          icon: Icons.email_outlined,
+                          label: "Email",
+                          value: state.email.isEmpty ? "N/A" : state.email,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 40),
+
+                  // Log out Button
+                  Center(
+                    child: OutlinedButton(
+                      onPressed: () {
+                        // Handle Logout
+                      },
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(color: Color(0xFFD6E4FF)),
+                        shape: const StadiumBorder(),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 24,
+                          vertical: 12,
+                        ),
+                      ),
+                      child: const Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            "Log out",
+                            style: TextStyle(
+                              color: Color(0xFF254EDB),
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          SizedBox(width: 8),
+                          Icon(
+                            Icons.logout_rounded,
+                            size: 18,
+                            color: Color(0xFF254EDB),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 

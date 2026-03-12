@@ -53,7 +53,7 @@ class AppSliverAppBar extends StatelessWidget {
                 package: 'app_ui',
                 fit: BoxFit.cover,
               ),
-              if (backgroundContent != null) backgroundContent!,
+              ?backgroundContent,
             ],
           ),
           title: title,

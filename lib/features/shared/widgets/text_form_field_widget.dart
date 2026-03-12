@@ -112,7 +112,6 @@ class TextFormFieldWidget extends StatelessWidget {
             borderSide: showBorder
                 ? BorderSide(
                     color: enabledBorderColor ?? AppColors.inputFocused,
-                    width: 1,
                   )
                 : BorderSide.none,
           ),
@@ -128,7 +127,6 @@ class TextFormFieldWidget extends StatelessWidget {
             borderSide: showBorder
                 ? BorderSide(
                     color: enabledBorderColor ?? AppColors.inputFocused,
-                    width: 1,
                   )
                 : BorderSide.none,
           ),

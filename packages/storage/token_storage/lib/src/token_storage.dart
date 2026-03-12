@@ -85,15 +85,17 @@ class TokenStorage {
     }
 
     try {
-      final expireInSeconds = int.parse(expireInString);
+      final expireInMinutes = int.parse(expireInString);
       final issuedAtMillis = int.parse(issuedAtString);
       final nowMillis = DateTime.now().millisecondsSinceEpoch;
 
-      final expireAtMillis = issuedAtMillis + (expireInSeconds * 1000);
+      final validityMillis = expireInMinutes * 60 * 1000;
+      final expireAtMillis = issuedAtMillis + validityMillis;
       final remainingMillis = expireAtMillis - nowMillis;
 
-      return Duration(
-          milliseconds: remainingMillis.clamp(0, expireInSeconds * 1000));
+      if (remainingMillis <= 0) return Duration.zero;
+
+      return Duration(milliseconds: remainingMillis.clamp(0, validityMillis));
     } catch (e) {
       return Duration.zero;
     }

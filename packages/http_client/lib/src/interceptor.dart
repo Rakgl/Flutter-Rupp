@@ -94,6 +94,18 @@ class AuthenticationQueuedInterceptor extends QueuedInterceptor {
       return handler.reject(e);
     }
   }
+
+  @override
+  void onError(
+    DioException err,
+    ErrorInterceptorHandler handler,
+  ) {
+    if (err.response?.statusCode == 401) {
+      log('[AuthenticationQueuedInterceptor] 401 Unauthorized received, clearing token storage.');
+      _tokenStorage.clearToken();
+    }
+    return super.onError(err, handler);
+  }
 }
 
 // logger interceptor
@@ -122,8 +134,12 @@ class LoggingInterceptor extends Interceptor {
     DioException err,
     ErrorInterceptorHandler handler,
   ) {
-    log('ERROR[${err.response?.statusCode}] => '
-        'PATH: ${err.requestOptions.path}');
+    log(
+      'ERROR[${err.response?.statusCode}] => '
+      'PATH: ${err.requestOptions.path} '
+      'TYPE: ${err.type} '
+      'MESSAGE: ${err.message}',
+    );
     return super.onError(err, handler);
   }
 }

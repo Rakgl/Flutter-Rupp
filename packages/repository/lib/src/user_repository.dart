@@ -38,62 +38,7 @@ class UserRepository {
     return response;
   }
 
-  Response<String, PharmacyResponse> getPharmacies({
-    int page = 1,
-    String? search,
-    Map<String, dynamic>? filters,
-  }) async {
-    final response = await _apiClient.getPharmacies();
 
-    await response.when<PharmacyResponse>(
-      success: (data) async {
-        log('getPharmacies success: ${data.pharmacies.length}');
-      },
-      failure: (error) async {
-        log('getPharmacies failure: $error');
-      },
-    );
-
-    return response;
-  }
-
-  /// show parmacy by ID
-  Response<String, PharmacyDetailResponse> showPharmacy(String id) async {
-    final response = await _apiClient.showPharmacy(id);
-    await response.when<PharmacyDetailResponse>(
-      success: (data) async {
-        log('showPharmacy success: ${data.pharmacyDetail.name}');
-      },
-      failure: (error) async {
-        log('showPharmacy failure: $error');
-      },
-    );
-
-    return response;
-  }
-
-  // get product by ID
-  Response<String, ProductResponse> getProductByPharmacyId(
-    String id,
-    String? categoryId, {
-    required int page,
-  }) async {
-    final response = await _apiClient.getProductsByPharmacyId(
-      id,
-      page: page,
-      categoryId,
-    );
-    await response.when<ProductResponse>(
-      success: (data) async {
-        log('getProductByPharmacyId success: ${data.products.length}');
-      },
-      failure: (error) async {
-        log('getProductByPharmacyId failure: $error');
-      },
-    );
-
-    return response;
-  }
 
   // get category
   Response<String, CategoryResponse> getCategories() async {
@@ -234,11 +179,13 @@ class UserRepository {
   }
 
   Response<String, CartResponse> addToCart({
-    required String productId,
+    required String itemId,
+    required String itemType,
     required int quantity,
   }) async {
     final response = await _apiClient.addToCart(
-      phamacyProductId: productId,
+      itemId: itemId,
+      itemType: itemType,
       quantity: quantity,
     );
     return response;

@@ -40,11 +40,19 @@ class ProductCart extends StatelessWidget {
             child: Stack(
               children: [
                 Center(
-                  child: Image.asset(
-                    image,
-                    height: 120,
-                    fit: BoxFit.cover,
-                  ),
+                  child: image.startsWith('http')
+                      ? Image.network(
+                          image,
+                          height: 120,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) =>
+                              const Icon(Icons.broken_image, size: 120),
+                        )
+                      : Image.asset(
+                          image,
+                          height: 120,
+                          fit: BoxFit.cover,
+                        ),
                 ),
                 if (isAdd)
                   Positioned(

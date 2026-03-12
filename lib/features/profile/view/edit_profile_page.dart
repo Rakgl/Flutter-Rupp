@@ -1,17 +1,46 @@
+import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_methgo_app/features/profile/cubit/profile_cubit.dart';
 import 'package:go_router/go_router.dart';
 
-class EditProfilePage extends StatelessWidget {
+class EditProfilePage extends StatefulWidget {
   const EditProfilePage({super.key});
 
   static const String path = '/edit-profile';
 
   @override
+  State<EditProfilePage> createState() => _EditProfilePageState();
+}
+
+class _EditProfilePageState extends State<EditProfilePage> {
+  late TextEditingController _nameController;
+  late TextEditingController _addressController;
+  late TextEditingController _emailController;
+
+  @override
+  void initState() {
+    super.initState();
+    final profileState = context.read<ProfileCubit>().state;
+    _nameController = TextEditingController(text: profileState.name);
+    _addressController = TextEditingController(text: profileState.location);
+    _emailController = TextEditingController(text: profileState.email);
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _addressController.dispose();
+    _emailController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F7FA), // Light greyish-blue background
+      backgroundColor: AppColors.scaffoldBackground,
       appBar: AppBar(
-        backgroundColor: const Color(0xFFF5F7FA),
+        backgroundColor: AppColors.scaffoldBackground,
         elevation: 0,
         centerTitle: true,
         leading: IconButton(
@@ -109,20 +138,19 @@ class EditProfilePage extends StatelessWidget {
                           _buildTextField(
                             icon: Icons.person_outline,
                             label: "Full name",
-                            initialValue: "Kosal linnorak",
+                            controller: _nameController,
                           ),
                           const Divider(height: 32, color: Color(0xFFEEEEEE)),
                           _buildTextField(
-                            icon: Icons.calendar_today_outlined,
+                            icon: Icons.location_on_outlined,
                             label: "Delivery address",
-                            initialValue:
-                                "123 Main St Apartment 4A,New York, NY",
+                            controller: _addressController,
                           ),
                           const Divider(height: 32, color: Color(0xFFEEEEEE)),
                           _buildTextField(
                             icon: Icons.email_outlined,
                             label: "Email",
-                            initialValue: "abc@gmail.com",
+                            controller: _emailController,
                           ),
                         ],
                       ),
@@ -140,7 +168,12 @@ class EditProfilePage extends StatelessWidget {
                 height: 50,
                 child: ElevatedButton(
                   onPressed: () {
-                    // Save action
+                    context.read<ProfileCubit>().updateProfile(
+                      name: _nameController.text,
+                      location: _addressController.text,
+                      email: _emailController.text,
+                    );
+                    context.pop();
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(
@@ -169,7 +202,7 @@ class EditProfilePage extends StatelessWidget {
   Widget _buildTextField({
     required IconData icon,
     required String label,
-    required String initialValue,
+    required TextEditingController controller,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -189,7 +222,7 @@ class EditProfilePage extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         TextFormField(
-          initialValue: initialValue,
+          controller: controller,
           decoration: const InputDecoration(
             isDense: true,
             contentPadding: EdgeInsets.zero,

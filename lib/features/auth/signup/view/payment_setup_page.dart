@@ -158,7 +158,7 @@ class _PaymentSetupPageState extends State<PaymentSetupPage> {
                       }),
                     ),
                     const SizedBox(height: 6),
-                    _FieldLabel(text: 'Full Legal Name'),
+                    const _FieldLabel(text: 'Full Legal Name'),
                     TextFormFieldWidget(
                       controller: _fullNameController,
                       labelText: 'Enter your full name as shown on ID',
@@ -167,7 +167,7 @@ class _PaymentSetupPageState extends State<PaymentSetupPage> {
                       enabledBorderColor: AppColors.inputFocused,
                       onChanged: (_) => setState(() {}),
                     ),
-                    _FieldLabel(text: 'IBAN / Account Number'),
+                    const _FieldLabel(text: 'IBAN / Account Number'),
                     TextFormFieldWidget(
                       controller: _ibanController,
                       labelText: 'Enter your bank account number',
@@ -177,7 +177,7 @@ class _PaymentSetupPageState extends State<PaymentSetupPage> {
                       enabledBorderColor: AppColors.inputFocused,
                       onChanged: (_) => setState(() {}),
                     ),
-                    _FieldLabel(text: 'Routing Number'),
+                    const _FieldLabel(text: 'Routing Number'),
                     TextFormFieldWidget(
                       controller: _routingController,
                       labelText: 'Bank routing number (if applicable)',
@@ -187,7 +187,7 @@ class _PaymentSetupPageState extends State<PaymentSetupPage> {
                       enabledBorderColor: AppColors.inputFocused,
                       onChanged: (_) => setState(() {}),
                     ),
-                    _FieldLabel(text: 'Billing Address'),
+                    const _FieldLabel(text: 'Billing Address'),
                     TextFormField(
                       controller: _billingAddressController,
                       minLines: 2,
@@ -215,7 +215,6 @@ class _PaymentSetupPageState extends State<PaymentSetupPage> {
                           borderRadius: BorderRadius.circular(12),
                           borderSide: const BorderSide(
                             color: AppColors.inputFocused,
-                            width: 1,
                           ),
                         ),
                         focusedBorder: OutlineInputBorder(
@@ -229,13 +228,12 @@ class _PaymentSetupPageState extends State<PaymentSetupPage> {
                           borderRadius: BorderRadius.circular(12),
                           borderSide: const BorderSide(
                             color: AppColors.inputFocused,
-                            width: 1,
                           ),
                         ),
                       ),
                     ),
                     const SizedBox(height: 16),
-                    _FieldLabel(text: 'Identity Verification'),
+                    const _FieldLabel(text: 'Identity Verification'),
                     _UploadCard(
                       title: 'Upload Government ID',
                       subtitle: "Passport, driver's license, or national ID",

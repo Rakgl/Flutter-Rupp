@@ -1,6 +1,9 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:flutter_methgo_app/features/settings/cubit/settings_cubit.dart';
+import 'package:repository/repository.dart';
 import 'package:go_router/go_router.dart';
 
 class SettingsPage extends StatelessWidget {
@@ -10,8 +13,12 @@ class SettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF5F7FA),
+    return BlocProvider(
+      create: (context) => SettingsCubit(
+        settingRepository: context.read<SettingRepository>(),
+      )..fetchSettings(),
+      child: Scaffold(
+        backgroundColor: const Color(0xFFF5F7FA),
       appBar: AppBar(
         backgroundColor: AppColors.white,
         elevation: 0,
@@ -135,6 +142,7 @@ class SettingsPage extends StatelessWidget {
             const SizedBox(height: AppSpacing.xxlg),
           ],
         ),
+      ),
       ),
     );
   }
