@@ -8,12 +8,10 @@ class AppointmentRepository {
   final ApiHttpClient _apiClient;
 
   Response<String, AppointmentResponse> getAppointments({
-    required int page,
-    required String status,
+    int page = 1,
   }) async {
-    final response = await _apiClient.getAppointement(
+    final response = await _apiClient.getAppointments(
       page: page,
-      status: status,
     );
     return response;
   }
@@ -25,45 +23,17 @@ class AppointmentRepository {
     return response;
   }
 
-  Response<String, AvailableTimeSlotResponse> getAvailableTimeSlots({
-    required String doctorId,
-    required String hospitalId,
-    required String date,
-  }) async {
-    final response = await _apiClient.availableTimeSlot(
-      doctorId: doctorId,
-      hospitalId: hospitalId,
-      date: date,
-    );
-    return response;
-  }
-
-  Response<String, BookAppointmentResponse> bookAppointment(
+  Response<String, AppointmentDetailResponse> bookAppointment(
     BookAppointmentRequest request,
   ) async {
     final response = await _apiClient.bookAppointment(request);
     return response;
   }
 
-  Response<String, String> cancelAppointment({
+  Response<String, AppointmentDetailResponse> cancelAppointment({
     required String appointmentId,
-    required String reason,
   }) async {
     final response = await _apiClient.cancelAppointment(
-      appointmentId: appointmentId,
-      reason: reason,
-    );
-    return response;
-  }
-
-  Response<String, String> rescheduleAppointment({
-    required String slotId,
-    required String reason,
-    required String appointmentId,
-  }) async {
-    final response = await _apiClient.reschedule(
-      slotId: slotId,
-      reason: reason,
       appointmentId: appointmentId,
     );
     return response;

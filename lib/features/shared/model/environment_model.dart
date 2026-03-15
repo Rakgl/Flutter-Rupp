@@ -32,7 +32,7 @@ class EnvironmentModel extends Equatable {
       apiVersion: apiVersion,
       color: color ?? Colors.red,
       environment: Environment.development,
-      baseUrl: baseUrl ?? 'http://10.10.11.24:8000/api/v1/mobile',
+      baseUrl: baseUrl ?? 'http://192.168.1.6:8000/api/v1/mobile/',
     );
   }
 

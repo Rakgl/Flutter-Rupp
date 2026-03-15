@@ -12,17 +12,11 @@ class FavoriteRepository {
     return response;
   }
 
-  Response<String, String> addFavorite({
+  Response<String, ToggleFavoriteResponse> toggleFavorite({
     required String id,
+    required String itemType,
   }) async {
-    final response = await _apiClient.addFavorite(id: id);
-    return response;
-  }
-
-  Response<String, String> removeFavorite({
-    required String id,
-  }) async {
-    final response = await _apiClient.removeFavorite(id: id);
+    final response = await _apiClient.toggleFavorite(id: id, itemType: itemType);
     return response;
   }
 }

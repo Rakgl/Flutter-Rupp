@@ -30,6 +30,7 @@ class Pet {
   final String? medicalNotes;
   final String? price;
   final Category? category;
+  final bool isFavorite;
 
   Pet({
     required this.id,
@@ -42,6 +43,7 @@ class Pet {
     this.medicalNotes,
     this.price,
     this.category,
+    this.isFavorite = false,
   });
 
   factory Pet.fromJson(Map<String, dynamic> json) {
@@ -55,10 +57,11 @@ class Pet {
       dateOfBirth: json['date_of_birth'] as String?,
       imageUrl: json['image_url'] as String?,
       medicalNotes: json['medical_notes'] as String?,
-      price: json['price'] as String?,
+      price: json['price']?.toString() ?? json['cost']?.toString() ?? json['unit_price']?.toString(),
       category: json['category'] != null
           ? Category.fromJson(json['category'] as Map<String, dynamic>)
           : null,
+      isFavorite: json['is_favorite'] as bool? ?? false,
     );
   }
 }

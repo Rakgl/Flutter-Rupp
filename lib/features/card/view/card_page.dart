@@ -178,10 +178,14 @@ class _CartItemCard extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                Wrap(
+                  alignment: WrapAlignment.spaceBetween,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  spacing: 8,
+                  runSpacing: 8,
                   children: [
-                    Expanded(
+                    ConstrainedBox(
+                      constraints: const BoxConstraints(minWidth: 80),
                       child: Text(
                         '\$${price.toStringAsFixed(2)}',
                         style: const TextStyle(
@@ -189,10 +193,8 @@ class _CartItemCard extends StatelessWidget {
                           fontWeight: FontWeight.w900,
                           fontSize: 18,
                         ),
-                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    const SizedBox(width: 8),
                     // Quantity Control
                     Container(
                       decoration: BoxDecoration(
@@ -200,32 +202,40 @@ class _CartItemCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Row(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           _QtyButton(
                             icon: Icons.remove_rounded,
                             onTap: () async {
                               if (item.quantity > 1) {
-                                context.read<CardCubit>().updateCart(item.id, item.quantity - 1);
+                                context
+                                    .read<CardCubit>()
+                                    .updateCart(item.id, item.quantity - 1);
                               } else {
                                 final confirm = await showDialog<bool>(
                                   context: context,
                                   builder: (context) => AlertDialog(
                                     title: const Text('Remove Item'),
-                                    content: const Text('This is the last item. Remove from cart?'),
+                                    content: const Text(
+                                        'This is the last item. Remove from cart?'),
                                     actions: [
                                       TextButton(
-                                        onPressed: () => Navigator.of(context).pop(false),
+                                        onPressed: () =>
+                                            Navigator.of(context).pop(false),
                                         child: const Text('Cancel'),
                                       ),
                                       TextButton(
-                                        onPressed: () => Navigator.of(context).pop(true),
+                                        onPressed: () =>
+                                            Navigator.of(context).pop(true),
                                         child: const Text('Remove'),
                                       ),
                                     ],
                                   ),
                                 );
                                 if (confirm ?? false) {
-                                  context.read<CardCubit>().removeCartItem(item.id);
+                                  context
+                                      .read<CardCubit>()
+                                      .removeCartItem(item.id);
                                 }
                               }
                             },
@@ -244,7 +254,9 @@ class _CartItemCard extends StatelessWidget {
                           _QtyButton(
                             icon: Icons.add_rounded,
                             onTap: () {
-                              context.read<CardCubit>().updateCart(item.id, item.quantity + 1);
+                              context
+                                  .read<CardCubit>()
+                                  .updateCart(item.id, item.quantity + 1);
                             },
                           ),
                         ],
@@ -308,24 +320,31 @@ class _CheckoutBottomBar extends StatelessWidget {
       child: SafeArea(
         top: false,
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  'Total Payment',
-                  style: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
+                const Expanded(
+                  child: Text(
+                    'Total Payment',
+                    style: TextStyle(
+                      color: Colors.grey,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
-                Text(
-                  '\$${total.toStringAsFixed(2)}',
-                  style: const TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w900,
-                    color: Colors.black87, // Premium dark color
+                const SizedBox(width: 16),
+                Flexible(
+                  child: Text(
+                    '\$${total.toStringAsFixed(2)}',
+                    textAlign: TextAlign.right,
+                    style: const TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w900,
+                      color: Colors.black87,
+                    ),
                   ),
                 ),
               ],

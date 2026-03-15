@@ -4,6 +4,7 @@ import 'package:flutter_methgo_app/features/pets/cubit/pets_cubit.dart';
 import 'package:api_http_client/api_http_client.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_methgo_app/features/pets/view/pet_detail_page.dart';
+import 'package:flutter_methgo_app/features/favorite/cubit/favorite_cubit.dart';
 
 class PetsPage extends StatefulWidget {
   const PetsPage({super.key});
@@ -223,16 +224,54 @@ class _PremiumPetCard extends StatelessWidget {
             // Image Area
             Expanded(
               flex: 5,
-              child: ClipRRect(
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(18)),
-                child: pet.imageUrl != null && pet.imageUrl!.startsWith('http')
-                    ? Image.network(
-                        pet.imageUrl!,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => _placeholder,
-                      )
-                    : _placeholder,
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  ClipRRect(
+                    borderRadius:
+                        const BorderRadius.vertical(top: Radius.circular(18)),
+                    child: pet.imageUrl != null &&
+                            pet.imageUrl!.startsWith('http')
+                        ? Image.network(
+                            pet.imageUrl!,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) => _placeholder,
+                          )
+                        : _placeholder,
+                  ),
+                  Positioned(
+                    top: 10,
+                    right: 10,
+                    child: BlocBuilder<FavoriteCubit, FavoriteState>(
+                      builder: (context, favoriteState) {
+                        final isFav = pet.isFavorite ||
+                            favoriteState.favorites.any(
+                                (f) => f.type == 'pet' && f.itemId == pet.id);
+                        return GestureDetector(
+                          onTap: () {
+                            context.read<FavoriteCubit>().toggleFavorite(
+                                  id: pet.id,
+                                  itemType: 'pet',
+                                );
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.8),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              isFav ? Icons.favorite : Icons.favorite_border,
+                              color: isFav ? Colors.red : Colors.grey,
+                              size: 20,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
             ),
             // Text Area
@@ -255,14 +294,30 @@ class _PremiumPetCard extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 4),
-                    Text(
-                      pet.category?.name ?? pet.breed ?? pet.species ?? 'Unknown breed',
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: Colors.black54,
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            pet.category?.name ?? pet.breed ?? pet.species ?? 'Unknown breed',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Colors.black54,
+                            ),
+                          ),
+                        ),
+                        if (pet.price != null && pet.price!.isNotEmpty)
+                          Text(
+                            '\$${pet.price}',
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF10B981),
+                            ),
+                          ),
+                      ],
                     ),
                   ],
                 ),

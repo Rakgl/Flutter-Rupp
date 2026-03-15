@@ -28,6 +28,7 @@ class Product {
   final double price;
   final String? imageUrl;
   final String? categoryName;
+  final bool isFavorite;
 
   Product({
     required this.id,
@@ -36,6 +37,7 @@ class Product {
     required this.price,
     this.imageUrl,
     this.categoryName,
+    this.isFavorite = false,
   });
 
   factory Product.fromJson(Map<String, dynamic> json) {
@@ -46,6 +48,7 @@ class Product {
       price: double.tryParse(json['price'].toString()) ?? 0.0,
       imageUrl: json['image_url'] as String?,
       categoryName: json['category_name'] as String?,
+      isFavorite: json['is_favorite'] as bool? ?? false,
     );
   }
 
@@ -57,6 +60,7 @@ class Product {
       'price': price,
       'image_url': imageUrl,
       'category_name': categoryName,
+      'is_favorite': isFavorite,
     };
   }
 }

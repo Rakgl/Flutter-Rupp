@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_methgo_app/features/products/cubit/products_cubit.dart';
 import 'package:flutter_methgo_app/features/products/view/product_detail_page.dart';
 import 'package:flutter_methgo_app/features/card/cubit/card_cubit.dart';
+import 'package:flutter_methgo_app/features/favorite/cubit/favorite_cubit.dart';
 import 'package:go_router/go_router.dart';
 
 
@@ -176,16 +177,54 @@ class _PremiumProductCard extends StatelessWidget {
             // Image Area
             Expanded(
               flex: 5,
-              child: ClipRRect(
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(18)),
-                child: product.imageUrl != null && product.imageUrl!.startsWith('http')
-                    ? Image.network(
-                        product.imageUrl!,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => _placeholder,
-                      )
-                    : _placeholder,
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  ClipRRect(
+                    borderRadius:
+                        const BorderRadius.vertical(top: Radius.circular(18)),
+                    child: product.imageUrl != null &&
+                            product.imageUrl!.startsWith('http')
+                        ? Image.network(
+                            product.imageUrl!,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) => _placeholder,
+                          )
+                        : _placeholder,
+                  ),
+                  Positioned(
+                    top: 10,
+                    right: 10,
+                    child: BlocBuilder<FavoriteCubit, FavoriteState>(
+                      builder: (context, favoriteState) {
+                        final isFav = product.isFavorite ||
+                            favoriteState.favorites.any((f) =>
+                                f.type == 'product' && f.itemId == product.id);
+                        return GestureDetector(
+                          onTap: () {
+                            context.read<FavoriteCubit>().toggleFavorite(
+                                  id: product.id,
+                                  itemType: 'product',
+                                );
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.8),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              isFav ? Icons.favorite : Icons.favorite_border,
+                              color: isFav ? Colors.red : Colors.grey,
+                              size: 20,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
             ),
             // Text Area

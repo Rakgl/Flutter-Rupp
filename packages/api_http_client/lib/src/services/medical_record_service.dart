@@ -12,7 +12,7 @@ class MedicalRecordService extends ApiHttpClient {
 
   Response<String, MedicalRecordResponse> getMedicalRecords() async {
     try {
-      final response = await _httpClient.get('/medical-records');
+      final response = await _httpClient.get('medical-records');
       final res = MedicalRecordResponse.fromJson(response);
       if (res.success) {
         return Right(res);
@@ -32,7 +32,7 @@ class MedicalRecordService extends ApiHttpClient {
 
   Response<String, DocumentTypeResponse> getDocumentTypes() async {
     try {
-      final response = await _httpClient.get('/get-document-types');
+      final response = await _httpClient.get('get-document-types');
       final res = DocumentTypeResponse.fromJson(response);
       if (res.success) {
         return Right(res);
@@ -55,7 +55,7 @@ class MedicalRecordService extends ApiHttpClient {
     required String recordId,
   }) async {
     try {
-      final response = await _httpClient.get('/medical-records/$recordId');
+      final response = await _httpClient.get('medical-records/$recordId');
       final res = MedicalRecordDetails.fromJson(response);
       if (res.success) {
         return Right(res);
@@ -104,7 +104,7 @@ class MedicalRecordService extends ApiHttpClient {
       });
 
       final response = await _httpClient.post(
-        '/medical-records',
+        'medical-records',
         body: formData,
       );
 
@@ -129,7 +129,7 @@ class MedicalRecordService extends ApiHttpClient {
     required String recordId,
   }) async {
     try {
-      final response = await _httpClient.delete('/medical-records/$recordId');
+      final response = await _httpClient.delete('medical-records/$recordId');
 
       if (response['success'] == true) {
         return Right(response['message']);

@@ -1,43 +1,41 @@
 class BookAppointmentRequest {
   const BookAppointmentRequest({
-    required this.slotId,
-    required this.reasonForVisit,
-    // this.patientNotes,
-    required this.appointmentType,
+    required this.petId,
     required this.serviceId,
+    required this.startTime,
+    this.specialRequests,
+    this.storeId,
   });
 
-  final String slotId;
-  final String reasonForVisit;
-  // final String? patientNotes;
-  final String appointmentType;
+  final String petId;
   final String serviceId;
-
-  // copy with
-  BookAppointmentRequest copyWith({
-    String? slotId,
-    String? hospitalId,
-    String? reasonForVisit,
-    String? patientNotes,
-    String? appointmentType,
-    String? serviceId,
-  }) {
-    return BookAppointmentRequest(
-      slotId: slotId ?? this.slotId,
-      reasonForVisit: reasonForVisit ?? this.reasonForVisit,
-      // patientNotes: patientNotes ?? this.patientNotes,
-      appointmentType: appointmentType ?? this.appointmentType,
-      serviceId: serviceId ?? this.serviceId,
-    );
-  }
+  final String startTime; // Y-m-d H:i:s
+  final String? specialRequests;
+  final String? storeId;
 
   Map<String, dynamic> toJson() {
     return {
-      'slot_id': slotId,
-      'reason_for_visit': reasonForVisit,
-      // 'patient_notes': patientNotes,
-      'appointment_type': appointmentType,
+      'pet_id': petId,
       'service_id': serviceId,
+      'start_time': startTime,
+      'special_requests': specialRequests,
+      if (storeId != null) 'store_id': storeId,
     };
+  }
+
+  BookAppointmentRequest copyWith({
+    String? petId,
+    String? serviceId,
+    String? startTime,
+    String? specialRequests,
+    String? storeId,
+  }) {
+    return BookAppointmentRequest(
+      petId: petId ?? this.petId,
+      serviceId: serviceId ?? this.serviceId,
+      startTime: startTime ?? this.startTime,
+      specialRequests: specialRequests ?? this.specialRequests,
+      storeId: storeId ?? this.storeId,
+    );
   }
 }

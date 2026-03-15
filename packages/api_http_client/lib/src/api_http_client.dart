@@ -42,7 +42,7 @@ class ApiHttpClient {
   Response<String, SignInResponse> signIn(SignInRequest request) async {
     try {
       final response = await _httpClient.post(
-        '/auth/login',
+        'auth/login',
         body: request.toJson(),
       );
       final signInResponse = SignInResponse.fromJson(response);
@@ -67,7 +67,7 @@ class ApiHttpClient {
   Response<String, SignInResponse> signOut({String? deviceId}) async {
     try {
       final response = await _httpClient.post(
-        '/auth/logout',
+        'auth/logout',
         body: deviceId != null ? {'deviceId': deviceId} : null,
       );
       final signInResponse = SignInResponse.fromJson(response);
@@ -93,7 +93,7 @@ class ApiHttpClient {
     required int page,
   }) async {
     try {
-      var baseURL = '/products?page=$page';
+      var baseURL = 'products?page=$page';
       final response = await _httpClient.get(baseURL);
       final productResponse = ProductResponse.fromJson(response);
 
@@ -120,8 +120,8 @@ class ApiHttpClient {
       final queryParams = <String, String>{};
       if (type != null) queryParams['type'] = type;
       final path = queryParams.isEmpty
-          ? '/categories'
-          : '/categories?${queryParams.entries.map((e) => '${e.key}=${e.value}').join('&')}';
+          ? 'categories'
+          : 'categories?${queryParams.entries.map((e) => '${e.key}=${e.value}').join('&')}';
       final response = await _httpClient.get(path);
       final categoryResponse = CategoryResponse.fromJson(response);
       if (categoryResponse.categories.isNotEmpty || response['data'] != null) {
@@ -146,8 +146,8 @@ class ApiHttpClient {
       {required int page, String? query}) async {
     try {
       final baseURL = query == null
-          ? '/doctors?page=$page'
-          : '/doctors?page=$page&speciality_id=$query';
+          ? 'doctors?page=$page'
+          : 'doctors?page=$page&speciality_id=$query';
       final response = await _httpClient.get(baseURL);
       final res = DoctorResponse.fromJson(response);
       if (res.success) {
@@ -171,7 +171,7 @@ class ApiHttpClient {
   Response<String, DoctorDetailResponse> getDoctorDetail(
       {required String id}) async {
     try {
-      final response = await _httpClient.get('/doctors/$id');
+      final response = await _httpClient.get('doctors/$id');
       final res = DoctorDetailResponse.fromJson(response);
       if (res.success) {
         return Right(res);
@@ -194,7 +194,7 @@ class ApiHttpClient {
   Response<String, SpecialityResponse> getSpecialities(
       {required int page}) async {
     try {
-      final response = await _httpClient.get('/specialities?page=$page');
+      final response = await _httpClient.get('specialities?page=$page');
       final res = SpecialityResponse.fromJson(response);
       if (res.success) {
         return Right(res);
@@ -216,7 +216,7 @@ class ApiHttpClient {
   // get hospital
   Response<String, HospitalResponse> getHospital() async {
     try {
-      final response = await _httpClient.get('/hospitals');
+      final response = await _httpClient.get('hospitals');
       final res = HospitalResponse.fromJson(response);
       if (res.success) {
         return Right(res);
@@ -238,7 +238,7 @@ class ApiHttpClient {
   // get user info
   Response<String, UserInfoResponse> getUserInfo() async {
     try {
-      final response = await _httpClient.get('/auth/get-user-info');
+      final response = await _httpClient.get('auth/get-user-info');
       final res = UserInfoResponse.fromJson(response);
       if (res.success) {
         return Right(res);
@@ -261,7 +261,7 @@ class ApiHttpClient {
   Response<String, HospitalDetailResponse> getHospitalDetails(
       {required String id}) async {
     try {
-      final response = await _httpClient.get('/hospitals/$id');
+      final response = await _httpClient.get('hospitals/$id');
       final res = HospitalDetailResponse.fromJson(response);
       if (res.success) {
         return Right(res);
@@ -284,7 +284,7 @@ class ApiHttpClient {
     required String id,
   }) async {
     try {
-      final response = await _httpClient.get('/doctors/by-hospital/$id');
+      final response = await _httpClient.get('doctors/by-hospital/$id');
       final res = DoctorResponse.fromJson(response);
       if (res.success) {
         return Right(res);
@@ -307,7 +307,7 @@ class ApiHttpClient {
     required String id,
   }) async {
     try {
-      final response = await _httpClient.get('/doctors/$id/hospitals');
+      final response = await _httpClient.get('doctors/$id/hospitals');
       final res = HospitalResponse.fromJson(response);
       if (res.success) {
         return Right(res);
@@ -333,7 +333,7 @@ class ApiHttpClient {
   }) async {
     try {
       final baseURL =
-          '/appointments/available-slots?doctor_id=$doctorId&date=$date&hospital_id=$hospitalId';
+          'appointments/available-slots?doctor_id=$doctorId&date=$date&hospital_id=$hospitalId';
       final response = await _httpClient.get(baseURL);
       final res = AvailableTimeSlotResponse.fromJson(response);
       if (res.success) {
@@ -353,13 +353,11 @@ class ApiHttpClient {
     }
   }
 
-  Response<String, AppointmentResponse> getAppointement({
-    required int page,
-    required String status,
+  Response<String, AppointmentResponse> getAppointments({
+    int page = 1,
   }) async {
     try {
-      final response =
-          await _httpClient.get('/me/appointments?page=$page&status=$status');
+      final response = await _httpClient.get('appointments?page=$page');
       final res = AppointmentResponse.fromJson(response);
       if (res.success) {
         return Right(res);
@@ -371,30 +369,31 @@ class ApiHttpClient {
     } on SocketException {
       return const Left('no_internet');
     } catch (e) {
-      log('[ApiHttpClient] Error in getAppointement: $e');
+      log('[ApiHttpClient] Error in getAppointments: $e');
       return const Left(
         'Something went wrong. Try again',
       );
     }
   }
 
-  Response<String, BookAppointmentResponse> bookAppointment(
+  Response<String, AppointmentDetailResponse> bookAppointment(
     BookAppointmentRequest request,
   ) async {
     try {
       log('Booking appointment with request: ${request.toJson()}');
       final response = await _httpClient.post(
-        '/appointments/book',
+        'appointments',
         body: request.toJson(),
       );
-      final res = BookAppointmentResponse.fromJson(response);
+      final res = AppointmentDetailResponse.fromJson(response);
       if (res.success) {
         return Right(res);
       } else {
         return Left(res.message ?? 'Failed to book appointment');
       }
     } on ApiRequestFailure catch (e) {
-      return Left(e.body['message'] as String);
+      final message = e.body['message'];
+      return Left(message is String ? message : 'Failed to book appointment');
     } on SocketException {
       return const Left('no_internet');
     } catch (e) {
@@ -406,19 +405,17 @@ class ApiHttpClient {
   }
 
   // cancel appointment
-  Response<String, String> cancelAppointment({
+  Response<String, AppointmentDetailResponse> cancelAppointment({
     required String appointmentId,
-    required String reason,
   }) async {
     try {
       final response =
-          await _httpClient.post('/appointments/$appointmentId/cancel', body: {
-        'cancellation_reason': reason,
-      });
-      if (response['success'] == true) {
-        return Right(response['message'] as String);
+          await _httpClient.post('appointments/$appointmentId/cancel');
+      final res = AppointmentDetailResponse.fromJson(response);
+      if (res.success) {
+        return Right(res);
       } else {
-        return Left(response['message'] as String);
+        return Left(res.message ?? 'Failed to cancel appointment');
       }
     } on ApiRequestFailure catch (e) {
       return Left(e.body['message'] as String);
@@ -440,7 +437,7 @@ class ApiHttpClient {
   }) async {
     try {
       final response = await _httpClient.post(
-        '/cart/add',
+        'cart/add',
         body: {
           'item_id': itemId,
           'item_type': itemType,
@@ -468,7 +465,7 @@ class ApiHttpClient {
   // get cart
   Response<String, CartResponse> getCart() async {
     try {
-      final response = await _httpClient.get('/cart');
+      final response = await _httpClient.get('cart');
       final cartResponse = CartResponse.fromJson(response);
       if (cartResponse.success) {
         return Right(cartResponse);
@@ -494,7 +491,7 @@ class ApiHttpClient {
   }) async {
     try {
       final response = await _httpClient.put(
-        '/cart/items/$cartItemId',
+        'cart/items/$cartItemId',
         body: {
           'quantity': quantity,
         },
@@ -523,7 +520,7 @@ class ApiHttpClient {
     required String cartItemId,
   }) async {
     try {
-      final response = await _httpClient.delete('/cart/items/$cartItemId');
+      final response = await _httpClient.delete('cart/items/$cartItemId');
       final cartResponse = CartResponse.fromJson(response);
       if (cartResponse.success) {
         return Right(cartResponse);
@@ -545,7 +542,7 @@ class ApiHttpClient {
   // get delivery type
   Response<String, DeliveryTypeResponse> getDeliveryType() async {
     try {
-      final response = await _httpClient.get('/checkout/delivery-types');
+      final response = await _httpClient.get('checkout/delivery-types');
       final deliveryTypeResponse = DeliveryTypeResponse.fromJson(response);
       if (deliveryTypeResponse.success) {
         return Right(deliveryTypeResponse);
@@ -568,7 +565,7 @@ class ApiHttpClient {
   // get payment methods
   Response<String, PaymentMethodResponse> getPaymentMethods() async {
     try {
-      final response = await _httpClient.get('/checkout/payment-methods');
+      final response = await _httpClient.get('checkout/payment-methods');
       final res = PaymentMethodResponse.fromJson(response);
       if (res.success) {
         return Right(res);
@@ -591,7 +588,7 @@ class ApiHttpClient {
   Response<String, String> placeOrder(PlaceOrderRequest request) async {
     try {
       final response = await _httpClient.post(
-        '/checkout/place-order',
+        'checkout/place-order',
         body: request.toJson(),
       );
       log('placeOrder response: $response');
@@ -618,7 +615,7 @@ class ApiHttpClient {
   }) async {
     try {
       final response = await _httpClient.post(
-        '/ai/chat',
+        'ai/chat',
         body: {
           'message': message,
         },
@@ -649,7 +646,7 @@ class ApiHttpClient {
   }) async {
     try {
       final response = await _httpClient.put(
-        '/appointments/$appointmentId/reschedule',
+        'appointments/$appointmentId/reschedule',
         body: {
           'slot_id': slotId,
           'reason_for_reschedule': reason,
@@ -675,7 +672,7 @@ class ApiHttpClient {
 
   Response<String, ServiceResponse> getServices() async {
     try {
-      final response = await _httpClient.get('/services');
+      final response = await _httpClient.get('services');
       final res = ServiceResponse.fromJson(response);
       if (res.services.isNotEmpty || response['data'] != null) {
         return Right(res);
@@ -697,7 +694,7 @@ class ApiHttpClient {
   // get settings
   Response<String, SettingResponse> getSettings() async {
     try {
-      final response = await _httpClient.get('/settings');
+      final response = await _httpClient.get('settings');
       final res = SettingResponse.fromJson(response);
       if (res.success) {
         return Right(res);
@@ -721,7 +718,7 @@ class ApiHttpClient {
     required String id,
   }) async {
     try {
-      final response = await _httpClient.get('/products/$id');
+      final response = await _httpClient.get('products/$id');
       final res = ProductDetailResponse.fromJson(response);
       return Right(res);
     } on ApiRequestFailure catch (e) {
@@ -747,7 +744,7 @@ class ApiHttpClient {
       if (categoryId != null) queryParams['category_id'] = categoryId;
       if (search != null && search.isNotEmpty) queryParams['search'] = search;
       final path =
-          '/pets?${queryParams.entries.map((e) => '${e.key}=${Uri.encodeComponent(e.value)}').join('&')}';
+          'pets?${queryParams.entries.map((e) => '${e.key}=${Uri.encodeComponent(e.value)}').join('&')}';
       final response = await _httpClient.get(path);
       final res = PetResponse.fromJson(response);
       if (res.pets.isNotEmpty || response['data'] != null) {
@@ -772,7 +769,7 @@ class ApiHttpClient {
     required String id,
   }) async {
     try {
-      final response = await _httpClient.get('/pets/$id');
+      final response = await _httpClient.get('pets/$id');
       log('[DEBUG] getPet keys: ${response.keys.toList()}');
       final res = PetDetailResponse.fromJson(response);
       log('[DEBUG] getPet res.pet: ${res.pet?.name}');
@@ -798,7 +795,7 @@ class ApiHttpClient {
     required String id,
   }) async {
     try {
-      final response = await _httpClient.get('/categories/$id');
+      final response = await _httpClient.get('categories/$id');
       final res = CategoryDetailResponse.fromJson(response);
       return Right(res);
     } on ApiRequestFailure catch (e) {
@@ -818,7 +815,7 @@ class ApiHttpClient {
     required String id,
   }) async {
     try {
-      final response = await _httpClient.get('/services/$id');
+      final response = await _httpClient.get('services/$id');
       final res = ServiceDetailResponse.fromJson(response);
       return Right(res);
     } on ApiRequestFailure catch (e) {
@@ -833,7 +830,7 @@ class ApiHttpClient {
   // clear cart
   Response<String, CartResponse> clearCart() async {
     try {
-      final response = await _httpClient.delete('/cart/clear');
+      final response = await _httpClient.delete('cart/clear');
       final cartResponse = CartResponse.fromJson(response);
       if (cartResponse.success) {
         return Right(cartResponse);
@@ -857,7 +854,7 @@ class ApiHttpClient {
     required String id,
   }) async {
     try {
-      final response = await _httpClient.get('/appointments/$id');
+      final response = await _httpClient.get('appointments/$id');
       final res = AppointmentDetailResponse.fromJson(response);
       if (res.success || res.data != null || response['data'] != null) {
         return Right(res);
@@ -879,15 +876,11 @@ class ApiHttpClient {
   // get favorites
   Response<String, FavoriteResponse> getFavorites() async {
     try {
-      final response = await _httpClient.get('/favorites');
+      final response = await _httpClient.get('favorites');
       final res = FavoriteResponse.fromJson(response);
-      if (res.success) {
-        return Right(res);
-      } else {
-        return Left(res.message ?? 'Failed to fetch favorites');
-      }
+      return Right(res);
     } on ApiRequestFailure catch (e) {
-      return Left(e.body['message'] as String);
+      return Left(e.body['message']?.toString() ?? 'Failed to fetch favorites');
     } on SocketException {
       return const Left('no_internet');
     } catch (e) {
@@ -898,49 +891,33 @@ class ApiHttpClient {
     }
   }
 
-  // add favorite
-  Response<String, String> addFavorite({
+  // toggle favorite
+  Response<String, ToggleFavoriteResponse> toggleFavorite({
     required String id,
+    required String itemType,
   }) async {
     try {
       final response = await _httpClient.post(
-        '/favorites',
-        body: {'id': id},
+        'favorites',
+        body: {
+          'item_id': id,
+          'item_type': itemType,
+        },
       );
-      if (response['success'] == true) {
-        return Right(response['message'] as String);
+      final res = ToggleFavoriteResponse.fromJson(response);
+      if (res.success) {
+        return Right(res);
       } else {
-        return Left(response['message'] as String);
+        return Left(res.message ?? 'Failed to toggle favorite');
       }
     } on ApiRequestFailure catch (e) {
-      return Left(e.body['message'] as String);
+      final message =
+          e.body['message']?.toString() ?? 'Failed to toggle favorite';
+      return Left(message);
     } on SocketException {
       return const Left('no_internet');
     } catch (e) {
-      log('[ApiHttpClient] Error in addFavorite: $e');
-      return const Left(
-        'Something went wrong. Try again',
-      );
-    }
-  }
-
-  // remove favorite
-  Response<String, String> removeFavorite({
-    required String id,
-  }) async {
-    try {
-      final response = await _httpClient.delete('/favorites/$id');
-      if (response['success'] == true) {
-        return Right(response['message'] as String);
-      } else {
-        return Left(response['message'] as String);
-      }
-    } on ApiRequestFailure catch (e) {
-      return Left(e.body['message'] as String);
-    } on SocketException {
-      return const Left('no_internet');
-    } catch (e) {
-      log('[ApiHttpClient] Error in removeFavorite: $e');
+      log('[ApiHttpClient] Error in toggleFavorite: $e');
       return const Left(
         'Something went wrong. Try again',
       );

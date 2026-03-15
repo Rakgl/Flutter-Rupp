@@ -4,6 +4,10 @@ import 'package:flutter_methgo_app/features/services/cubit/service_detail_cubit.
 import 'package:repository/repository.dart';
 import 'package:flutter_methgo_app/features/card/cubit/card_cubit.dart';
 import 'package:flutter_methgo_app/features/favorite/cubit/favorite_cubit.dart';
+import 'package:flutter_methgo_app/features/pets/cubit/pets_cubit.dart';
+import 'package:flutter_methgo_app/features/appointments/cubit/appointments_cubit.dart';
+import 'package:api_http_client/api_http_client.dart';
+import 'package:intl/intl.dart';
 
 class ServiceDetailPage extends StatelessWidget {
   const ServiceDetailPage({super.key, required this.serviceId});
@@ -95,18 +99,24 @@ class _ServiceDetailView extends StatelessWidget {
                 actions: [
                   BlocBuilder<FavoriteCubit, FavoriteState>(
                     builder: (context, favoriteState) {
-                      final isFavorite = favoriteState.favorites.any((favorite) => favorite.id == service.id);
+                      // Check if this service is in the global favorites list
+                      final isFavoritedInList = favoriteState.favorites.any(
+                        (f) => f.type == 'service' && f.itemId == service.id,
+                      );
+                      
+                      // Use either the service's own isFavorite field OR the global list status
+                      final isFavorite = service.isFavorite || isFavoritedInList;
+
                       return IconButton(
                         icon: Icon(
                           isFavorite ? Icons.favorite : Icons.favorite_border,
                           color: isFavorite ? Colors.red : Colors.white,
                         ),
                         onPressed: () {
-                          if (isFavorite) {
-                            context.read<FavoriteCubit>().removeFavorite(service.id);
-                          } else {
-                            context.read<FavoriteCubit>().addFavorite(service.id);
-                          }
+                          context.read<FavoriteCubit>().toggleFavorite(
+                                id: service.id,
+                                itemType: 'service',
+                              );
                         },
                       );
                     },
@@ -243,9 +253,9 @@ class _ServiceDetailView extends StatelessWidget {
                                 );
                               },
                               icon: const Icon(Icons.shopping_cart_checkout_rounded),
-                              label: const Text(
-                                'Add to Cart',
-                                style: TextStyle(
+                              label: Text(
+                                'Add to Cart (\$${service.price})',
+                                style: const TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -264,7 +274,7 @@ class _ServiceDetailView extends StatelessWidget {
                           const SizedBox(width: 16),
                           Expanded(
                             child: ElevatedButton.icon(
-                              onPressed: () {},
+                              onPressed: () => _showBookingDialog(context, service),
                               icon: const Icon(Icons.calendar_today_rounded),
                               label: const Text(
                                 'Book Now',
@@ -299,6 +309,21 @@ class _ServiceDetailView extends StatelessWidget {
     );
   }
 
+  void _showBookingDialog(BuildContext context, ServiceModel service) {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => BlocProvider.value(
+        value: context.read<PetsCubit>(),
+        child: BlocProvider.value(
+          value: context.read<AppointmentsCubit>(),
+          child: _BookingSheet(service: service),
+        ),
+      ),
+    );
+  }
+
   Widget get _gradientBox => Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -311,6 +336,312 @@ class _ServiceDetailView extends StatelessWidget {
           child: Icon(Icons.spa_rounded, size: 80, color: Colors.white54),
         ),
       );
+}
+
+class _BookingSheet extends StatefulWidget {
+  const _BookingSheet({required this.service});
+  final ServiceModel service;
+
+  @override
+  State<_BookingSheet> createState() => _BookingSheetState();
+}
+
+class _BookingSheetState extends State<_BookingSheet> {
+  String? _selectedPetId;
+  DateTime _selectedDate = DateTime.now().add(const Duration(days: 1));
+  TimeOfDay _selectedTime = const TimeOfDay(hour: 10, minute: 0);
+  final _requestController = TextEditingController();
+
+  @override
+  void dispose() {
+    _requestController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+      ),
+      padding: EdgeInsets.only(
+        left: 24,
+        right: 24,
+        top: 24,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+      ),
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade300,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            const SizedBox(height: 24),
+            Text(
+              'Book ${widget.service.name}',
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 24),
+
+            // Pet Selection
+            const Text('Select Pet',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+            const SizedBox(height: 12),
+            BlocBuilder<PetsCubit, PetsState>(
+              builder: (context, state) {
+                if (state.status == PetsStatus.loading && state.pets.isEmpty) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (state.status == PetsStatus.failure && state.pets.isEmpty) {
+                  return Column(
+                    children: [
+                      Text(state.errorMessage ?? 'Failed to load pets'),
+                      TextButton(
+                        onPressed: () => context.read<PetsCubit>().fetchPets(),
+                        child: const Text('Retry'),
+                      ),
+                    ],
+                  );
+                }
+                if (state.pets.isEmpty) {
+                  return const Text('No pets found. Please add a pet first.');
+                }
+                return SizedBox(
+                  height: 100,
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: state.pets.length,
+                    separatorBuilder: (_, __) => const SizedBox(width: 12),
+                    itemBuilder: (context, index) {
+                      final pet = state.pets[index];
+                      final isSelected = _selectedPetId == pet.id;
+                      return GestureDetector(
+                        onTap: () => setState(() => _selectedPetId = pet.id),
+                        child: Column(
+                          children: [
+                            Container(
+                              width: 60,
+                              height: 60,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: isSelected
+                                      ? const Color(0xFF7C3AED)
+                                      : Colors.transparent,
+                                  width: 2,
+                                ),
+                                image: pet.imageUrl != null && pet.imageUrl!.isNotEmpty
+                                    ? DecorationImage(
+                                        image: NetworkImage(pet.imageUrl!),
+                                        fit: BoxFit.cover)
+                                    : null,
+                                color: Colors.grey.shade200,
+                              ),
+                              child: (pet.imageUrl == null || pet.imageUrl!.isEmpty)
+                                  ? const Icon(Icons.pets)
+                                  : null,
+                            ),
+                            const SizedBox(height: 4),
+                            Text(pet.name,
+                                style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: isSelected
+                                        ? FontWeight.bold
+                                        : FontWeight.normal)),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                );
+              },
+            ),
+
+            const SizedBox(height: 24),
+
+            // Date & Time
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text('Date',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 14)),
+                      const SizedBox(height: 8),
+                      InkWell(
+                        onTap: () async {
+                          final date = await showDatePicker(
+                            context: context,
+                            initialDate: _selectedDate,
+                            firstDate: DateTime.now(),
+                            lastDate: DateTime.now().add(const Duration(days: 90)),
+                          );
+                          if (date != null) setState(() => _selectedDate = date);
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey.shade300),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Row(
+                            children: [
+                              const Icon(Icons.calendar_today,
+                                  size: 18, color: Color(0xFF7C3AED)),
+                              const SizedBox(width: 8),
+                              Text(DateFormat('MMM dd, yyyy')
+                                  .format(_selectedDate)),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text('Time',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 14)),
+                      const SizedBox(height: 8),
+                      InkWell(
+                        onTap: () async {
+                          final time = await showTimePicker(
+                            context: context,
+                            initialTime: _selectedTime,
+                          );
+                          if (time != null) setState(() => _selectedTime = time);
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey.shade300),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Row(
+                            children: [
+                              const Icon(Icons.access_time,
+                                  size: 18, color: Color(0xFF7C3AED)),
+                              const SizedBox(width: 8),
+                              Text(_selectedTime.format(context)),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 24),
+
+            // Special Requests
+            const Text('Special Requests',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+            const SizedBox(height: 8),
+            TextField(
+              controller: _requestController,
+              maxLines: 3,
+              decoration: InputDecoration(
+                hintText: 'Any special instructions for the groomer...',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: Colors.grey.shade300),
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 32),
+
+            // Submit Button
+            BlocConsumer<AppointmentsCubit, AppointmentsState>(
+              listener: (context, state) {
+                if (state.status == AppointmentsStatus.success) {
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Appointment booked successfully!'),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+                } else if (state.status == AppointmentsStatus.failure) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(state.errorMessage ?? 'Booking failed'),
+                      backgroundColor: Colors.redAccent,
+                    ),
+                  );
+                }
+              },
+              builder: (context, state) {
+                return ElevatedButton(
+                  onPressed: state.status == AppointmentsStatus.loading
+                      ? null
+                      : () {
+                          if (_selectedPetId == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Please select a pet')),
+                            );
+                            return;
+                          }
+
+                          final startDateTime = DateTime(
+                            _selectedDate.year,
+                            _selectedDate.month,
+                            _selectedDate.day,
+                            _selectedTime.hour,
+                            _selectedTime.minute,
+                          );
+
+                          final request = BookAppointmentRequest(
+                            petId: _selectedPetId!,
+                            serviceId: widget.service.id,
+                            startTime: DateFormat('yyyy-MM-dd HH:mm:ss')
+                                .format(startDateTime),
+                            specialRequests: _requestController.text,
+                          );
+
+                          context
+                              .read<AppointmentsCubit>()
+                              .bookAppointment(request);
+                        },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF7C3AED),
+                    foregroundColor: Colors.white,
+                    minimumSize: const Size(double.infinity, 56),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                  ),
+                  child: state.status == AppointmentsStatus.loading
+                      ? const CircularProgressIndicator(color: Colors.white)
+                      : const Text('Confirm Booking',
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold)),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 class _Chip extends StatelessWidget {

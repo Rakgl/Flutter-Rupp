@@ -144,7 +144,9 @@ class _AppState extends State<App> {
             create: (context) => NavigationCubit(),
           ),
           BlocProvider<ProfileCubit>(
-            create: (context) => ProfileCubit(),
+            create: (context) => ProfileCubit(
+              userRepository: context.read<UserRepository>(),
+            ),
           ),
           BlocProvider<ProductsCubit>(
             create: (context) => ProductsCubit(

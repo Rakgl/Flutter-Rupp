@@ -59,12 +59,13 @@ extension JsonValueCast on Map<String, dynamic> {
 
   // check map if map return string else null
   String? getStringOrNull(String key) {
-    if (this[key] is Map) {
-      final keyString = this[key] as Map<String, dynamic>;
-      return keyString['en'] as String;
-    } else {
-      return null;
+    final value = this[key];
+    if (value is String) return value;
+    if (value is Map) {
+      return (value['en'] ?? (value.isNotEmpty ? value.values.first : null))
+          ?.toString();
     }
+    return null;
   }
 
   Map<String, dynamic>? getMapOrNull(String key) {

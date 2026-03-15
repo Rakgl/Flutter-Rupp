@@ -5,6 +5,7 @@ import 'package:flutter_methgo_app/features/pets/cubit/pet_detail_state.dart';
 import 'package:flutter_methgo_app/features/card/cubit/card_cubit.dart';
 import 'package:flutter_methgo_app/features/favorite/cubit/favorite_cubit.dart';
 import 'package:repository/repository.dart';
+import 'package:api_http_client/api_http_client.dart';
 
 class PetDetailPage extends StatelessWidget {
   const PetDetailPage({super.key, required this.petId});
@@ -63,18 +64,24 @@ class PetDetailView extends StatelessWidget {
                 actions: [
                   BlocBuilder<FavoriteCubit, FavoriteState>(
                     builder: (context, favoriteState) {
-                      final isFavorite = favoriteState.favorites.any((favorite) => favorite.id == pet.id);
+                      // Check if this pet is in the global favorites list
+                      final isFavoritedInList = favoriteState.favorites.any(
+                        (f) => f.type == 'pet' && f.itemId == pet.id,
+                      );
+                      
+                      // Use either the pet's own isFavorite field OR the global list status
+                      final isFavorite = pet.isFavorite || isFavoritedInList;
+
                       return IconButton(
                         icon: Icon(
                           isFavorite ? Icons.favorite : Icons.favorite_border,
                           color: isFavorite ? Colors.red : Colors.black,
                         ),
                         onPressed: () {
-                          if (isFavorite) {
-                            context.read<FavoriteCubit>().removeFavorite(pet.id);
-                          } else {
-                            context.read<FavoriteCubit>().addFavorite(pet.id);
-                          }
+                          context.read<FavoriteCubit>().toggleFavorite(
+                                id: pet.id,
+                                itemType: 'pet',
+                              );
                         },
                       );
                     },
@@ -88,8 +95,11 @@ class PetDetailView extends StatelessWidget {
                         )
                       : const ColoredBox(
                           color: Color(0xFFE5E7EB),
-                          child:
-                              Icon(Icons.pets, size: 100, color: Colors.grey),
+                          child: Icon(
+                            Icons.pets,
+                            size: 100,
+                            color: Colors.grey,
+                          ),
                         ),
                 ),
               ),
@@ -97,7 +107,9 @@ class PetDetailView extends StatelessWidget {
                 child: Container(
                   decoration: const BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(32),
+                    ),
                   ),
                   transform: Matrix4.translationValues(0, -32, 0),
                   child: Padding(
@@ -106,32 +118,40 @@ class PetDetailView extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const SizedBox(height: 8),
-                        Text(
-                          pet.name,
-                          style: const TextStyle(
-                            fontSize: 28,
-                            fontWeight: FontWeight.w900,
-                            color: Colors.black87,
-                            letterSpacing: -0.5,
-                          ),
-                        ),
-                        if (pet.price != null && pet.price!.isNotEmpty) ...[
-                          const SizedBox(height: 8),
-                          Text(
-                            '\$${pet.price}',
-                            style: const TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFF3B82F6),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                pet.name,
+                                style: const TextStyle(
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.w900,
+                                  color: Colors.black87,
+                                  letterSpacing: -0.5,
+                                ),
+                              ),
                             ),
-                          ),
-                        ],
+                            if (pet.price != null && pet.price!.isNotEmpty)
+                              Text(
+                                '\$${pet.price}',
+                                style: const TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF3B82F6),
+                                ),
+                              ),
+                          ],
+                        ),
                         const SizedBox(height: 16),
                         Row(
                           children: [
-                            if (pet.category?.name != null || pet.species != null)
+                            if (pet.category?.name != null ||
+                                pet.species != null)
                               _buildBadge(
-                                  pet.category?.name ?? pet.species!, Colors.blue),
+                                pet.category?.name ?? pet.species!,
+                                Colors.blue,
+                              ),
                             const SizedBox(width: 8),
                             if (pet.breed != null && pet.breed!.isNotEmpty)
                               _buildBadge(pet.breed!, Colors.orange),
@@ -144,11 +164,15 @@ class PetDetailView extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             _buildInfoColumn(
-                                'Weight', pet.weight ?? 'N/A', Icons.scale_rounded),
+                              'Weight',
+                              pet.weight ?? 'N/A',
+                              Icons.scale_rounded,
+                            ),
                             _buildInfoColumn(
-                                'DOB',
-                                pet.dateOfBirth?.split(' ').first ?? 'Unknown',
-                                Icons.cake_rounded),
+                              'DOB',
+                              pet.dateOfBirth?.split(' ').first ?? 'Unknown',
+                              Icons.cake_rounded,
+                            ),
                           ],
                         ),
 
@@ -172,7 +196,9 @@ class PetDetailView extends StatelessWidget {
                             height: 1.6,
                           ),
                         ),
-                        const SizedBox(height: 100), // Extra padding for the bottom button
+                        const SizedBox(
+                          height: 100,
+                        ), // Extra padding for the bottom button
                       ],
                     ),
                   ),
@@ -198,17 +224,20 @@ class PetDetailView extends StatelessWidget {
                   if (cardState.status == CardStatus.failure) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                          content: Text(
-                              cardState.errorMessage ?? 'Failed to add to cart')),
+                        content: Text(
+                          cardState.errorMessage ?? 'Failed to add to cart',
+                        ),
+                      ),
                     );
                   }
                 },
                 builder: (context, cardState) {
                   return ElevatedButton(
                     onPressed: () {
-                      context
-                          .read<CardCubit>()
-                          .addToCart(pet.id, itemType: 'pet');
+                      context.read<CardCubit>().addToCart(
+                        pet.id,
+                        itemType: 'pet',
+                      );
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text('Pet added to cart!'),
@@ -225,9 +254,9 @@ class PetDetailView extends StatelessWidget {
                       ),
                       elevation: 0,
                     ),
-                    child: const Text(
-                      'Add to Cart',
-                      style: TextStyle(
+                    child: Text(
+                      'Add to Cart${pet.price != null && pet.price!.isNotEmpty ? " (\$${pet.price})" : ""}',
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),

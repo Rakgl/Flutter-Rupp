@@ -1,7 +1,10 @@
 part of 'profile_cubit.dart';
 
+enum ProfileStatus { initial, loading, success, failure, logoutSuccess }
+
 class ProfileState extends Equatable {
   const ProfileState({
+    this.status = ProfileStatus.initial,
     this.name = 'Peter Parker',
     this.email = 'spider.man@gmail.com',
     this.location = 'New York, NY',
@@ -12,6 +15,7 @@ class ProfileState extends Equatable {
     this.isDarkMode = false,
   });
 
+  final ProfileStatus status;
   final String name;
   final String email;
   final String location;
@@ -23,6 +27,7 @@ class ProfileState extends Equatable {
 
   @override
   List<Object> get props => [
+    status,
     name,
     email,
     location,
@@ -34,6 +39,7 @@ class ProfileState extends Equatable {
   ];
 
   ProfileState copyWith({
+    ProfileStatus? status,
     String? name,
     String? email,
     String? location,
@@ -42,6 +48,7 @@ class ProfileState extends Equatable {
     bool? isDarkMode,
   }) {
     return ProfileState(
+      status: status ?? this.status,
       name: name ?? this.name,
       email: email ?? this.email,
       location: location ?? this.location,

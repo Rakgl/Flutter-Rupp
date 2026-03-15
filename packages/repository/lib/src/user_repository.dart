@@ -124,8 +124,7 @@ class UserRepository {
     required int page,
     required String status,
   }) async {
-    final response =
-        await _apiClient.getAppointement(page: page, status: status);
+    final response = await _apiClient.getAppointments(page: page);
     return response;
   }
 
@@ -153,7 +152,7 @@ class UserRepository {
     return response;
   }
 
-  Response<String, BookAppointmentResponse> bookAppointment(
+  Response<String, AppointmentDetailResponse> bookAppointment(
     BookAppointmentRequest request,
   ) async {
     final response = await _apiClient.bookAppointment(request);
@@ -165,10 +164,9 @@ class UserRepository {
     return response;
   }
 
-  Response<String, String> cancelAppointment(String id, String reason) async {
+  Response<String, AppointmentDetailResponse> cancelAppointment(String id) async {
     final response = await _apiClient.cancelAppointment(
       appointmentId: id,
-      reason: reason,
     );
     return response;
   }

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:api_http_client/api_http_client.dart';
@@ -17,6 +19,7 @@ class FavoriteCubit extends Cubit<FavoriteState> {
     final response = await _favoriteRepository.getFavorites();
     await response.when<void>(
       success: (FavoriteResponse favoriteResponse) async {
+        log('[FavoriteCubit] Successfully fetched ${favoriteResponse.favorites.length} favorites');
         emit(
           state.copyWith(
             status: FavoriteStatus.success,
@@ -25,6 +28,7 @@ class FavoriteCubit extends Cubit<FavoriteState> {
         );
       },
       failure: (String error) async {
+        log('[FavoriteCubit] Failed to fetch favorites: $error');
         emit(
           state.copyWith(
             status: FavoriteStatus.failure,
@@ -35,28 +39,19 @@ class FavoriteCubit extends Cubit<FavoriteState> {
     );
   }
 
-  Future<void> addFavorite(String id) async {
-    final response = await _favoriteRepository.addFavorite(id: id);
+  Future<void> toggleFavorite({
+    required String id,
+    required String itemType,
+  }) async {
+    final response =
+        await _favoriteRepository.toggleFavorite(id: id, itemType: itemType);
     await response.when<void>(
-      success: (String message) async {
-        // After adding, fetch the updated list of favorites
+      success: (ToggleFavoriteResponse toggleResponse) async {
+        // After toggling, fetch the updated list of favorites
         await fetchFavorites();
       },
       failure: (String error) async {
         // Optionally, handle failure, e.g., show an error message
-      },
-    );
-  }
-
-  Future<void> removeFavorite(String id) async {
-    final response = await _favoriteRepository.removeFavorite(id: id);
-    await response.when<void>(
-      success: (String message) async {
-        // After removing, fetch the updated list of favorites
-        await fetchFavorites();
-      },
-      failure: (String error) async {
-        // Optionally, handle failure
       },
     );
   }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_methgo_app/features/services/cubit/services_cubit.dart';
 import 'package:flutter_methgo_app/features/services/view/service_detail_page.dart';
+import 'package:flutter_methgo_app/features/favorite/cubit/favorite_cubit.dart';
 
 class ServicesPage extends StatefulWidget {
   const ServicesPage({super.key});
@@ -216,16 +217,54 @@ class _ServicesPageState extends State<ServicesPage> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      // Name
-                                      Text(
-                                        service.name,
-                                        style: const TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black87,
-                                        ),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
+                                      // Name + Favorite
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Expanded(
+                                            child: Text(
+                                              service.name,
+                                              style: const TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.black87,
+                                              ),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                          BlocBuilder<FavoriteCubit,
+                                              FavoriteState>(
+                                            builder: (context, favoriteState) {
+                                              final isFav = service.isFavorite ||
+                                                  favoriteState.favorites.any(
+                                                      (f) =>
+                                                          f.type == 'service' &&
+                                                          f.itemId ==
+                                                              service.id);
+                                              return GestureDetector(
+                                                onTap: () {
+                                                  context
+                                                      .read<FavoriteCubit>()
+                                                      .toggleFavorite(
+                                                        id: service.id,
+                                                        itemType: 'service',
+                                                      );
+                                                },
+                                                child: Icon(
+                                                  isFav
+                                                      ? Icons.favorite
+                                                      : Icons.favorite_border,
+                                                  color: isFav
+                                                      ? Colors.red
+                                                      : Colors.grey,
+                                                  size: 20,
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ],
                                       ),
                                       if (service.description.isNotEmpty) ...[
                                         const SizedBox(height: 4),

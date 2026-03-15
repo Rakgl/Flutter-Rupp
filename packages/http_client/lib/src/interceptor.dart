@@ -54,7 +54,7 @@ class AuthenticationQueuedInterceptor extends QueuedInterceptor {
       };
       final dio = Dio();
       final response = await dio.post<Map<String, dynamic>>(
-        '$_baseUrl/auth/refresh-token',
+        '${_baseUrl}auth/refresh-token',
         data: request,
         options: Options(
           contentType: 'application/json',

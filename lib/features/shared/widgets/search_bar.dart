@@ -18,25 +18,32 @@ class SearchButton extends StatelessWidget {
           ),
         ],
       ),
-      child: const TextField(
-        decoration: InputDecoration(
-          prefixIcon: Icon(Icons.search, color: Colors.black, size: 24),
-          hintText: 'Search',
-          hintStyle: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.w500,
-            fontSize: 16,
+      child: const Row(
+        children: [
+          Icon(Icons.search, color: Colors.black, size: 24),
+          SizedBox(width: 8),
+          Expanded(
+            child: TextField(
+              decoration: InputDecoration(
+                hintText: 'Search',
+                hintStyle: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 16,
+                ),
+                border: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                errorBorder: InputBorder.none,
+                disabledBorder: InputBorder.none,
+                isDense: true,
+                contentPadding: EdgeInsets.symmetric(
+                  vertical: 12,
+                ),
+              ),
+            ),
           ),
-          border: InputBorder.none,
-          focusedBorder: InputBorder.none,
-          enabledBorder: InputBorder.none,
-          errorBorder: InputBorder.none,
-          disabledBorder: InputBorder.none,
-          isDense: true,
-          contentPadding: EdgeInsets.symmetric(
-            vertical: 12,
-          ),
-        ),
+        ],
       ),
     );
   }

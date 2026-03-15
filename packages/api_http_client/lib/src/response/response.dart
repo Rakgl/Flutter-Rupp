@@ -28,4 +28,5 @@ export 'service_response.dart';
 export 'setting_response.dart';
 export 'sign_in_response.dart';
 export 'speciality_response.dart';
+export 'toggle_favorite_response.dart';
 export 'user_info_response.dart';

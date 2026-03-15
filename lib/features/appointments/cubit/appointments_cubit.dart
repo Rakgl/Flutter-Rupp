@@ -16,7 +16,6 @@ class AppointmentsCubit extends Cubit<AppointmentsState> {
     emit(state.copyWith(status: AppointmentsStatus.loading));
     final response = await _appointmentRepository.getAppointments(
       page: page,
-      status: status,
     );
     await response.when<void>(
       success: (AppointmentResponse appointmentResponse) async {
@@ -24,7 +23,7 @@ class AppointmentsCubit extends Cubit<AppointmentsState> {
           state.copyWith(
             status: AppointmentsStatus.success,
             appointments: appointmentResponse.appointments,
-            isReachMax: appointmentResponse.isReachMax,
+            // isReachMax: appointmentResponse.isReachMax, // Removed if not in API response
           ),
         );
       },
@@ -41,17 +40,34 @@ class AppointmentsCubit extends Cubit<AppointmentsState> {
 
   Future<void> cancelAppointment({
     required String appointmentId,
-    required String reason,
   }) async {
     emit(state.copyWith(status: AppointmentsStatus.loading));
     final response = await _appointmentRepository.cancelAppointment(
       appointmentId: appointmentId,
-      reason: reason,
     );
     await response.when<void>(
-      success: (String successMsg) async {
-        // Just refetch after cancel
-        fetchAppointments();
+      success: (AppointmentDetailResponse res) async {
+        // Just refetch after cancel to get updated list
+        await fetchAppointments();
+      },
+      failure: (String error) async {
+        emit(
+          state.copyWith(
+            status: AppointmentsStatus.failure,
+            errorMessage: error,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> bookAppointment(BookAppointmentRequest request) async {
+    emit(state.copyWith(status: AppointmentsStatus.loading));
+    final response = await _appointmentRepository.bookAppointment(request);
+    await response.when<void>(
+      success: (AppointmentDetailResponse res) async {
+        // Successfully booked
+        await fetchAppointments();
       },
       failure: (String error) async {
         emit(

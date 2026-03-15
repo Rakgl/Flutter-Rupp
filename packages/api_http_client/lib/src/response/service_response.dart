@@ -34,6 +34,7 @@ class ServiceModel {
   final int durationMinutes;
   final String? imageUrl;
   final String status;
+  final bool isFavorite;
 
   ServiceModel({
     required this.id,
@@ -43,6 +44,7 @@ class ServiceModel {
     this.durationMinutes = 0,
     this.imageUrl,
     this.status = 'ACTIVE',
+    this.isFavorite = false,
   });
 
   String get name =>
@@ -59,6 +61,7 @@ class ServiceModel {
       durationMinutes: json['duration_minutes'] as int? ?? 0,
       imageUrl: json['image_url']?.toString(),
       status: json['status']?.toString() ?? 'ACTIVE',
+      isFavorite: json['is_favorite'] as bool? ?? false,
     );
   }
 
@@ -83,5 +86,6 @@ class ServiceModel {
         'duration_minutes': durationMinutes,
         'image_url': imageUrl,
         'status': status,
+        'is_favorite': isFavorite,
       };
 }
