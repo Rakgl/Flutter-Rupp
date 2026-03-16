@@ -11,7 +11,11 @@ class PetDetailCubit extends Cubit<PetDetailState> {
 
   final PetRepository _petRepository;
 
-  Future<void> fetchPet(String id) async {
+  Future<void> fetchPet(String id, {Pet? initialPet}) async {
+    if (initialPet != null) {
+      emit(state.copyWith(status: PetDetailStatus.success, pet: initialPet));
+      return;
+    }
     emit(state.copyWith(status: PetDetailStatus.loading));
     final response = await _petRepository.getPet(id: id);
     await response.when<void>(

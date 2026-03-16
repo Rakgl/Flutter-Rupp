@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_methgo_app/features/categories/cubit/categories_cubit.dart';
-import 'package:flutter_methgo_app/features/categories/view/category_detail_page.dart';
 import 'package:flutter_methgo_app/features/shared/widgets/category_cart.dart';
+import 'package:go_router/go_router.dart';
 
 class CategoriesPage extends StatefulWidget {
   const CategoriesPage({super.key});
@@ -36,8 +36,7 @@ class _CategoriesPageState extends State<CategoriesPage> {
                 backgroundColor: const Color(0xFF3B82F6),
                 flexibleSpace: FlexibleSpaceBar(
                   centerTitle: false,
-                  titlePadding:
-                      const EdgeInsets.only(left: 20, bottom: 16),
+                  titlePadding: const EdgeInsets.only(left: 20, bottom: 16),
                   title: Column(
                     mainAxisAlignment: MainAxisAlignment.end,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -93,8 +92,7 @@ class _CategoriesPageState extends State<CategoriesPage> {
               else if (state.status == CategoriesStatus.failure)
                 SliverFillRemaining(
                   child: _ErrorView(
-                    message:
-                        state.errorMessage ?? 'Failed to fetch categories',
+                    message: state.errorMessage ?? 'Failed to fetch categories',
                     onRetry: () =>
                         context.read<CategoriesCubit>().fetchCategories(),
                   ),
@@ -105,12 +103,16 @@ class _CategoriesPageState extends State<CategoriesPage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.category_outlined,
-                            size: 64, color: Colors.grey),
+                        Icon(
+                          Icons.category_outlined,
+                          size: 64,
+                          color: Colors.grey,
+                        ),
                         SizedBox(height: 12),
-                        Text('No categories found',
-                            style:
-                                TextStyle(fontSize: 16, color: Colors.grey)),
+                        Text(
+                          'No categories found',
+                          style: TextStyle(fontSize: 16, color: Colors.grey),
+                        ),
                       ],
                     ),
                   ),
@@ -121,23 +123,17 @@ class _CategoriesPageState extends State<CategoriesPage> {
                   sliver: SliverGrid(
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 14,
-                      mainAxisSpacing: 14,
-                      childAspectRatio: 0.82,
-                    ),
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 14,
+                          mainAxisSpacing: 14,
+                          childAspectRatio: 0.82,
+                        ),
                     delegate: SliverChildBuilderDelegate(
                       (context, index) {
                         final category = state.categories[index];
                         return GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute<void>(
-                                builder: (_) => CategoryDetailPage(
-                                  categoryId: category.id,
-                                ),
-                              ),
-                            );
+                          onTap: () async {
+                            await context.push('/categories/${category.id}');
                           },
                           child: CategoryCart(
                             type: category.type ?? '',
@@ -174,9 +170,11 @@ class _ErrorView extends StatelessWidget {
           children: [
             const Icon(Icons.wifi_off_rounded, size: 64, color: Colors.grey),
             const SizedBox(height: 16),
-            Text(message,
-                textAlign: TextAlign.center,
-                style: const TextStyle(color: Colors.grey)),
+            Text(
+              message,
+              textAlign: TextAlign.center,
+              style: const TextStyle(color: Colors.grey),
+            ),
             const SizedBox(height: 20),
             ElevatedButton.icon(
               onPressed: onRetry,
@@ -188,8 +186,10 @@ class _ErrorView extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30),
                 ),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 12,
+                ),
               ),
             ),
           ],

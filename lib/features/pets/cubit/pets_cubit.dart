@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
@@ -13,7 +14,43 @@ class PetsCubit extends Cubit<PetsState> {
 
   final PetRepository _petRepository;
 
-  Future<void> fetchPets({String? categoryId, String? search}) async {
+  Future<void> addPet({
+    required String name,
+    String? species,
+    String? breed,
+    String? weight,
+    String? dateOfBirth,
+    File? image,
+  }) async {
+    emit(state.copyWith(status: PetsStatus.loading));
+    final response = await _petRepository.addPet(
+      name: name,
+      species: species,
+      breed: breed,
+      weight: weight,
+      dateOfBirth: dateOfBirth,
+      image: image,
+    );
+    await response.when<void>(
+      success: (Pet pet) async {
+        // Success: Refetch the personal pet list
+        await fetchPets();
+      },
+      failure: (String error) async {
+        emit(
+          state.copyWith(
+            status: PetsStatus.failure,
+            errorMessage: error,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> fetchPets({
+    String? categoryId,
+    String? search,
+  }) async {
     emit(state.copyWith(status: PetsStatus.loading));
     final response = await _petRepository.getPets(
       categoryId: categoryId,

@@ -2,18 +2,20 @@ import 'package:api_http_client/api_http_client.dart';
 
 class CategoryResponse extends BaseResponse {
   CategoryResponse.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
-    List<dynamic> dataList = [];
-    if (json.containsKey('data')) {
-      dataList = json.getListOrDefault('data');
-    } else {
-      // Sometimes it might not be paginated, fallback to root if it was a list (though not typical for BaseResponse)
-      dataList = json.getListOrDefault('data');
-    }
+    final dataList = json.getListOrDefault('data');
     categories = dataList.map((e) => Category.fromJson(e as Map<String, dynamic>)).toList();
 
-    currentPage = json.getIntOrDefault('current_page', defaultValue: 1);
-    lastPage = json.getIntOrDefault('last_page', defaultValue: 1);
-    total = json.getIntOrDefault('total', defaultValue: 0);
+    // Handle nested meta for pagination
+    if (json.containsKey('meta')) {
+      final meta = json['meta'] as Map<String, dynamic>;
+      currentPage = meta.getIntOrDefault('current_page', defaultValue: 1);
+      lastPage = meta.getIntOrDefault('last_page', defaultValue: 1);
+      total = meta.getIntOrDefault('total', defaultValue: 0);
+    } else {
+      currentPage = json.getIntOrDefault('current_page', defaultValue: 1);
+      lastPage = json.getIntOrDefault('last_page', defaultValue: 1);
+      total = json.getIntOrDefault('total', defaultValue: 0);
+    }
   }
 
   late List<Category> categories = [];
@@ -26,49 +28,32 @@ class CategoryResponse extends BaseResponse {
 
 class Category {
   final String id;
-  final Map<String, dynamic> nameObj;
-  final Map<String, dynamic> descriptionObj;
+  final String name;
+  final String description;
   final String? imageUrl;
   final String? type;
-
-  // Seamless backwards compatibility string accessor prioritizing English
-  String get name => nameObj['en']?.toString() ?? nameObj['kh']?.toString() ?? 'Category';
-  String get description => descriptionObj['en']?.toString() ?? descriptionObj['kh']?.toString() ?? '';
+  final String? slug;
+  final String? status;
 
   const Category({
     required this.id,
-    required this.nameObj,
-    required this.descriptionObj,
+    required this.name,
+    required this.description,
     this.imageUrl,
     this.type,
+    this.slug,
+    this.status,
   });
 
   factory Category.fromJson(Map<String, dynamic> json) {
-    final nameField = json['name'];
-    Map<String, dynamic> parsedName = {};
-    
-    if (nameField is Map<String, dynamic>) {
-      parsedName = nameField;
-    } else if (nameField is String) {
-      // Fallback in case backend sometimes sends naked strings
-      parsedName = {'en': nameField};
-    }
-
-    final descField = json['description'];
-    Map<String, dynamic> parsedDesc = {};
-    
-    if (descField is Map<String, dynamic>) {
-      parsedDesc = descField;
-    } else if (descField is String) {
-      parsedDesc = {'en': descField};
-    }
-
     return Category(
       id: json['id']?.toString() ?? '',
-      nameObj: parsedName,
-      descriptionObj: parsedDesc,
+      name: json['name']?.toString() ?? '',
+      description: json['description']?.toString() ?? '',
       imageUrl: json['image_url']?.toString(),
       type: json['type']?.toString(),
+      slug: json['slug']?.toString(),
+      status: json['status']?.toString(),
     );
   }
 }

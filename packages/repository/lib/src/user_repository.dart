@@ -14,6 +14,9 @@ class UserRepository {
   final TokenStorage _tokenStorage;
   final ApiHttpClient _apiClient;
 
+  Stream<bool> get authenticationStatus =>
+      _tokenStorage.accessTokenStream.map((token) => token != null);
+
   Future<List<String?>> readToken() => _tokenStorage.readToken();
   Future<void> clearToken() => _tokenStorage.clearToken();
 
@@ -46,48 +49,6 @@ class UserRepository {
     return response;
   }
 
-  // get doctor
-  Response<String, DoctorResponse> getDoctors({
-    required int page,
-    String? query,
-  }) async {
-    final response = await _apiClient.getDoctors(
-      page: page,
-      query: query,
-    );
-    return response;
-  }
-
-  // get doctor detail
-  Response<String, DoctorDetailResponse> getDoctorDetail({
-    required String id,
-  }) async {
-    final response = await _apiClient.getDoctorDetail(id: id);
-    return response;
-  }
-
-  // get speciality
-  Response<String, SpecialityResponse> getSpecialities({
-    required int page,
-  }) async {
-    final response = await _apiClient.getSpecialities(page: page);
-    return response;
-  }
-
-  // get hospital
-  Response<String, HospitalResponse> getHospital() async {
-    final response = await _apiClient.getHospital();
-    return response;
-  }
-
-  // get hospital details
-  Response<String, HospitalDetailResponse> getHospitalDetails({
-    required String id,
-  }) async {
-    final response = await _apiClient.getHospitalDetails(id: id);
-    return response;
-  }
-
   // get user info
   Response<String, UserInfoResponse> getUserInfo() async {
     final response = await _apiClient.getUserInfo();
@@ -106,39 +67,11 @@ class UserRepository {
     }
   }
 
-  Response<String, DoctorResponse> getDoctorByHospital({
-    required String hospitalId,
-  }) async {
-    final response = await _apiClient.getDoctorByHospital(id: hospitalId);
-    return response;
-  }
-
-  Response<String, HospitalResponse> getHospitalByDoctor({
-    required String hospitalId,
-  }) async {
-    final response = await _apiClient.getHospitalByDoctor(id: hospitalId);
-    return response;
-  }
-
   Response<String, AppointmentResponse> getAppointement({
     required int page,
     required String status,
   }) async {
     final response = await _apiClient.getAppointments(page: page);
-    return response;
-  }
-
-  Response<String, AvailableTimeSlotResponse> availableTimeSlot({
-    required String doctorId,
-    required String date,
-    required String hospitalId,
-  }) async {
-    final response = await _apiClient.availableTimeSlot(
-      date: date,
-      doctorId: doctorId,
-      hospitalId: hospitalId,
-    );
-
     return response;
   }
 
@@ -173,6 +106,11 @@ class UserRepository {
 
   Response<String, CartResponse> getCart() async {
     final response = await _apiClient.getCart();
+    return response;
+  }
+
+  Response<String, CheckoutConfigResponse> getCheckoutConfig() async {
+    final response = await _apiClient.getCheckoutConfig();
     return response;
   }
 

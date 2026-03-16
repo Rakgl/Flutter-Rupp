@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_methgo_app/features/appointments/cubit/appointments_cubit.dart';
 import 'package:api_http_client/api_http_client.dart';
 import 'package:intl/intl.dart';
+import 'package:go_router/go_router.dart';
 
 class AppointmentsPage extends StatefulWidget {
   const AppointmentsPage({super.key});
@@ -32,6 +33,12 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
         elevation: 0,
         backgroundColor: Colors.white,
         centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Color(0xFF3B82F6)),
+          onPressed: () {
+            Navigator.of(context).maybePop();
+          },
+        ),
         title: const Text(
           'My Appointments',
           style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold),

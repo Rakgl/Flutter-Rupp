@@ -67,6 +67,10 @@ class AppointmentsCubit extends Cubit<AppointmentsState> {
     await response.when<void>(
       success: (AppointmentDetailResponse res) async {
         // Successfully booked
+        emit(state.copyWith(
+          status: AppointmentsStatus.success,
+          lastBookedAppointment: res.appointment,
+        ));
         await fetchAppointments();
       },
       failure: (String error) async {

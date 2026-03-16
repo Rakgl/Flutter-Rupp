@@ -11,6 +11,7 @@ import 'package:flutter_methgo_app/navigation/cubit/navigation_cubit.dart';
 import 'package:flutter_methgo_app/features/profile/cubit/profile_cubit.dart';
 import 'package:flutter_methgo_app/features/products/cubit/products_cubit.dart';
 import 'package:flutter_methgo_app/features/pets/cubit/pets_cubit.dart';
+import 'package:flutter_methgo_app/features/pets/cubit/pet_listings_cubit.dart';
 import 'package:flutter_methgo_app/features/categories/cubit/categories_cubit.dart';
 import 'package:flutter_methgo_app/features/services/cubit/services_cubit.dart';
 import 'package:flutter_methgo_app/features/card/cubit/card_cubit.dart';
@@ -43,8 +44,17 @@ class _AppState extends State<App> {
   CategoryRepository? _categoryRepository;
   ServiceRepository? _serviceRepository;
   PetRepository? _petRepository;
+  PetListingRepository? _petListingRepository;
+
+  StreamSubscription<bool>? _authSubscription;
 
   bool _isInitialized = false;
+
+  @override
+  void dispose() {
+    _authSubscription?.cancel();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -91,6 +101,16 @@ class _AppState extends State<App> {
       _petRepository = PetRepository(
         apiClient: apiClient,
       );
+      _petListingRepository = PetListingRepository(
+        apiClient: apiClient,
+      );
+
+      _authSubscription = _userRepository!.authenticationStatus.listen((isAuth) {
+        if (!isAuth) {
+          GlobalRouter.instance.go('/login');
+        }
+      });
+
       _isInitialized = true;
     });
   }
@@ -137,6 +157,9 @@ class _AppState extends State<App> {
         RepositoryProvider<PetRepository>(
           create: (context) => _petRepository!,
         ),
+        RepositoryProvider<PetListingRepository>(
+          create: (context) => _petListingRepository!,
+        ),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -156,6 +179,11 @@ class _AppState extends State<App> {
           BlocProvider<PetsCubit>(
             create: (context) => PetsCubit(
               petRepository: context.read<PetRepository>(),
+            ),
+          ),
+          BlocProvider<PetListingsCubit>(
+            create: (context) => PetListingsCubit(
+              petListingRepository: context.read<PetListingRepository>(),
             ),
           ),
           BlocProvider<CategoriesCubit>(

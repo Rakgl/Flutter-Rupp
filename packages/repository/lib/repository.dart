@@ -1,10 +1,14 @@
+library repository;
+
+export 'package:api_http_client/api_http_client.dart';
 export 'src/appointment_repository.dart';
 export 'src/cart_repository.dart';
 export 'src/category_repository.dart';
 export 'src/favorite_repository.dart';
 export 'src/medical_record_repository.dart';
 export 'src/pet_repository.dart';
+export 'src/pet_listing_repository.dart';
 export 'src/product_repository.dart';
 export 'src/service_repository.dart';
-export 'src/setting_repository.dart';
 export 'src/user_repository.dart';
+export 'src/setting_repository.dart';

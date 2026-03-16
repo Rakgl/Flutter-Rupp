@@ -168,12 +168,12 @@ class _CategoryDetailView extends StatelessWidget {
                           if (category.type != null &&
                               category.type!.isNotEmpty)
                             _Badge(
-                              label: category.type!,
+                              label: category.type![0].toUpperCase() + category.type!.substring(1).toLowerCase(),
                               color: const Color(0xFF6366F1),
                             ),
                           const SizedBox(width: 8),
                           const _Badge(
-                            label: 'ACTIVE',
+                            label: 'Active',
                             color: Colors.green,
                             icon: Icons.circle,
                           ),
@@ -194,22 +194,6 @@ class _CategoryDetailView extends StatelessWidget {
                             color: Colors.black54,
                             fontSize: 15,
                             height: 1.7,
-                          ),
-                        ),
-                      ),
-
-                      const SizedBox(height: 16),
-
-                      // Slug info card
-                      _SectionCard(
-                        icon: Icons.link_rounded,
-                        title: 'Identifier',
-                        child: Text(
-                          category.id,
-                          style: const TextStyle(
-                            color: Colors.black45,
-                            fontSize: 12,
-                            fontFamily: 'monospace',
                           ),
                         ),
                       ),

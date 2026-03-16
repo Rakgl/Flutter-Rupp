@@ -8,9 +8,10 @@ import 'package:repository/repository.dart';
 import 'package:api_http_client/api_http_client.dart';
 
 class PetDetailPage extends StatelessWidget {
-  const PetDetailPage({super.key, required this.petId});
+  const PetDetailPage({super.key, required this.petId, this.pet});
 
   final String petId;
+  final Pet? pet;
 
   static const path = '/pet-detail';
 
@@ -19,7 +20,7 @@ class PetDetailPage extends StatelessWidget {
     return BlocProvider(
       create: (context) => PetDetailCubit(
         petRepository: context.read<PetRepository>(),
-      )..fetchPet(petId),
+      )..fetchPet(petId, initialPet: pet),
       child: const PetDetailView(),
     );
   }

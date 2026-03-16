@@ -514,7 +514,7 @@
 					"@executable_path/Frameworks",
 				);
 				PACKAGE_CONFIG = .dart_tool/package_config.json;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.example.verygoodcore.flutter-super-aslan-app.dev";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.rak.superaslan.flutter-super-aslan-app.dev";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -534,7 +534,7 @@
 				DEVELOPMENT_TEAM = H4GG68X57D;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.example.verygoodcore.flutter-super-aslan-app.RunnerTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.rak.superaslan.flutter-super-aslan-app.RunnerTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -614,7 +614,7 @@
 					"@executable_path/Frameworks",
 				);
 				PACKAGE_CONFIG = .dart_tool/package_config.json;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.example.verygoodcore.flutter-super-aslan-app";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.rak.superaslan.flutter-super-aslan-app";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -634,7 +634,7 @@
 				DEVELOPMENT_TEAM = H4GG68X57D;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.example.verygoodcore.flutter-super-aslan-app.RunnerTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.rak.superaslan.flutter-super-aslan-app.RunnerTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -711,7 +711,7 @@
 					"@executable_path/Frameworks",
 				);
 				PACKAGE_CONFIG = .dart_tool/package_config.json;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.example.verygoodcore.flutter-super-aslan-app";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.rak.superaslan.flutter-super-aslan-app";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
@@ -730,7 +730,7 @@
 				DEVELOPMENT_TEAM = H4GG68X57D;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.example.verygoodcore.flutter-super-aslan-app.RunnerTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.rak.superaslan.flutter-super-aslan-app.RunnerTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Runner.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Runner";
@@ -803,7 +803,7 @@
 					"@executable_path/Frameworks",
 				);
 				PACKAGE_CONFIG = .dart_tool/package_config.json;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.example.verygoodcore.flutter-super-aslan-app";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.rak.superaslan.flutter-super-aslan-app";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
@@ -821,7 +821,7 @@
 				DEVELOPMENT_TEAM = H4GG68X57D;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.example.verygoodcore.flutter-super-aslan-app";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.rak.superaslan.flutter-super-aslan-app";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Runner.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Runner";
@@ -899,7 +899,7 @@
 					"@executable_path/Frameworks",
 				);
 				PACKAGE_CONFIG = .dart_tool/package_config.json;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.example.verygoodcore.flutter-super-aslan-app.dev";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.rak.superaslan.flutter-super-aslan-app.dev";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -919,7 +919,7 @@
 				DEVELOPMENT_TEAM = H4GG68X57D;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.example.verygoodcore.flutter-super-aslan-app.RunnerTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.rak.superaslan.flutter-super-aslan-app.RunnerTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -994,7 +994,7 @@
 					"@executable_path/Frameworks",
 				);
 				PACKAGE_CONFIG = .dart_tool/package_config.json;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.example.verygoodcore.flutter-super-aslan-app.dev";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.rak.superaslan.flutter-super-aslan-app.dev";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
@@ -1013,7 +1013,7 @@
 				DEVELOPMENT_TEAM = H4GG68X57D;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.example.verygoodcore.flutter-super-aslan-app.RunnerTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.rak.superaslan.flutter-super-aslan-app.RunnerTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Runner.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Runner";
@@ -1088,7 +1088,7 @@
 					"@executable_path/Frameworks",
 				);
 				PACKAGE_CONFIG = .dart_tool/package_config.json;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.example.verygoodcore.flutter-super-aslan-app.dev";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.rak.superaslan.flutter-super-aslan-app.dev";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
@@ -1107,7 +1107,7 @@
 				DEVELOPMENT_TEAM = H4GG68X57D;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.example.verygoodcore.flutter-super-aslan-app.RunnerTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.rak.superaslan.flutter-super-aslan-app.RunnerTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Runner.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Runner";
@@ -1185,7 +1185,7 @@
 					"@executable_path/Frameworks",
 				);
 				PACKAGE_CONFIG = .dart_tool/package_config.json;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.example.verygoodcore.flutter-super-aslan-app.stg";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.rak.superaslan.flutter-super-aslan-app.stg";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -1205,7 +1205,7 @@
 				DEVELOPMENT_TEAM = H4GG68X57D;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.example.verygoodcore.flutter-super-aslan-app.RunnerTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.rak.superaslan.flutter-super-aslan-app.RunnerTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -1282,7 +1282,7 @@
 					"@executable_path/Frameworks",
 				);
 				PACKAGE_CONFIG = .dart_tool/package_config.json;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.example.verygoodcore.flutter-super-aslan-app.stg";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.rak.superaslan.flutter-super-aslan-app.stg";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
@@ -1301,7 +1301,7 @@
 				DEVELOPMENT_TEAM = H4GG68X57D;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.example.verygoodcore.flutter-super-aslan-app.RunnerTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.rak.superaslan.flutter-super-aslan-app.RunnerTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Runner.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Runner";
@@ -1374,7 +1374,7 @@
 					"@executable_path/Frameworks",
 				);
 				PACKAGE_CONFIG = .dart_tool/package_config.json;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.example.verygoodcore.flutter-super-aslan-app.stg";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.rak.superaslan.flutter-super-aslan-app.stg";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
@@ -1393,7 +1393,7 @@
 				DEVELOPMENT_TEAM = H4GG68X57D;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.example.verygoodcore.flutter-super-aslan-app.RunnerTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.rak.superaslan.flutter-super-aslan-app.RunnerTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Runner.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Runner";

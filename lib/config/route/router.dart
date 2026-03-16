@@ -24,6 +24,9 @@ import 'package:flutter_methgo_app/splash/view/splash_page.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_methgo_app/features/auth/signup/view/insurance_information_page.dart';
 
+import 'package:flutter_methgo_app/features/appointments/view/booking_success_page.dart';
+import 'package:api_http_client/api_http_client.dart';
+
 GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 class GlobalRouter {
@@ -82,6 +85,13 @@ class GlobalRouter {
       GoRoute(
         path: AppointmentsPage.path,
         builder: (context, state) => const AppointmentsPage(),
+      ),
+      GoRoute(
+        path: BookingSuccessPage.path,
+        builder: (context, state) {
+          final appointment = state.extra as AppointmentModel;
+          return BookingSuccessPage(appointment: appointment);
+        },
       ),
       GoRoute(
         path: BusinessVerificationPage.path,

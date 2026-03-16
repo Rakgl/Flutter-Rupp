@@ -36,6 +36,18 @@ class CardCubit extends Cubit<CardState> {
     );
   }
 
+  Future<void> fetchCheckoutConfig() async {
+    final response = await _cartRepository.getCheckoutConfig();
+    await response.when<void>(
+      success: (CheckoutConfigResponse config) async {
+        emit(state.copyWith(checkoutConfig: config));
+      },
+      failure: (error) async {
+        // Silently fail or handle error
+      },
+    );
+  }
+
   Future<void> clearCart() async {
     emit(state.copyWith(status: CardStatus.loading));
     final response = await _cartRepository.clearCart();

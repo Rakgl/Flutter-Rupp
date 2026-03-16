@@ -6,9 +6,11 @@ class ServiceDetailResponse {
   final ServiceModel service;
 
   factory ServiceDetailResponse.fromJson(Map<String, dynamic> json) {
-    // The endpoint returns the service object directly (unwrapped)
+    final data = json.containsKey('data') && json['data'] is Map<String, dynamic>
+        ? json['data'] as Map<String, dynamic>
+        : json;
     return ServiceDetailResponse(
-      service: ServiceModel.fromJson(json),
+      service: ServiceModel.fromJson(data),
     );
   }
 }

@@ -2,6 +2,7 @@ import 'package:api_http_client/api_http_client.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_methgo_app/features/card/cubit/card_cubit.dart';
+import 'package:flutter_methgo_app/features/card/view/checkout_page.dart';
 
 class CardPage extends StatefulWidget {
   const CardPage({super.key});
@@ -352,7 +353,11 @@ class _CheckoutBottomBar extends StatelessWidget {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                // Checkout navigation
+                Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => const CheckoutPage(),
+                  ),
+                );
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF3B82F6),

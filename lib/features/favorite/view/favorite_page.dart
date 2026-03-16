@@ -5,7 +5,6 @@ import 'package:flutter_methgo_app/features/shared/widgets/product_cart.dart';
 import 'package:flutter_methgo_app/features/products/view/product_detail_page.dart';
 import 'package:flutter_methgo_app/features/pets/view/pet_detail_page.dart';
 import 'package:flutter_methgo_app/features/services/view/service_detail_page.dart';
-import 'package:repository/repository.dart';
 
 class FavoritePage extends StatefulWidget {
   const FavoritePage({super.key});
@@ -18,8 +17,8 @@ class _FavoritePageState extends State<FavoritePage> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<FavoriteCubit>().fetchFavorites();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await context.read<FavoriteCubit>().fetchFavorites();
     });
   }
 
@@ -37,19 +36,28 @@ class _FavoritePageState extends State<FavoritePage> {
       ),
       body: BlocBuilder<FavoriteCubit, FavoriteState>(
         builder: (context, state) {
-          if (state.status == FavoriteStatus.loading && state.favorites.isEmpty) {
-            return const Center(child: CircularProgressIndicator(color: Color(0xFF3B82F6)));
+          if (state.status == FavoriteStatus.loading &&
+              state.favorites.isEmpty) {
+            return const Center(
+              child: CircularProgressIndicator(color: Color(0xFF3B82F6)),
+            );
           }
-          if (state.status == FavoriteStatus.failure && state.favorites.isEmpty) {
+          if (state.status == FavoriteStatus.failure &&
+              state.favorites.isEmpty) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.error_outline_rounded, size: 60, color: Colors.redAccent),
+                  const Icon(
+                    Icons.error_outline_rounded,
+                    size: 60,
+                    color: Colors.redAccent,
+                  ),
                   const SizedBox(height: 16),
                   Text(state.errorMessage ?? 'Failed to load favorites'),
                   TextButton(
-                    onPressed: () => context.read<FavoriteCubit>().fetchFavorites(),
+                    onPressed: () =>
+                        context.read<FavoriteCubit>().fetchFavorites(),
                     child: const Text('Try Again'),
                   ),
                 ],
@@ -61,11 +69,19 @@ class _FavoritePageState extends State<FavoritePage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.favorite_border_rounded, size: 80, color: Colors.grey.withOpacity(0.3)),
+                  Icon(
+                    Icons.favorite_border_rounded,
+                    size: 80,
+                    color: Colors.grey.withOpacity(0.3),
+                  ),
                   const SizedBox(height: 20),
                   const Text(
                     'No favorite items yet',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.grey),
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey,
+                    ),
                   ),
                   const SizedBox(height: 8),
                   Text(
@@ -93,17 +109,25 @@ class _FavoritePageState extends State<FavoritePage> {
                   GestureDetector(
                     onTap: () {
                       if (item.type == 'product') {
-                        Navigator.of(context).push(MaterialPageRoute<void>(
-                          builder: (_) => ProductDetailPage(productId: item.itemId!),
-                        ));
+                        Navigator.of(context).push(
+                          MaterialPageRoute<void>(
+                            builder: (_) =>
+                                ProductDetailPage(productId: item.itemId!),
+                          ),
+                        );
                       } else if (item.type == 'pet') {
-                        Navigator.of(context).push(MaterialPageRoute<void>(
-                          builder: (_) => PetDetailPage(petId: item.itemId!),
-                        ));
+                        Navigator.of(context).push(
+                          MaterialPageRoute<void>(
+                            builder: (_) => PetDetailPage(petId: item.itemId!),
+                          ),
+                        );
                       } else if (item.type == 'service') {
-                        Navigator.of(context).push(MaterialPageRoute<void>(
-                          builder: (_) => ServiceDetailPage(serviceId: item.itemId!),
-                        ));
+                        Navigator.of(context).push(
+                          MaterialPageRoute<void>(
+                            builder: (_) =>
+                                ServiceDetailPage(serviceId: item.itemId!),
+                          ),
+                        );
                       }
                     },
                     child: ProductCart(
@@ -120,9 +144,9 @@ class _FavoritePageState extends State<FavoritePage> {
                     child: GestureDetector(
                       onTap: () {
                         context.read<FavoriteCubit>().toggleFavorite(
-                              id: item.itemId!,
-                              itemType: item.type,
-                            );
+                          id: item.itemId!,
+                          itemType: item.type,
+                        );
                       },
                       child: Container(
                         padding: const EdgeInsets.all(6),

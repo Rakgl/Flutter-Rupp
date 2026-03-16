@@ -130,7 +130,7 @@ class _ProductsPageState extends State<ProductsPage> {
                     crossAxisCount: 2,
                     crossAxisSpacing: 16,
                     mainAxisSpacing: 16,
-                    childAspectRatio: 0.7,
+                    childAspectRatio: 0.68,
                   ),
                   delegate: SliverChildBuilderDelegate(
                     (context, index) {
@@ -250,15 +250,42 @@ class _PremiumProductCard extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 2),
-                        Text(
-                          product.categoryName ?? 'Product',
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            fontSize: 11,
-                            color: Colors.black54,
-                          ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                product.categoryName ?? 'Product',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontSize: 11,
+                                  color: Colors.black54,
+                                ),
+                              ),
+                            ),
+                            if (product.status.toUpperCase() == 'ACTIVE')
+                              Container(
+                                width: 6,
+                                height: 6,
+                                decoration: const BoxDecoration(
+                                  color: Colors.green,
+                                  shape: BoxShape.circle,
+                                ),
+                              ),
+                          ],
                         ),
+                        if (product.sku.isNotEmpty)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 2),
+                            child: Text(
+                              product.sku,
+                              style: TextStyle(
+                                fontSize: 10,
+                                color: Colors.grey.shade400,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
                       ],
                     ),
                     Row(
@@ -273,29 +300,35 @@ class _PremiumProductCard extends StatelessWidget {
                           ),
                         ),
                     GestureDetector(
-                      onTap: () {
-                        context.read<CardCubit>().addToCart(product.id);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('${product.name} added to cart!'),
-                            backgroundColor: const Color(0xFF3B82F6),
-                            duration: const Duration(seconds: 2),
-                          ),
-                        );
-                      },
+                      onTap: product.stockStatus == 'OUT_OF_STOCK'
+                          ? null
+                          : () {
+                              context.read<CardCubit>().addToCart(product.id);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('${product.name} added to cart!'),
+                                  backgroundColor: const Color(0xFF3B82F6),
+                                  duration: const Duration(seconds: 2),
+                                ),
+                              );
+                            },
                       child: Container(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 6,
                           vertical: 3,
                         ),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF3B82F6).withOpacity(0.12),
+                          color: product.stockStatus == 'OUT_OF_STOCK'
+                              ? Colors.grey.withOpacity(0.12)
+                              : const Color(0xFF3B82F6).withOpacity(0.12),
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        child: const Icon(
+                        child: Icon(
                           Icons.add_shopping_cart_rounded,
                           size: 18,
-                          color: Color(0xFF3B82F6),
+                          color: product.stockStatus == 'OUT_OF_STOCK'
+                              ? Colors.grey
+                              : const Color(0xFF3B82F6),
                         ),
                       ),
                     ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_methgo_app/features/pets/cubit/pets_cubit.dart';
+import 'package:flutter_methgo_app/features/pets/cubit/pet_listings_cubit.dart';
 import 'package:api_http_client/api_http_client.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_methgo_app/features/pets/view/pet_detail_page.dart';
@@ -21,7 +21,7 @@ class _PetsPageState extends State<PetsPage> {
   @override
   void initState() {
     super.initState();
-    context.read<PetsCubit>().fetchPets();
+    context.read<PetListingsCubit>().fetchListings();
   }
 
   @override
@@ -97,7 +97,9 @@ class _PetsPageState extends State<PetsPage> {
                   child: TextField(
                     controller: _searchController,
                     onChanged: (value) {
-                      context.read<PetsCubit>().fetchPets(search: value.trim());
+                      context
+                          .read<PetListingsCubit>()
+                          .fetchListings(search: value.trim());
                     },
                     decoration: InputDecoration(
                       hintText: 'Search pets (e.g. pug, siamese...)',
@@ -108,7 +110,9 @@ class _PetsPageState extends State<PetsPage> {
                               icon: const Icon(Icons.clear, size: 20),
                               onPressed: () {
                                 _searchController.clear();
-                                context.read<PetsCubit>().fetchPets();
+                                context
+                                    .read<PetListingsCubit>()
+                                    .fetchListings();
                                 setState(() {});
                               },
                             )
@@ -132,14 +136,14 @@ class _PetsPageState extends State<PetsPage> {
           ),
 
           // ── Grid Content ─────────────────────────────────────────────
-          BlocBuilder<PetsCubit, PetsState>(
+          BlocBuilder<PetListingsCubit, PetListingsState>(
             builder: (context, state) {
-              if (state.status == PetsStatus.loading || state.status == PetsStatus.initial) {
+              if (state.status == PetListingsStatus.loading || state.status == PetListingsStatus.initial) {
                 return const SliverFillRemaining(
                   child: Center(child: CircularProgressIndicator(color: Color(0xFF10B981))),
                 );
               }
-              if (state.status == PetsStatus.failure) {
+              if (state.status == PetListingsStatus.failure) {
                 return SliverFillRemaining(
                   child: Center(
                     child: Column(
@@ -150,7 +154,7 @@ class _PetsPageState extends State<PetsPage> {
                         Text(state.errorMessage ?? 'Failed to fetch pets'),
                         const SizedBox(height: 16),
                         ElevatedButton(
-                          onPressed: () => context.read<PetsCubit>().fetchPets(),
+                          onPressed: () => context.read<PetListingsCubit>().fetchListings(),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF10B981),
                             foregroundColor: Colors.white,
@@ -162,7 +166,7 @@ class _PetsPageState extends State<PetsPage> {
                   ),
                 );
               }
-              if (state.pets.isEmpty) {
+              if (state.listings.isEmpty) {
                 return const SliverFillRemaining(
                   child: Center(
                     child: Text('No pets found', style: TextStyle(color: Colors.grey)),
@@ -181,10 +185,10 @@ class _PetsPageState extends State<PetsPage> {
                   ),
                   delegate: SliverChildBuilderDelegate(
                     (context, index) {
-                      final pet = state.pets[index];
-                      return _PremiumPetCard(pet: pet);
+                      final listing = state.listings[index];
+                      return _PremiumPetCard(listing: listing);
                     },
-                    childCount: state.pets.length,
+                    childCount: state.listings.length,
                   ),
                 ),
               );
@@ -197,14 +201,22 @@ class _PetsPageState extends State<PetsPage> {
 }
 
 class _PremiumPetCard extends StatelessWidget {
-  const _PremiumPetCard({required this.pet});
-  final Pet pet;
+  const _PremiumPetCard({required this.listing});
+  final PetListing listing;
 
   @override
   Widget build(BuildContext context) {
+    final pet = listing.pet;
     return GestureDetector(
       onTap: () {
-        context.push(PetDetailPage.path, extra: pet.id);
+        Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (_) => PetDetailPage(
+              petId: pet.id,
+              pet: pet,
+            ),
+          ),
+        );
       },
       child: Container(
         decoration: BoxDecoration(
@@ -308,9 +320,9 @@ class _PremiumPetCard extends StatelessWidget {
                             ),
                           ),
                         ),
-                        if (pet.price != null && pet.price!.isNotEmpty)
+                        if (listing.price != '0')
                           Text(
-                            '\$${pet.price}',
+                            '\$${listing.price}',
                             style: const TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.bold,

@@ -141,100 +141,6 @@ class ApiHttpClient {
     }
   }
 
-  // get doctor
-  Response<String, DoctorResponse> getDoctors(
-      {required int page, String? query}) async {
-    try {
-      final baseURL = query == null
-          ? 'doctors?page=$page'
-          : 'doctors?page=$page&speciality_id=$query';
-      final response = await _httpClient.get(baseURL);
-      final res = DoctorResponse.fromJson(response);
-      if (res.success) {
-        return Right(res);
-      } else {
-        return Left(res.message ?? 'Failed to get doctors');
-      }
-    } on ApiRequestFailure catch (e) {
-      return Left(e.body['message'] as String);
-    } on SocketException {
-      return const Left('no_internet');
-    } catch (e) {
-      log('[ApiHttpClient] Error in getDoctors: $e');
-      return const Left(
-        'Something went wrong. Try again',
-      );
-    }
-  }
-
-  // get doctor detail
-  Response<String, DoctorDetailResponse> getDoctorDetail(
-      {required String id}) async {
-    try {
-      final response = await _httpClient.get('doctors/$id');
-      final res = DoctorDetailResponse.fromJson(response);
-      if (res.success) {
-        return Right(res);
-      } else {
-        return Left(res.message ?? 'Failed to get doctor detail');
-      }
-    } on ApiRequestFailure catch (e) {
-      return Left(e.body['message'] as String);
-    } on SocketException {
-      return const Left('no_internet');
-    } catch (e) {
-      log('[ApiHttpClient] Error in getDoctorDetail: $e');
-      return const Left(
-        'Something went wrong. Try again',
-      );
-    }
-  }
-
-  // get speciality
-  Response<String, SpecialityResponse> getSpecialities(
-      {required int page}) async {
-    try {
-      final response = await _httpClient.get('specialities?page=$page');
-      final res = SpecialityResponse.fromJson(response);
-      if (res.success) {
-        return Right(res);
-      } else {
-        return Left(res.message ?? 'Failed to get specialities');
-      }
-    } on ApiRequestFailure catch (e) {
-      return Left(e.body['message'] as String);
-    } on SocketException {
-      return const Left('no_internet');
-    } catch (e) {
-      log('[ApiHttpClient] Error in getSpecialities: $e');
-      return const Left(
-        'Something went wrong. Try again',
-      );
-    }
-  }
-
-  // get hospital
-  Response<String, HospitalResponse> getHospital() async {
-    try {
-      final response = await _httpClient.get('hospitals');
-      final res = HospitalResponse.fromJson(response);
-      if (res.success) {
-        return Right(res);
-      } else {
-        return Left(res.message ?? 'Failed to get hospitals');
-      }
-    } on ApiRequestFailure catch (e) {
-      return Left(e.body['message'] as String);
-    } on SocketException {
-      return const Left('no_internet');
-    } catch (e) {
-      log('[ApiHttpClient] Error in getHospital: $e');
-      return const Left(
-        'Something went wrong. Try again',
-      );
-    }
-  }
-
   // get user info
   Response<String, UserInfoResponse> getUserInfo() async {
     try {
@@ -251,102 +157,6 @@ class ApiHttpClient {
       return const Left('no_internet');
     } catch (e) {
       log('[ApiHttpClient] Error in getUserInfo: $e');
-      return const Left(
-        'Something went wrong. Try again',
-      );
-    }
-  }
-
-  // get hospital
-  Response<String, HospitalDetailResponse> getHospitalDetails(
-      {required String id}) async {
-    try {
-      final response = await _httpClient.get('hospitals/$id');
-      final res = HospitalDetailResponse.fromJson(response);
-      if (res.success) {
-        return Right(res);
-      } else {
-        return Left(res.message ?? 'Failed to get hospital details');
-      }
-    } on ApiRequestFailure catch (e) {
-      return Left(e.body['message'] as String);
-    } on SocketException {
-      return const Left('no_internet');
-    } catch (e) {
-      log('[ApiHttpClient] Error in getHospitalDetails: $e');
-      return const Left(
-        'Something went wrong. Try again',
-      );
-    }
-  }
-
-  Response<String, DoctorResponse> getDoctorByHospital({
-    required String id,
-  }) async {
-    try {
-      final response = await _httpClient.get('doctors/by-hospital/$id');
-      final res = DoctorResponse.fromJson(response);
-      if (res.success) {
-        return Right(res);
-      } else {
-        return Left(res.message ?? 'Failed to get doctors by hospital');
-      }
-    } on ApiRequestFailure catch (e) {
-      return Left(e.body['message'] as String);
-    } on SocketException {
-      return const Left('no_internet');
-    } catch (e) {
-      log('[ApiHttpClient] Error in getDoctorByHospital: $e');
-      return const Left(
-        'Something went wrong. Try again',
-      );
-    }
-  }
-
-  Response<String, HospitalResponse> getHospitalByDoctor({
-    required String id,
-  }) async {
-    try {
-      final response = await _httpClient.get('doctors/$id/hospitals');
-      final res = HospitalResponse.fromJson(response);
-      if (res.success) {
-        return Right(res);
-      } else {
-        return Left(res.message ?? 'Failed to get hospitals');
-      }
-    } on ApiRequestFailure catch (e) {
-      return Left(e.body['message'] as String);
-    } on SocketException {
-      return const Left('no_internet');
-    } catch (e) {
-      log('[ApiHttpClient] Error in getHospitalByDoctor: $e');
-      return const Left(
-        'Something went wrong. Try again',
-      );
-    }
-  }
-
-  Response<String, AvailableTimeSlotResponse> availableTimeSlot({
-    required String doctorId,
-    required String hospitalId,
-    required String date,
-  }) async {
-    try {
-      final baseURL =
-          'appointments/available-slots?doctor_id=$doctorId&date=$date&hospital_id=$hospitalId';
-      final response = await _httpClient.get(baseURL);
-      final res = AvailableTimeSlotResponse.fromJson(response);
-      if (res.success) {
-        return Right(res);
-      } else {
-        return Left(res.message ?? 'Failed to get available time slots');
-      }
-    } on ApiRequestFailure catch (e) {
-      return Left(e.body['message'] as String);
-    } on SocketException {
-      return const Left('no_internet');
-    } catch (e) {
-      log('[ApiHttpClient] Error in availableTimeSlot: $e');
       return const Left(
         'Something went wrong. Try again',
       );
@@ -478,6 +288,27 @@ class ApiHttpClient {
       return const Left('no_internet');
     } catch (e) {
       log('[ApiHttpClient] Error in getCart: $e');
+      return const Left(
+        'Something went wrong. Try again',
+      );
+    }
+  }
+
+  Response<String, CheckoutConfigResponse> getCheckoutConfig() async {
+    try {
+      final response = await _httpClient.get('checkout/config');
+      final res = CheckoutConfigResponse.fromJson(response);
+      if (res.success) {
+        return Right(res);
+      } else {
+        return Left(res.message ?? 'Failed to fetch checkout config');
+      }
+    } on ApiRequestFailure catch (e) {
+      return Left(e.body['message'] as String);
+    } on SocketException {
+      return const Left('no_internet');
+    } catch (e) {
+      log('[ApiHttpClient] Error in getCheckoutConfig: $e');
       return const Left(
         'Something went wrong. Try again',
       );
@@ -733,7 +564,74 @@ class ApiHttpClient {
     }
   }
 
-  // get pets
+  // get pet listings (Marketplace)
+  Response<String, PetResponse> getPetListings({
+    String? categoryId,
+    String? search,
+    int page = 1,
+  }) async {
+    try {
+      final queryParams = <String, String>{'page': '$page'};
+      if (categoryId != null) queryParams['category_id'] = categoryId;
+      if (search != null && search.isNotEmpty) queryParams['search'] = search;
+      final path =
+          'pet-listings?${queryParams.entries.map((e) => '${e.key}=${Uri.encodeComponent(e.value)}').join('&')}';
+      final response = await _httpClient.get(path);
+      final res = PetResponse.fromJson(response);
+      if (res.pets.isNotEmpty || response['data'] != null) {
+        return Right(res);
+      } else {
+        return const Left('No pet listings found');
+      }
+    } on ApiRequestFailure catch (e) {
+      return Left(e.body['message'] as String);
+    } on SocketException {
+      return const Left('no_internet');
+    } catch (e) {
+      log('[ApiHttpClient] Error in getPetListings: $e');
+      return const Left(
+        'Something went wrong. Try again',
+      );
+    }
+  }
+
+  // add pet (User-owned)
+  Response<String, Pet> addPet({
+    required String name,
+    String? species,
+    String? breed,
+    String? weight,
+    String? dateOfBirth,
+    File? image,
+  }) async {
+    try {
+      final body = {
+        'name': name,
+        if (species != null) 'species': species,
+        if (breed != null) 'breed': breed,
+        if (weight != null) 'weight': weight,
+        if (dateOfBirth != null) 'date_of_birth': dateOfBirth,
+      };
+
+      final response = await _httpClient.postMultipart(
+        'pets',
+        fields: body,
+        files: image != null ? {'image': image} : null,
+      );
+
+      final data = response['data'] as Map<String, dynamic>;
+      return Right(Pet.fromJson(data));
+    } on ApiRequestFailure catch (e) {
+      return Left(e.body['message'] as String);
+    } on SocketException {
+      return const Left('no_internet');
+    } catch (e) {
+      log('[ApiHttpClient] Error in addPet: $e');
+      return const Left('Something went wrong. Try again');
+    }
+  }
+
+  // get pets (User-owned)
   Response<String, PetResponse> getPets({
     String? categoryId,
     String? search,
@@ -856,7 +754,7 @@ class ApiHttpClient {
     try {
       final response = await _httpClient.get('appointments/$id');
       final res = AppointmentDetailResponse.fromJson(response);
-      if (res.success || res.data != null || response['data'] != null) {
+      if (res.success || res.appointment != null || response['data'] != null) {
         return Right(res);
       } else {
         return Left(res.message ?? 'Failed to fetch appointment detail');

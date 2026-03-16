@@ -4,7 +4,7 @@ class ProductResponse extends BaseResponse {
   ProductResponse.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
     final data = json.getListOrDefault('data');
     products = List<Product>.from(data.map((x) => Product.fromJson(x)));
-    
+
     final meta = json.getMapOrNull('meta');
     if (meta != null) {
       currentPage = meta.getIntOrDefault('current_page');
@@ -17,7 +17,7 @@ class ProductResponse extends BaseResponse {
   int currentPage = 1;
   int lastPage = 1;
   int total = 0;
-  
+
   bool get isReachMax => currentPage >= lastPage;
 }
 
@@ -29,6 +29,10 @@ class Product {
   final String? imageUrl;
   final String? categoryName;
   final bool isFavorite;
+  final String sku;
+  final String status;
+  final int stockQuantity;
+  final String stockStatus; // IN_STOCK, LOW_STOCK, OUT_OF_STOCK
 
   Product({
     required this.id,
@@ -38,6 +42,10 @@ class Product {
     this.imageUrl,
     this.categoryName,
     this.isFavorite = false,
+    required this.sku,
+    required this.status,
+    this.stockQuantity = 0,
+    this.stockStatus = 'OUT_OF_STOCK',
   });
 
   factory Product.fromJson(Map<String, dynamic> json) {
@@ -49,6 +57,10 @@ class Product {
       imageUrl: json['image_url'] as String?,
       categoryName: json['category_name'] as String?,
       isFavorite: json['is_favorite'] as bool? ?? false,
+      sku: json['sku'] as String? ?? '',
+      status: json['status'] as String? ?? '',
+      stockQuantity: json.getIntOrDefault('stock_quantity'),
+      stockStatus: json['stock_status']?.toString() ?? 'OUT_OF_STOCK',
     );
   }
 
@@ -61,6 +73,10 @@ class Product {
       'image_url': imageUrl,
       'category_name': categoryName,
       'is_favorite': isFavorite,
+      'sku': sku,
+      'status': status,
+      'stock_quantity': stockQuantity,
+      'stock_status': stockStatus,
     };
   }
 }

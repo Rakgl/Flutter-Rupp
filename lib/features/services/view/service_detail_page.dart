@@ -9,6 +9,9 @@ import 'package:flutter_methgo_app/features/appointments/cubit/appointments_cubi
 import 'package:api_http_client/api_http_client.dart';
 import 'package:intl/intl.dart';
 
+import 'package:go_router/go_router.dart';
+import 'package:flutter_methgo_app/features/appointments/view/booking_success_page.dart';
+
 class ServiceDetailPage extends StatelessWidget {
   const ServiceDetailPage({super.key, required this.serviceId});
 
@@ -16,10 +19,19 @@ class ServiceDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => ServiceDetailCubit(
-        serviceRepository: context.read<ServiceRepository>(),
-      )..fetchService(id: serviceId),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => ServiceDetailCubit(
+            serviceRepository: context.read<ServiceRepository>(),
+          )..fetchService(id: serviceId),
+        ),
+        BlocProvider(
+          create: (context) => PetsCubit(
+            petRepository: context.read<PetRepository>(),
+          )..fetchPets(),
+        ),
+      ],
       child: const _ServiceDetailView(),
     );
   }
@@ -314,12 +326,12 @@ class _ServiceDetailView extends StatelessWidget {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => BlocProvider.value(
-        value: context.read<PetsCubit>(),
-        child: BlocProvider.value(
-          value: context.read<AppointmentsCubit>(),
-          child: _BookingSheet(service: service),
-        ),
+      builder: (_) => MultiBlocProvider(
+        providers: [
+          BlocProvider.value(value: context.read<PetsCubit>()),
+          BlocProvider.value(value: context.read<AppointmentsCubit>()),
+        ],
+        child: _BookingSheet(service: service),
       ),
     );
   }
@@ -572,14 +584,11 @@ class _BookingSheetState extends State<_BookingSheet> {
             // Submit Button
             BlocConsumer<AppointmentsCubit, AppointmentsState>(
               listener: (context, state) {
-                if (state.status == AppointmentsStatus.success) {
-                  Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Appointment booked successfully!'),
-                      backgroundColor: Colors.green,
-                    ),
-                  );
+                if (state.status == AppointmentsStatus.success &&
+                    state.lastBookedAppointment != null) {
+                  Navigator.pop(context); // Close sheet
+                  context.push(BookingSuccessPage.path,
+                      extra: state.lastBookedAppointment);
                 } else if (state.status == AppointmentsStatus.failure) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(

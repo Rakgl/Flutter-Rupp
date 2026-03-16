@@ -1,15 +1,8 @@
 import 'dart:convert';
+import 'package:api_http_client/api_http_client.dart';
 
-class ServiceResponse {
-  ServiceResponse({
-    required this.services,
-    this.isReachMax = false,
-  });
-
-  late List<ServiceModel> services;
-  late bool isReachMax;
-
-  factory ServiceResponse.fromJson(Map<String, dynamic> json) {
+class ServiceResponse extends BaseResponse {
+  ServiceResponse.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
     final rawData = json['data'];
     List<dynamic> dataList = [];
     if (rawData is List) {
@@ -17,13 +10,30 @@ class ServiceResponse {
     } else if (rawData is Map && rawData['data'] is List) {
       dataList = rawData['data'] as List<dynamic>;
     }
-    return ServiceResponse(
-      services: dataList
-          .map((e) => ServiceModel.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      isReachMax: json['next_page_url'] == null,
-    );
+
+    services = dataList
+        .map((e) => ServiceModel.fromJson(e as Map<String, dynamic>))
+        .toList();
+
+    // Handle nested meta for pagination
+    if (json.containsKey('meta')) {
+      final meta = json['meta'] as Map<String, dynamic>;
+      currentPage = meta.getIntOrDefault('current_page', defaultValue: 1);
+      lastPage = meta.getIntOrDefault('last_page', defaultValue: 1);
+      total = meta.getIntOrDefault('total', defaultValue: 0);
+    } else {
+      currentPage = json.getIntOrDefault('current_page', defaultValue: 1);
+      lastPage = json.getIntOrDefault('last_page', defaultValue: 1);
+      total = json.getIntOrDefault('total', defaultValue: 0);
+    }
   }
+
+  late List<ServiceModel> services = [];
+  int currentPage = 1;
+  int lastPage = 1;
+  int total = 0;
+
+  bool get isReachMax => currentPage >= lastPage;
 }
 
 class ServiceModel {

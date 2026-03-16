@@ -132,16 +132,61 @@ class ProductDetailView extends StatelessWidget {
                         ),
                         const SizedBox(height: 8),
                         if (product.categoryName != null)
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 4),
-                            decoration: BoxDecoration(
-                              color: Colors.blue.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Text(
-                              product.categoryName!,
-                              style: const TextStyle(color: Colors.blue),
+                          Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 4),
+                                decoration: BoxDecoration(
+                                  color: Colors.blue.withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Text(
+                                  product.categoryName!,
+                                  style: const TextStyle(
+                                      color: Colors.blue,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 12),
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              if (product.status.isNotEmpty)
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 12, vertical: 4),
+                                  decoration: BoxDecoration(
+                                    color: (product.status.toUpperCase() ==
+                                                'ACTIVE' ||
+                                            product.status.toUpperCase() ==
+                                                'AVAILABLE')
+                                        ? Colors.green.withOpacity(0.1)
+                                        : Colors.grey.withOpacity(0.1),
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: Text(
+                                    product.status.toUpperCase(),
+                                    style: TextStyle(
+                                      color: (product.status.toUpperCase() ==
+                                                  'ACTIVE' ||
+                                              product.status.toUpperCase() ==
+                                                  'AVAILABLE')
+                                          ? Colors.green
+                                          : Colors.grey,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 11,
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        const SizedBox(height: 16),
+                        if (product.sku.isNotEmpty)
+                          Text(
+                            'SKU: ${product.sku}',
+                            style: TextStyle(
+                              color: Colors.grey.shade600,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
                         const SizedBox(height: 24),
@@ -177,26 +222,31 @@ class ProductDetailView extends StatelessWidget {
             child: BlocBuilder<ProductDetailCubit, ProductDetailState>(
               builder: (context, state) {
                 final product = state.product;
+                final isOutOfStock = product?.stockStatus == 'OUT_OF_STOCK';
+
                 return ElevatedButton(
-                  onPressed: () {
-                    if (product != null) {
-                      context.read<CardCubit>().addToCart(product.id);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('${product.name} added to cart!'),
-                          backgroundColor: Colors.green,
-                        ),
-                      );
-                    }
-                  },
+                  onPressed: (product == null || isOutOfStock)
+                      ? null
+                      : () {
+                          context.read<CardCubit>().addToCart(product.id);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('${product.name} added to cart!'),
+                              backgroundColor: Colors.green,
+                            ),
+                          );
+                        },
                   style: ElevatedButton.styleFrom(
                     minimumSize: const Size(double.infinity, 50),
+                    backgroundColor: isOutOfStock ? Colors.grey : null,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
                   child: Text(
-                    'Add to Cart${product != null ? " (\$${product.price.toStringAsFixed(2)})" : ""}',
+                    isOutOfStock
+                        ? 'OUT OF STOCK'
+                        : 'Add to Cart${product != null ? " (\$${product.price.toStringAsFixed(2)})" : ""}',
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 );

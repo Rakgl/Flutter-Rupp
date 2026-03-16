@@ -4,14 +4,9 @@ export 'pharmacy_response.dart';
 export 'pharmacy_detail_response.dart';
 export 'product_response.dart';
 export 'category_response.dart';
-export 'doctor_response.dart';
-export 'speciality_response.dart';
-export 'doctor_detail_response.dart';
-export 'hospital_response.dart';
 export 'user_info_response.dart';
-export 'hospital_detail_response.dart';
-export 'available_time_slot_response.dart';
-export 'appointment_response.dart'; 
+export 'appointment_response.dart';
+ 
 export 'book_appointment_response.dart';
 export 'service_response.dart';
 export 'cart_response.dart';

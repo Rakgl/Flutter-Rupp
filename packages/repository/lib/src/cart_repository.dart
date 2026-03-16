@@ -60,6 +60,11 @@ class CartRepository {
     return response;
   }
 
+  Response<String, CheckoutConfigResponse> getCheckoutConfig() async {
+    final response = await _apiClient.getCheckoutConfig();
+    return response;
+  }
+
   Response<String, String> placeOrder(PlaceOrderRequest request) async {
     final response = await _apiClient.placeOrder(request);
     return response;

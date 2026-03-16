@@ -10,6 +10,7 @@ import 'package:flutter_methgo_app/features/categories/view/categories_page.dart
 import 'package:flutter_methgo_app/features/categories/view/category_detail_page.dart';
 import 'package:flutter_methgo_app/features/home/home.dart';
 import 'package:flutter_methgo_app/features/pets/cubit/pets_cubit.dart';
+import 'package:flutter_methgo_app/features/pets/cubit/pet_listings_cubit.dart';
 import 'package:flutter_methgo_app/features/pets/view/pets_page.dart';
 import 'package:flutter_methgo_app/features/products/cubit/products_cubit.dart';
 import 'package:flutter_methgo_app/features/services/cubit/services_cubit.dart';
@@ -18,6 +19,7 @@ import 'package:flutter_methgo_app/features/favorite/cubit/favorite_cubit.dart';
 import 'package:flutter_methgo_app/features/products/view/product_detail_page.dart';
 import 'package:flutter_methgo_app/features/pets/view/pet_detail_page.dart';
 import 'package:flutter_methgo_app/features/services/view/service_detail_page.dart';
+import 'package:repository/repository.dart';
 import 'package:flutter_methgo_app/features/shared/widgets/app_header_bar.dart';
 import 'package:flutter_methgo_app/features/shared/widgets/category_list.dart';
 import 'package:flutter_methgo_app/features/shared/widgets/search_bar.dart';
@@ -27,10 +29,7 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => HomeCubit(),
-      child: const HomeView(),
-    );
+    return const HomeView();
   }
 }
 
@@ -46,8 +45,9 @@ class _HomeViewState extends State<HomeView> {
   void initState() {
     super.initState();
     context.read<ServicesCubit>().fetchServices();
-    context.read<PetsCubit>().fetchPets();
     context.read<ProductsCubit>().fetchProducts();
+    context.read<PetListingsCubit>().fetchListings(); // Marketplace
+    context.read<PetsCubit>().fetchPets(); // User pets (for booking etc)
   }
 
   @override
@@ -151,7 +151,7 @@ class _HomeViewState extends State<HomeView> {
 
               // ══ PETS SECTION ═════════════════════════════════════════
               _SectionHeader(
-                title: 'Pets',
+                title: 'Marketplace', // Changed to Marketplace
                 icon: Icons.pets_rounded,
                 color: const Color(0xFF10B981),
                 onSeeAll: () => Navigator.of(context).push(
@@ -159,29 +159,33 @@ class _HomeViewState extends State<HomeView> {
                 ),
               ),
               const SizedBox(height: 12),
-              BlocBuilder<PetsCubit, PetsState>(
+              BlocBuilder<PetListingsCubit, PetListingsState>(
                 builder: (context, state) {
-                  if (state.status == PetsStatus.loading) {
+                  if (state.status == PetListingsStatus.loading) {
                     return const _HorizontalLoadingShimmer(
                         color: Color(0xFF10B981));
                   }
-                  if (state.pets.isEmpty) {
-                    return const _EmptySection(label: 'No pets available');
+                  if (state.listings.isEmpty) {
+                    return const _EmptySection(label: 'No listings available');
                   }
                   return SizedBox(
                     height: 200,
                     child: ListView.separated(
                       scrollDirection: Axis.horizontal,
-                      itemCount: state.pets.length > 8 ? 8 : state.pets.length,
+                      itemCount: state.listings.length > 8 ? 8 : state.listings.length,
                       separatorBuilder: (_, __) => const SizedBox(width: 12),
                       itemBuilder: (context, index) {
-                        final pet = state.pets[index];
+                        final listing = state.listings[index];
+                        final pet = listing.pet;
                         return _FadeInItem(
                           index: index,
                           child: GestureDetector(
                             onTap: () => Navigator.of(context).push(
                               MaterialPageRoute<void>(
-                                builder: (_) => PetDetailPage(petId: pet.id),
+                                builder: (_) => PetDetailPage(
+                                  petId: pet.id,
+                                  pet: pet,
+                                ),
                               ),
                             ),
                             child: _PetCard(
@@ -190,7 +194,7 @@ class _HomeViewState extends State<HomeView> {
                               image: pet.imageUrl ?? '',
                               breed: pet.breed ?? '',
                               isFavorite: pet.isFavorite,
-                              price: pet.price ?? '0',
+                              price: listing.price,
                             ),
                           ),
                         );

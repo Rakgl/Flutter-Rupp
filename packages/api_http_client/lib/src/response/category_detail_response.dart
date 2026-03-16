@@ -10,8 +10,11 @@ class CategoryDetailResponse extends Equatable {
   final Category category;
 
   factory CategoryDetailResponse.fromJson(Map<String, dynamic> json) {
+    final data = json.containsKey('data') && json['data'] is Map<String, dynamic>
+        ? json['data'] as Map<String, dynamic>
+        : json;
     return CategoryDetailResponse(
-      category: Category.fromJson(json),
+      category: Category.fromJson(data),
     );
   }
 

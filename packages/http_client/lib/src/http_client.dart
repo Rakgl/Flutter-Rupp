@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:dio/dio.dart' hide ProgressCallback;
 import 'package:http_client/src/interceptor.dart';
 import 'package:token_storage/token_storage.dart';
@@ -34,6 +35,14 @@ abstract class HttpClient {
   Future<Map<String, dynamic>> delete(
     String path, {
     Map<String, dynamic>? queryParameters,
+    Map<String, dynamic>? headers,
+  });
+
+  /// [postMultipart] sends a HTTP POST request with multipart/form-data
+  Future<Map<String, dynamic>> postMultipart(
+    String path, {
+    required Map<String, dynamic> fields,
+    Map<String, File>? files,
     Map<String, dynamic>? headers,
   });
 
@@ -216,7 +225,51 @@ class DioHttpClient implements HttpClient {
     } on DioException catch (e) {
       if (e.response != null) {
         throw ApiRequestFailure(
-          statusCode: e.response!.statusCode!,
+          statusCode: e.response?.statusCode ?? 500,
+          body: e.response!.data as Map<String, dynamic>,
+        );
+      } else {
+        rethrow;
+      }
+    } on FormatException catch (e) {
+      throw ApiMalformedResponse(error: e);
+    }
+  }
+
+  @override
+  Future<Map<String, dynamic>> postMultipart(
+    String path, {
+    required Map<String, dynamic> fields,
+    Map<String, File>? files,
+    Map<String, dynamic>? headers,
+  }) async {
+    try {
+      final formData = FormData.fromMap(fields);
+
+      if (files != null) {
+        for (final entry in files.entries) {
+          formData.files.add(
+            MapEntry(
+              entry.key,
+              await MultipartFile.fromFile(
+                entry.value.path,
+                filename: entry.value.path.split('/').last,
+              ),
+            ),
+          );
+        }
+      }
+
+      final response = await _dio.post<Map<String, dynamic>>(
+        path,
+        data: formData,
+        options: Options(headers: headers),
+      );
+      return response.data!;
+    } on DioException catch (e) {
+      if (e.response != null) {
+        throw ApiRequestFailure(
+          statusCode: e.response!.statusCode ?? 500,
           body: e.response!.data as Map<String, dynamic>,
         );
       } else {

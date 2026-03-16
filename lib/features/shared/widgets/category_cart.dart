@@ -75,7 +75,7 @@ class CategoryCart extends StatelessWidget {
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(
-                      type,
+                      type[0].toUpperCase() + type.substring(1).toLowerCase(),
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 10,
