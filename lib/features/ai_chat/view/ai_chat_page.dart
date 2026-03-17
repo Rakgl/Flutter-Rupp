@@ -221,15 +221,21 @@ class _AiChatPageState extends State<AiChatPage> {
       children: [
         // Top bar
         Container(
-          height: 56,
-          padding: const EdgeInsets.symmetric(horizontal: 8),
+          padding: EdgeInsets.only(
+            top: MediaQuery.of(context).padding.top,
+            left: 8,
+            right: 8,
+          ),
+          constraints: const BoxConstraints(minHeight: 56),
           decoration: BoxDecoration(
             color: Colors.white,
             border: Border(
               bottom: BorderSide(color: Colors.grey.shade200),
             ),
           ),
-          child: Row(
+          child: SizedBox(
+            height: 56,
+            child: Row(
             children: [
               if (isWide)
                 IconButton(
@@ -263,6 +269,7 @@ class _AiChatPageState extends State<AiChatPage> {
                 onPressed: () => Navigator.of(context).pop(),
               ),
             ],
+          ),
           ),
         ),
 
