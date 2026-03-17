@@ -7,6 +7,7 @@ import 'package:flutter_methgo_app/features/card/view/card_page.dart';
 import 'package:flutter_methgo_app/features/favorite/view/favorite_page.dart';
 import 'package:flutter_methgo_app/features/home/view/home_page.dart';
 import 'package:flutter_methgo_app/features/profile/view/profile_page.dart';
+import 'package:flutter_methgo_app/features/ai_chat/view/ai_chat_page.dart';
 import 'package:flutter_methgo_app/navigation/cubit/navigation_cubit.dart';
 import 'package:flutter_methgo_app/navigation/view/bottom_nav_bar.dart';
 import 'package:badges/badges.dart' as badges;
@@ -113,32 +114,18 @@ class _BodyViewState extends State<_BodyView> {
         alignment: Alignment.center,
         children: _isLoggedIn ? authenticatedPages : guestPages,
       ),
-      floatingActionButton: BlocBuilder<CardCubit, CardState>(
-        builder: (context, state) {
-          final itemCount = state.cartData?.items.length ?? 0;
-          return badges.Badge(
-            showBadge: itemCount > 0,
-            badgeContent: Text(
-              itemCount.toString(),
-              style: const TextStyle(color: Colors.white),
-            ),
-            child: FloatingActionButton(
-              onPressed: () {
-                if (_isLoggedIn) {
-                   Navigator.of(context).push(
-                    MaterialPageRoute<void>(builder: (_) => const CardPage()),
-                  );
-                } else {
-                  _showLoginRequiredDialog(context);
-                }
-              },
-              backgroundColor: const Color(0xFF3B82F6), // Pet Shop blue
-              elevation: 4,
-              shape: const CircleBorder(),
-              child: const Icon(Icons.add, color: Colors.white, size: 28),
-            ),
-          );
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          if (_isLoggedIn) {
+            context.push(AiChatPage.path);
+          } else {
+            _showLoginRequiredDialog(context);
+          }
         },
+        backgroundColor: const Color(0xFF3B82F6), // Pet Shop blue
+        elevation: 4,
+        shape: const CircleBorder(),
+        child: const Icon(Icons.smart_toy, color: Colors.white, size: 28),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomNavBar(

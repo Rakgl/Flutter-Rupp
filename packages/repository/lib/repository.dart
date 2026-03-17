@@ -12,3 +12,4 @@ export 'src/product_repository.dart';
 export 'src/service_repository.dart';
 export 'src/user_repository.dart';
 export 'src/setting_repository.dart';
+export 'src/ai_repository.dart';

@@ -1,3 +1,4 @@
+export 'ai_response.dart';
 export 'appointment_detail_response.dart';
 export 'appointment_response.dart';
 export 'base_response.dart';
