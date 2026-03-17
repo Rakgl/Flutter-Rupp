@@ -224,7 +224,7 @@ class _HomeViewState extends State<HomeView> {
 
               // ══ PRODUCTS SECTION ─────────────────────────────────────
               _SectionHeader(
-                title: 'Products',
+                title: 'Accessory',
                 icon: Icons.shopping_bag_rounded,
                 color: const Color(0xFF3B82F6),
                 onSeeAll: () => Navigator.of(context).push(

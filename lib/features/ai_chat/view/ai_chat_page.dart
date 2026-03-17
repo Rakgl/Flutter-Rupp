@@ -337,7 +337,7 @@ class _AiChatPageState extends State<AiChatPage> {
                   color: const Color(0xFF3B82F6),
                   borderRadius: BorderRadius.circular(18),
                 ),
-                child: Text(
+                child: SelectableText(
                   msg.message,
                   style: const TextStyle(
                     fontSize: 15,
@@ -376,7 +376,7 @@ class _AiChatPageState extends State<AiChatPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 4),
-                Text(
+                SelectableText(
                   msg.message,
                   style: const TextStyle(
                     fontSize: 15,
