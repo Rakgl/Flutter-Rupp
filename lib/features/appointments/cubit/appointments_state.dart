@@ -22,15 +22,18 @@ class AppointmentsState extends Equatable {
     List<AppointmentModel>? appointments,
     bool? isReachMax,
     String? errorMessage,
+    bool clearErrorMessage = false,
     AppointmentModel? lastBookedAppointment,
+    bool clearLastBookedAppointment = false,
   }) {
     return AppointmentsState(
       status: status ?? this.status,
       appointments: appointments ?? this.appointments,
       isReachMax: isReachMax ?? this.isReachMax,
-      errorMessage: errorMessage ?? this.errorMessage,
-      lastBookedAppointment:
-          lastBookedAppointment ?? this.lastBookedAppointment,
+      errorMessage: clearErrorMessage ? null : (errorMessage ?? this.errorMessage),
+      lastBookedAppointment: clearLastBookedAppointment
+          ? null
+          : (lastBookedAppointment ?? this.lastBookedAppointment),
     );
   }
 

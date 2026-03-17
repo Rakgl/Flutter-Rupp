@@ -19,6 +19,12 @@ class AuthenticationQueuedInterceptor extends QueuedInterceptor {
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
+    if (options.path.contains('auth/verify-phone-number') ||
+        options.path.contains('auth/verify-otp') ||
+        options.path.contains('auth/register') ||
+        options.path.contains('auth/login')) {
+      return handler.next(options);
+    }
     final token = await _tokenStorage.readToken();
     final accessToken = token[0];
     final refreshToken = token[1];

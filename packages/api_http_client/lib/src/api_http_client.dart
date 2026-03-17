@@ -63,6 +63,86 @@ class ApiHttpClient {
     }
   }
 
+  /// Request OTP
+  Response<String, String> verifyPhoneNumber({
+    required String phone,
+    required String countryCode,
+  }) async {
+    try {
+      final response = await _httpClient.post(
+        'auth/verify-phone-number',
+        body: {
+          'phone': phone,
+          'country_code': countryCode,
+        },
+      );
+      if (response['success'] == true) {
+        return Right(response['transaction_code'] as String);
+      } else {
+        return Left(response['message'] as String? ?? 'Failed to request OTP');
+      }
+    } on ApiRequestFailure catch (e) {
+      return Left(e.body['message'] as String? ?? 'Failed to request OTP');
+    } catch (e) {
+      return const Left('Something went wrong. Try again');
+    }
+  }
+
+  /// Verify OTP
+  Response<String, bool> verifyOTP({
+    required String otp,
+    required String transactionCode,
+  }) async {
+    try {
+      final response = await _httpClient.post(
+        'auth/verify-otp',
+        body: {
+          'otp': otp,
+          'transaction_code': transactionCode,
+        },
+      );
+      if (response['success'] == true) {
+        return const Right(true);
+      } else {
+        return Left(response['message'] as String? ?? 'Failed to verify OTP');
+      }
+    } on ApiRequestFailure catch (e) {
+      return Left(e.body['message'] as String? ?? 'Failed to verify OTP');
+    } catch (e) {
+      return const Left('Something went wrong. Try again');
+    }
+  }
+
+  /// Complete Registration
+  Response<String, SignInResponse> register({
+    required String phone,
+    required String name,
+    required String password,
+    required String passwordConfirmation,
+  }) async {
+    try {
+      final response = await _httpClient.post(
+        'auth/register',
+        body: {
+          'phone': phone,
+          'name': name,
+          'password': password,
+          'password_confirmation': passwordConfirmation,
+        },
+      );
+      final signInResponse = SignInResponse.fromJson(response);
+      if (signInResponse.success) {
+        return Right(signInResponse);
+      } else {
+        return Left(signInResponse.message ?? 'Registration failed');
+      }
+    } on ApiRequestFailure catch (e) {
+      return Left(e.body['message'] as String? ?? 'Registration failed');
+    } catch (e) {
+      return const Left('Something went wrong. Try again');
+    }
+  }
+
   // sign out
   Response<String, SignInResponse> signOut({String? deviceId}) async {
     try {
@@ -160,6 +240,55 @@ class ApiHttpClient {
       return const Left(
         'Something went wrong. Try again',
       );
+    }
+  }
+
+  // update user profile
+  Response<String, UserInfoResponse> updateUserProfile({
+    String? name,
+    String? email,
+    String? deliveryAddress,
+  }) async {
+    try {
+      final body = <String, dynamic>{
+        if (name != null) 'name': name,
+        if (email != null) 'email': email,
+        if (deliveryAddress != null) 'delivery_address': deliveryAddress,
+      };
+      final response = await _httpClient.post('user-profile', body: body);
+      final res = UserInfoResponse.fromJson(response);
+      if (res.success) {
+        return Right(res);
+      } else {
+        return Left(res.message ?? 'Failed to update profile');
+      }
+    } on ApiRequestFailure catch (e) {
+      return Left(e.body['message'] as String? ?? 'Failed to update profile');
+    } on SocketException {
+      return const Left('no_internet');
+    } catch (e) {
+      log('[ApiHttpClient] Error in updateUserProfile: $e');
+      return const Left('Something went wrong. Try again');
+    }
+  }
+
+  // get user profile
+  Response<String, UserInfoResponse> getUserProfile() async {
+    try {
+      final response = await _httpClient.get('user-profile');
+      final res = UserInfoResponse.fromJson(response);
+      if (res.success) {
+        return Right(res);
+      } else {
+        return Left(res.message ?? 'Failed to get user profile');
+      }
+    } on ApiRequestFailure catch (e) {
+      return Left(e.body['message'] as String? ?? 'Failed to get user profile');
+    } on SocketException {
+      return const Left('no_internet');
+    } catch (e) {
+      log('[ApiHttpClient] Error in getUserProfile: $e');
+      return const Left('Something went wrong. Try again');
     }
   }
 

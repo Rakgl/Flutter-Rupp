@@ -17,7 +17,7 @@ class AppHeaderBar extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                'Methgo',
+                'Pet Shop',
                 style: TextStyle(
                   fontFamily: 'Pacifico',
                   fontSize: 32,

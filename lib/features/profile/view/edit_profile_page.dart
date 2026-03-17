@@ -23,7 +23,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     super.initState();
     final profileState = context.read<ProfileCubit>().state;
     _nameController = TextEditingController(text: profileState.name);
-    _addressController = TextEditingController(text: profileState.location);
+    _addressController = TextEditingController(text: profileState.deliveryAddress);
     _emailController = TextEditingController(text: profileState.email);
   }
 
@@ -37,7 +37,20 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return BlocListener<ProfileCubit, ProfileState>(
+      listener: (context, state) {
+        if (state.status == ProfileStatus.updateSuccess) {
+          context.pop();
+        } else if (state.status == ProfileStatus.failure) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.errorMessage ?? 'Failed to update profile'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      },
+      child: Scaffold(
       backgroundColor: AppColors.scaffoldBackground,
       appBar: AppBar(
         backgroundColor: AppColors.scaffoldBackground,
@@ -69,49 +82,59 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Avatar Section
-                    Center(
-                      child: Stack(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(4),
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: const Color(0xFF254EDB),
-                                width: 1.5,
-                              ),
-                            ),
-                            child: CircleAvatar(
-                              radius: 40,
-                              backgroundColor: const Color(0xFFD6E4FF),
-                              child: Image.network(
-                                'https://cdn-icons-png.flaticon.com/512/4140/4140048.png',
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                          Positioned(
-                            bottom: 0,
-                            right: 0,
-                            child: Container(
-                              padding: const EdgeInsets.all(6),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFF254EDB),
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: Colors.white,
-                                  width: 2,
+                    BlocBuilder<ProfileCubit, ProfileState>(
+                      builder: (context, state) {
+                        return Center(
+                          child: Stack(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(4),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: const Color(0xFF254EDB),
+                                    width: 1.5,
+                                  ),
+                                ),
+                                child: CircleAvatar(
+                                  radius: 40,
+                                  backgroundColor: const Color(0xFFD6E4FF),
+                                  backgroundImage: state.image != null
+                                      ? NetworkImage(state.image!)
+                                      : null,
+                                  child: state.image == null
+                                      ? const Icon(
+                                          Icons.person,
+                                          size: 40,
+                                          color: Color(0xFF254EDB),
+                                        )
+                                      : null,
                                 ),
                               ),
-                              child: const Icon(
-                                Icons.camera_alt,
-                                color: Colors.white,
-                                size: 16,
+                              Positioned(
+                                bottom: 0,
+                                right: 0,
+                                child: Container(
+                                  padding: const EdgeInsets.all(6),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFF254EDB),
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: Colors.white,
+                                      width: 2,
+                                    ),
+                                  ),
+                                  child: const Icon(
+                                    Icons.camera_alt,
+                                    color: Colors.white,
+                                    size: 16,
+                                  ),
+                                ),
                               ),
-                            ),
+                            ],
                           ),
-                        ],
-                      ),
+                        );
+                      },
                     ),
                     const SizedBox(height: 32),
 
@@ -161,42 +184,55 @@ class _EditProfilePageState extends State<EditProfilePage> {
             ),
 
             // Bottom Save Button
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: ElevatedButton(
-                  onPressed: () {
-                    context.read<ProfileCubit>().updateProfile(
-                      name: _nameController.text,
-                      location: _addressController.text,
-                      email: _emailController.text,
-                    );
-                    context.pop();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(
-                      0xFF254EDB,
-                    ), // Matches exact blue
-                    shape: const StadiumBorder(),
-                    elevation: 0,
-                  ),
-                  child: const Text(
-                    "Save Change",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
+            BlocBuilder<ProfileCubit, ProfileState>(
+              builder: (context, state) {
+                final isLoading = state.status == ProfileStatus.loading;
+                return Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: ElevatedButton(
+                      onPressed: isLoading
+                          ? null
+                          : () {
+                              context.read<ProfileCubit>().updateProfile(
+                                name: _nameController.text.trim(),
+                                deliveryAddress: _addressController.text.trim(),
+                                email: _emailController.text.trim(),
+                              );
+                            },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF254EDB),
+                        shape: const StadiumBorder(),
+                        elevation: 0,
+                      ),
+                      child: isLoading
+                          ? const SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 2,
+                              ),
+                            )
+                          : const Text(
+                              "Save Change",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
                     ),
                   ),
-                ),
-              ),
+                );
+              },
             ),
           ],
         ),
       ),
-    );
+    ));
   }
 
   Widget _buildTextField({
@@ -227,6 +263,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
             isDense: true,
             contentPadding: EdgeInsets.zero,
             border: InputBorder.none,
+            enabledBorder: InputBorder.none,
+            focusedBorder: InputBorder.none,
+            errorBorder: InputBorder.none,
+            focusedErrorBorder: InputBorder.none,
           ),
           style: const TextStyle(
             fontSize: 14,

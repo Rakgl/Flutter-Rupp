@@ -1,62 +1,64 @@
 part of 'profile_cubit.dart';
 
-enum ProfileStatus { initial, loading, success, failure, logoutSuccess }
+enum ProfileStatus { initial, loading, success, updateSuccess, failure, logoutSuccess }
 
 class ProfileState extends Equatable {
   const ProfileState({
     this.status = ProfileStatus.initial,
-    this.name = 'Peter Parker',
-    this.email = 'spider.man@gmail.com',
-    this.location = 'New York, NY',
-    this.phone = '+1234567890',
-    this.walletBalance = 1250.50,
-    this.completionProgress = 0.5,
+    this.name,
+    this.email,
+    this.deliveryAddress,
+    this.phone,
+    this.image,
     this.isPushEnabled = true,
     this.isDarkMode = false,
+    this.errorMessage,
   });
 
   final ProfileStatus status;
-  final String name;
-  final String email;
-  final String location;
-  final String phone;
-  final double walletBalance;
-  final double completionProgress;
+  final String? name;
+  final String? email;
+  final String? deliveryAddress;
+  final String? phone;
+  final String? image;
   final bool isPushEnabled;
   final bool isDarkMode;
+  final String? errorMessage;
 
   @override
-  List<Object> get props => [
+  List<Object?> get props => [
     status,
     name,
     email,
-    location,
+    deliveryAddress,
     phone,
-    walletBalance,
-    completionProgress,
+    image,
     isPushEnabled,
     isDarkMode,
+    errorMessage,
   ];
 
   ProfileState copyWith({
     ProfileStatus? status,
     String? name,
     String? email,
-    String? location,
+    String? deliveryAddress,
     String? phone,
+    String? image,
     bool? isPushEnabled,
     bool? isDarkMode,
+    String? errorMessage,
   }) {
     return ProfileState(
       status: status ?? this.status,
       name: name ?? this.name,
       email: email ?? this.email,
-      location: location ?? this.location,
+      deliveryAddress: deliveryAddress ?? this.deliveryAddress,
       phone: phone ?? this.phone,
-      walletBalance: walletBalance,
-      completionProgress: completionProgress,
+      image: image ?? this.image,
       isPushEnabled: isPushEnabled ?? this.isPushEnabled,
       isDarkMode: isDarkMode ?? this.isDarkMode,
+      errorMessage: errorMessage ?? this.errorMessage,
     );
   }
 }

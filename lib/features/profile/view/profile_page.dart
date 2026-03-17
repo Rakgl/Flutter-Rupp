@@ -72,10 +72,16 @@ class ProfilePage extends StatelessWidget {
                           child: CircleAvatar(
                             radius: 40,
                             backgroundColor: const Color(0xFFD6E4FF),
-                            child: Image.network(
-                              'https://cdn-icons-png.flaticon.com/512/4140/4140048.png',
-                              fit: BoxFit.cover,
-                            ),
+                            backgroundImage: state.image != null
+                                ? NetworkImage(state.image!)
+                                : null,
+                            child: state.image == null
+                                ? const Icon(
+                                    Icons.person,
+                                    size: 40,
+                                    color: Color(0xFF254EDB),
+                                  )
+                                : null,
                           ),
                         ),
                       ),
@@ -144,7 +150,7 @@ class ProfilePage extends StatelessWidget {
                             ),
                             const Spacer(),
                             Text(
-                              state.phone,
+                              state.phone ?? '—',
                               style: const TextStyle(
                                 fontWeight: FontWeight.w500,
                                 color: Colors.black,
@@ -229,19 +235,19 @@ class ProfilePage extends StatelessWidget {
                             _buildInfoRow(
                               icon: Icons.person_outline,
                               label: "Full name",
-                              value: state.name,
+                              value: state.name ?? '—',
                             ),
                             const SizedBox(height: 20),
                             _buildInfoRow(
                               icon: Icons.location_on_outlined,
                               label: "Delivery address",
-                              value: state.location,
+                              value: state.deliveryAddress ?? '—',
                             ),
                             const SizedBox(height: 20),
                             _buildInfoRow(
                               icon: Icons.email_outlined,
                               label: "Email",
-                              value: state.email.isEmpty ? "N/A" : state.email,
+                              value: state.email ?? '—',
                             ),
                           ],
                         ),

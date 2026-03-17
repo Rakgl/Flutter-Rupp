@@ -19,7 +19,7 @@ class BottomNavBar extends StatelessWidget {
     return BottomAppBar(
       padding: EdgeInsets.zero,
       elevation: 0,
-      color: const Color(0xFF3B82F6), // Methgo blue
+      color: const Color(0xFF3B82F6), // Pet Shop blue
       shape: const CircularNotchedRectangle(),
       notchMargin: 8,
       child: Container(

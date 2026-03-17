@@ -107,7 +107,10 @@ class _AppState extends State<App> {
 
       _authSubscription = _userRepository!.authenticationStatus.listen((isAuth) {
         if (!isAuth) {
-          GlobalRouter.instance.go('/login');
+          final currentPath = GlobalRouter.instance.routerDelegate.currentConfiguration.last.matchedLocation;
+          if (currentPath != '/main' && currentPath != '/login' && currentPath != '/') {
+            GlobalRouter.instance.go('/login');
+          }
         }
       });
 
@@ -169,7 +172,7 @@ class _AppState extends State<App> {
           BlocProvider<ProfileCubit>(
             create: (context) => ProfileCubit(
               userRepository: context.read<UserRepository>(),
-            ),
+            )..loadProfile(),
           ),
           BlocProvider<ProductsCubit>(
             create: (context) => ProductsCubit(
@@ -214,7 +217,7 @@ class _AppState extends State<App> {
           BlocProvider<FavoriteCubit>(
             create: (context) => FavoriteCubit(
               favoriteRepository: context.read<FavoriteRepository>(),
-            )..fetchFavorites(),
+            ),
           ),
         ],
         child: MaterialApp.router(

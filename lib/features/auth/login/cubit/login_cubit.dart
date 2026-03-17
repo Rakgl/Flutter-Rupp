@@ -17,6 +17,7 @@ class LoginCubit extends Cubit<LoginState> {
     required String phone,
     required String password,
   }) async {
+    if (isClosed) return;
     emit(state.copyWith(status: LoginStatus.loading));
 
     try {
@@ -29,9 +30,11 @@ class LoginCubit extends Cubit<LoginState> {
 
       await response.when<SignInResponse>(
         success: (data) async {
+          if (isClosed) return;
           emit(state.copyWith(status: LoginStatus.success));
         },
         failure: (String error) async {
+          if (isClosed) return;
           emit(
             state.copyWith(
               status: LoginStatus.failure,
@@ -41,6 +44,7 @@ class LoginCubit extends Cubit<LoginState> {
         },
       );
     } catch (e) {
+      if (isClosed) return;
       emit(
         state.copyWith(
           status: LoginStatus.failure,

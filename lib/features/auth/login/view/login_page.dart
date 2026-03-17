@@ -337,6 +337,27 @@ class _LoginViewState extends State<LoginView> {
                                         ),
                                       ],
                                     ),
+                                    const SizedBox(height: 24), // Add spacing for the new button
+                                    SizedBox(
+                                      width: double.infinity,
+                                      height: 54,
+                                      child: TextButton(
+                                        onPressed: () => context.go(MainView.path),
+                                        style: TextButton.styleFrom(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(28),
+                                          ),
+                                        ),
+                                        child: Text(
+                                          'Continue as Guest',
+                                          style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                                            color: AppColors.grey.shade700,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 12),
                                   ],
                                 ),
                               ),

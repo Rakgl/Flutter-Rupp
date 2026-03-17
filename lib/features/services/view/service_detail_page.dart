@@ -11,6 +11,7 @@ import 'package:intl/intl.dart';
 
 import 'package:go_router/go_router.dart';
 import 'package:flutter_methgo_app/features/appointments/view/booking_success_page.dart';
+import 'package:flutter_methgo_app/features/pets/view/add_pet_page.dart';
 
 class ServiceDetailPage extends StatelessWidget {
   const ServiceDetailPage({super.key, required this.serviceId});
@@ -286,7 +287,24 @@ class _ServiceDetailView extends StatelessWidget {
                           const SizedBox(width: 16),
                           Expanded(
                             child: ElevatedButton.icon(
-                              onPressed: () => _showBookingDialog(context, service),
+                              onPressed: () {
+                                final petsState = context.read<PetsCubit>().state;
+                                if (petsState.status == PetsStatus.loading ||
+                                    petsState.status == PetsStatus.initial) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Loading your pets, please wait...'),
+                                      duration: Duration(seconds: 1),
+                                    ),
+                                  );
+                                  return;
+                                }
+                                if (petsState.pets.isEmpty) {
+                                  _showRegisterPetDialog(context);
+                                } else {
+                                  _showBookingDialog(context, service);
+                                }
+                              },
                               icon: const Icon(Icons.calendar_today_rounded),
                               label: const Text(
                                 'Book Now',
@@ -294,8 +312,7 @@ class _ServiceDetailView extends StatelessWidget {
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
                                 ),
-                              ),
-                              style: ElevatedButton.styleFrom(
+                              ),                              style: ElevatedButton.styleFrom(
                                 backgroundColor: const Color(0xFF7C3AED),
                                 foregroundColor: Colors.white,
                                 minimumSize: const Size(double.infinity, 54),
@@ -318,6 +335,34 @@ class _ServiceDetailView extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+
+  void _showRegisterPetDialog(BuildContext context) {
+    showDialog<void>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('No Pets Registered'),
+        content: const Text(
+            'You need to register at least one pet before booking an appointment.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              context.push(AddPetPage.path);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF7C3AED),
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Register Pet'),
+          ),
+        ],
+      ),
     );
   }
 

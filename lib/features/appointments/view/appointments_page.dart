@@ -21,8 +21,8 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
     _fetchAppointments();
   }
 
-  void _fetchAppointments() {
-    context.read<AppointmentsCubit>().fetchAppointments();
+  Future<void> _fetchAppointments() {
+    return context.read<AppointmentsCubit>().fetchAppointments();
   }
 
   @override
@@ -35,9 +35,7 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Color(0xFF3B82F6)),
-          onPressed: () {
-            Navigator.of(context).maybePop();
-          },
+          onPressed: () => context.pop(),
         ),
         title: const Text(
           'My Appointments',
@@ -45,55 +43,72 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
         ),
       ),
       body: RefreshIndicator(
-        onRefresh: () async => _fetchAppointments(),
+        onRefresh: _fetchAppointments,
         child: BlocBuilder<AppointmentsCubit, AppointmentsState>(
           builder: (context, state) {
             if (state.status == AppointmentsStatus.loading &&
                 state.appointments.isEmpty) {
-              return const Center(
-                  child: CircularProgressIndicator(color: Color(0xFF3B82F6)));
+              return const SingleChildScrollView(
+                physics: AlwaysScrollableScrollPhysics(),
+                child: SizedBox(
+                  height: 400,
+                  child: Center(
+                    child: CircularProgressIndicator(color: Color(0xFF3B82F6)),
+                  ),
+                ),
+              );
             }
             if (state.status == AppointmentsStatus.failure &&
                 state.appointments.isEmpty) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.error_outline_rounded,
-                        size: 60, color: Colors.redAccent),
-                    const SizedBox(height: 16),
-                    Text(state.errorMessage ?? 'Failed to load appointments'),
-                    TextButton(
-                        onPressed: _fetchAppointments,
-                        child: const Text('Try Again')),
-                  ],
+              return SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: SizedBox(
+                  height: 400,
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.error_outline_rounded,
+                            size: 60, color: Colors.redAccent),
+                        const SizedBox(height: 16),
+                        Text(state.errorMessage ?? 'Failed to load appointments'),
+                        TextButton(
+                            onPressed: _fetchAppointments,
+                            child: const Text('Try Again')),
+                      ],
+                    ),
+                  ),
                 ),
               );
             }
             if (state.appointments.isEmpty) {
-              return Center(
-                child: SingleChildScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.calendar_today_outlined,
-                          size: 80, color: Colors.grey.withOpacity(0.3)),
-                      const SizedBox(height: 20),
-                      const Text(
-                        'No appointments found',
-                        style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.grey),
-                      ),
-                    ],
+              return SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: SizedBox(
+                  height: 400,
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.calendar_today_outlined,
+                            size: 80, color: Colors.grey.withOpacity(0.3)),
+                        const SizedBox(height: 20),
+                        const Text(
+                          'No appointments found',
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               );
             }
 
             return ListView.builder(
+              physics: const AlwaysScrollableScrollPhysics(),
               padding: const EdgeInsets.all(16),
               itemCount: state.appointments.length,
               itemBuilder: (context, index) {

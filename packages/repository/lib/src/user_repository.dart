@@ -41,7 +41,60 @@ class UserRepository {
     return response;
   }
 
+  /// Request OTP (Step A)
+  Response<String, String> verifyPhoneNumber({
+    required String phone,
+    required String countryCode,
+  }) async {
+    final response = await _apiClient.verifyPhoneNumber(
+      phone: phone,
+      countryCode: countryCode,
+    );
+    return response;
+  }
 
+  /// Verify OTP (Step B)
+  Response<String, bool> verifyOTP({
+    required String otp,
+    required String transactionCode,
+  }) async {
+    final response = await _apiClient.verifyOTP(
+      otp: otp,
+      transactionCode: transactionCode,
+    );
+    return response;
+  }
+
+  /// Complete Registration (Step C)
+  Response<String, SignInResponse> register({
+    required String phone,
+    required String name,
+    required String password,
+    required String passwordConfirmation,
+  }) async {
+    final response = await _apiClient.register(
+      phone: phone,
+      name: name,
+      password: password,
+      passwordConfirmation: passwordConfirmation,
+    );
+
+    await response.when<SignInResponse>(
+      success: (data) async {
+        log('Registration success: ${data.success}');
+        await _tokenStorage.writeToken(
+          accessToken: data.accessToken,
+          refreshToken: data.refreshToken,
+          expireIn: data.expiresIn.toString(),
+          deviceId: '',
+        );
+      },
+      failure: (error) async {
+        log('Registration failure: $error');
+      },
+    );
+    return response;
+  }
 
   // get category
   Response<String, CategoryResponse> getCategories() async {
@@ -52,6 +105,26 @@ class UserRepository {
   // get user info
   Response<String, UserInfoResponse> getUserInfo() async {
     final response = await _apiClient.getUserInfo();
+    return response;
+  }
+
+  // get user profile
+  Response<String, UserInfoResponse> getUserProfile() async {
+    final response = await _apiClient.getUserProfile();
+    return response;
+  }
+
+  // update user profile
+  Response<String, UserInfoResponse> updateUserProfile({
+    String? name,
+    String? email,
+    String? deliveryAddress,
+  }) async {
+    final response = await _apiClient.updateUserProfile(
+      name: name,
+      email: email,
+      deliveryAddress: deliveryAddress,
+    );
     return response;
   }
 

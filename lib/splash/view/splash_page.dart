@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_methgo_app/features/welcome/view/welcome_page.dart';
+import 'package:flutter_methgo_app/features/auth/login/view/login_page.dart';
 import 'package:flutter_methgo_app/app/view/main_view.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -41,7 +41,7 @@ class _SplashViewState extends State<SplashView> {
       if (token.isNotEmpty && token[0] != null && token[0]!.isNotEmpty) {
         context.go(MainView.path);
       } else {
-        context.go(WelcomePage.path);
+        context.go(LoginPage.path);
       }
     });
   }
@@ -93,7 +93,7 @@ class _SplashViewState extends State<SplashView> {
             right: 0,
             child: const Center(
               child: Text(
-                'Methgo',
+                'Pet Shop',
                 style: TextStyle(
                   fontFamily: 'Pacifico',
                   fontSize: 56,

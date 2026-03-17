@@ -11,6 +11,9 @@ import 'package:flutter_methgo_app/navigation/cubit/navigation_cubit.dart';
 import 'package:flutter_methgo_app/navigation/view/bottom_nav_bar.dart';
 import 'package:badges/badges.dart' as badges;
 import 'package:flutter_methgo_app/features/card/cubit/card_cubit.dart';
+import 'package:repository/repository.dart';
+import 'package:go_router/go_router.dart';
+import 'package:flutter_methgo_app/features/auth/login/view/login_page.dart';
 
 
 class MainView extends StatelessWidget {
@@ -20,26 +23,65 @@ class MainView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const _BodyView();
+    return _BodyView(
+      userRepository: context.read<UserRepository>(),
+    );
   }
 }
 
 class _BodyView extends StatefulWidget {
-  const _BodyView();
+  const _BodyView({required this.userRepository});
+
+  final UserRepository userRepository;
 
   @override
   State<_BodyView> createState() => _BodyViewState();
 }
 
 class _BodyViewState extends State<_BodyView> {
+  bool _isLoggedIn = false;
+
   @override
   void initState() {
     super.initState();
+    _checkLoginStatus();
   }
 
-  @override
-  void dispose() {
-    super.dispose();
+  Future<void> _checkLoginStatus() async {
+    final token = await widget.userRepository.readToken();
+    if (mounted) {
+      setState(() {
+        _isLoggedIn =
+            token.isNotEmpty && token[0] != null && token[0]!.isNotEmpty;
+      });
+    }
+  }
+
+  void _showLoginRequiredDialog(BuildContext context) {
+    showDialog<void>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Login Required'),
+        content: const Text('You need to log in or register to access this feature.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              context.go(LoginPage.path);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF3B82F6),
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Login'),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -47,18 +89,29 @@ class _BodyViewState extends State<_BodyView> {
     final selectedTab = context.select(
       (NavigationCubit cubit) => cubit.state.tabIndex,
     );
+
+    final List<Widget> authenticatedPages = [
+      const HomePage(),
+      const CategoriesPage(),
+      const AboutPage(),
+      const FavoritePage(),
+      const ProfilePage(),
+    ];
+
+    final List<Widget> guestPages = [
+      const HomePage(),
+      const CategoriesPage(),
+      const AboutPage(),
+      const HomePage(), // Placeholder
+      const HomePage(), // Placeholder
+    ];
+
     return Scaffold(
       backgroundColor: AppColors.scaffoldBackground,
       body: IndexedStack(
         index: selectedTab,
         alignment: Alignment.center,
-        children: const [
-          HomePage(),
-          CategoriesPage(),
-          AboutPage(),
-          FavoritePage(),
-          ProfilePage(),
-        ],
+        children: _isLoggedIn ? authenticatedPages : guestPages,
       ),
       floatingActionButton: BlocBuilder<CardCubit, CardState>(
         builder: (context, state) {
@@ -71,11 +124,15 @@ class _BodyViewState extends State<_BodyView> {
             ),
             child: FloatingActionButton(
               onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute<void>(builder: (_) => const CardPage()),
-                );
+                if (_isLoggedIn) {
+                   Navigator.of(context).push(
+                    MaterialPageRoute<void>(builder: (_) => const CardPage()),
+                  );
+                } else {
+                  _showLoginRequiredDialog(context);
+                }
               },
-              backgroundColor: const Color(0xFF3B82F6), // Methgo blue
+              backgroundColor: const Color(0xFF3B82F6), // Pet Shop blue
               elevation: 4,
               shape: const CircleBorder(),
               child: const Icon(Icons.add, color: Colors.white, size: 28),
@@ -87,7 +144,11 @@ class _BodyViewState extends State<_BodyView> {
       bottomNavigationBar: BottomNavBar(
         currentIndex: selectedTab,
         onTap: (value) {
-          BlocProvider.of<NavigationCubit>(context).setTab(value);
+          if (!_isLoggedIn && (value == 3 || value == 4)) {
+            _showLoginRequiredDialog(context);
+          } else {
+            BlocProvider.of<NavigationCubit>(context).setTab(value);
+          }
         },
       ),
     );

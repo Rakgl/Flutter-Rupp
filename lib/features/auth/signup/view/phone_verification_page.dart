@@ -1,15 +1,18 @@
 import 'dart:async';
 
 import 'package:app_ui/app_ui.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_methgo_app/features/auth/signup/cubit/signup_cubit.dart';
+import 'package:flutter_methgo_app/features/auth/signup/view/signup_details_page.dart';
 import 'package:go_router/go_router.dart';
 
 class PhoneVerificationPage extends StatefulWidget {
-  const PhoneVerificationPage({super.key, this.phoneNumber});
+  const PhoneVerificationPage({super.key});
 
   static const String path = '/phone-verification';
-  final String? phoneNumber;
 
   @override
   State<PhoneVerificationPage> createState() => _PhoneVerificationPageState();
@@ -30,14 +33,11 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
 
   Timer? _timer;
   int _remainingSeconds = _resendTimeout;
-  bool _isVerifying = false;
 
   bool get _isCodeComplete =>
       _controllers.every((controller) => controller.text.trim().length == 1);
 
   bool get _canResend => _remainingSeconds == 0;
-
-  String get _displayPhoneNumber => widget.phoneNumber ?? '+855 16 123 467';
 
   @override
   void initState() {
@@ -46,6 +46,12 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
       controller.addListener(_handleCodeChanged);
     }
     _startTimer();
+
+    if (kDebugMode) {
+      for (final controller in _controllers) {
+        controller.text = '0';
+      }
+    }
   }
 
   @override
@@ -97,48 +103,12 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
   }
 
   Future<void> _handleVerify() async {
-    if (!_isCodeComplete || _isVerifying) {
+    if (!_isCodeComplete) {
       return;
     }
 
-    setState(() {
-      _isVerifying = true;
-    });
-
     final code = _controllers.map((c) => c.text).join();
-
-    try {
-      // Example: await authRepository.verifyPhone(phoneNumber, code);
-      assert(code.length == _codeLength, 'Code must be 6 digits');
-      await Future<void>.delayed(const Duration(seconds: 1));
-
-      if (mounted) {
-        // context.go(MainView.path); // or next signup step
-        context.pop();
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Phone verified successfully!'),
-            backgroundColor: Colors.green,
-          ),
-        );
-      }
-    } on Exception catch (_) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Verification failed. Please try again.'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isVerifying = false;
-        });
-      }
-    }
+    context.read<SignupCubit>().verifyOtp(otp: code);
   }
 
   Future<void> _handleResend() async {
@@ -146,45 +116,27 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
       return;
     }
 
-    try {
-      // await authRepository.resendVerificationCode(phoneNumber);
-      await Future<void>.delayed(const Duration(milliseconds: 500));
-
-      if (mounted) {
-        _startTimer();
-
-        // Clear input fields
-        for (final controller in _controllers) {
-          controller.clear();
-        }
-        _nodes[0].requestFocus();
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Verification code resent!'),
-            duration: Duration(seconds: 2),
-          ),
+    final state = context.read<SignupCubit>().state;
+    context.read<SignupCubit>().requestOtp(
+          phone: state.phoneNumber,
+          countryCode: state.countryCode,
         );
-      }
-    } on Exception catch (_) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Failed to resend code. Please try again.'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
+    
+    _startTimer();
+    for (final controller in _controllers) {
+      controller.clear();
     }
+    _nodes[0].requestFocus();
   }
 
-  Widget _buildActionButtons(BuildContext context) {
+  Widget _buildActionButtons(BuildContext context, SignupStatus status) {
+    final isLoading = status == SignupStatus.loading;
     return Column(
       children: [
         SizedBox(
           width: double.infinity,
           child: ElevatedButton(
-            onPressed: (_isCodeComplete && !_isVerifying) ? _handleVerify : null,
+            onPressed: (_isCodeComplete && !isLoading) ? _handleVerify : null,
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primaryColor,
               foregroundColor: AppColors.white,
@@ -192,7 +144,7 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
               padding: const EdgeInsets.symmetric(vertical: 14),
               elevation: 0,
             ),
-            child: _isVerifying
+            child: isLoading
                 ? const SizedBox(
                     height: 20,
                     width: 20,
@@ -235,152 +187,155 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
     final cardTop = size.height * 0.19;
     final isKeyboardVisible = mediaQuery.viewInsets.bottom > 0;
 
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        Positioned.fill(
-          child: Transform.translate(
-            offset: const Offset(0, -115),
-            child: Assets.img.backgroundImage.image(
-              fit: BoxFit.cover,
+    return BlocListener<SignupCubit, SignupState>(
+      listener: (context, state) {
+        if (state.status == SignupStatus.otpVerified) {
+          context.push(
+            SignupDetailsPage.path,
+            extra: context.read<SignupCubit>(),
+          );
+        } else if (state.status == SignupStatus.failure) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.errorMessage ?? 'Verification failed'),
+              backgroundColor: Colors.red,
+            ),
+          );
+          // We don't necessarily reset here, just let them try again or resend
+        }
+      },
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          Positioned.fill(
+            child: Transform.translate(
+              offset: const Offset(0, -115),
+              child: Assets.img.backgroundImage.image(
+                fit: BoxFit.cover,
+              ),
             ),
           ),
-        ),
-        Positioned(
-          left: 0,
-          right: 0,
-          bottom: 0,
-          height: whiteBgHeight,
-          child: Container(color: AppColors.white),
-        ),
-        Scaffold(
-          backgroundColor: Colors.transparent,
-          resizeToAvoidBottomInset: true,
-          body: SafeArea(
-            child: LayoutBuilder(
-              builder: (context, viewport) {
-                final minHeight = viewport.maxHeight - cardTop - 20;
-                return SingleChildScrollView(
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                      top: cardTop,
-                      left: 10,
-                      right: 10,
-                      bottom: 20,
-                    ),
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(
-                        minHeight: minHeight > 0 ? minHeight : 0,
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            height: whiteBgHeight,
+            child: Container(color: AppColors.white),
+          ),
+          Scaffold(
+            backgroundColor: Colors.transparent,
+            resizeToAvoidBottomInset: true,
+            body: SafeArea(
+              child: LayoutBuilder(
+                builder: (context, viewport) {
+                  final minHeight = viewport.maxHeight - cardTop - 20;
+                  return SingleChildScrollView(
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                        top: cardTop,
+                        left: 10,
+                        right: 10,
+                        bottom: 20,
                       ),
-                      child: IntrinsicHeight(
-                        child: Column(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.fromLTRB(
-                                24,
-                                28,
-                                24,
-                                32,
-                              ),
-                              decoration: BoxDecoration(
-                                color: AppColors.white,
-                                borderRadius: BorderRadius.circular(28),
-                              ),
-                              child: Column(
-                                children: [
-                                  Text(
-                                    'Phone Verification',
-                                    style:
-                                        Theme.of(
-                                          context,
-                                        ).textTheme.titleLarge?.copyWith(
-                                          fontWeight: FontWeight.w700,
-                                          color: AppColors.eerieBlack,
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          minHeight: minHeight > 0 ? minHeight : 0,
+                        ),
+                        child: IntrinsicHeight(
+                          child: Column(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.fromLTRB(
+                                  24,
+                                  28,
+                                  24,
+                                  32,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: AppColors.white,
+                                  borderRadius: BorderRadius.circular(28),
+                                ),
+                                child: BlocBuilder<SignupCubit, SignupState>(
+                                  builder: (context, state) {
+                                    return Column(
+                                      children: [
+                                        Text(
+                                          'Phone Verification',
+                                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                                fontWeight: FontWeight.w700,
+                                                color: AppColors.eerieBlack,
+                                              ),
                                         ),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Text(
-                                    "We've sent a 6-digit code to $_displayPhoneNumber",
-                                    textAlign: TextAlign.center,
-                                    style:
-                                        Theme.of(
-                                          context,
-                                        ).textTheme.bodySmall?.copyWith(
-                                          color: AppColors.paleSky,
-                                          height: 1.4,
+                                        const SizedBox(height: 8),
+                                        Text(
+                                          "We've sent a 6-digit code to +${state.countryCode} ${state.phoneNumber}",
+                                          textAlign: TextAlign.center,
+                                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                                color: AppColors.paleSky,
+                                                height: 1.4,
+                                              ),
                                         ),
-                                  ),
-                                  const SizedBox(height: 16),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: List.generate(_codeLength, (
-                                      index,
-                                    ) {
-                                      return _OtpBox(
-                                        controller: _controllers[index],
-                                        focusNode: _nodes[index],
-                                        autoFocus: index == 0,
-                                        onChanged: (value) =>
-                                            _handleDigitChanged(index, value),
-                                      );
-                                    }),
-                                  ),
-                                  const SizedBox(height: 16),
-                                  Text(
-                                    "Didn't receive the code?",
-                                    style:
-                                        Theme.of(
-                                          context,
-                                        ).textTheme.bodySmall?.copyWith(
-                                          color: AppColors.liver,
+                                        const SizedBox(height: 16),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: List.generate(_codeLength, (index) {
+                                            return _OtpBox(
+                                              controller: _controllers[index],
+                                              focusNode: _nodes[index],
+                                              autoFocus: index == 0,
+                                              onChanged: (value) => _handleDigitChanged(index, value),
+                                            );
+                                          }),
                                         ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  GestureDetector(
-                                    onTap: _canResend ? _handleResend : null,
-                                    child: Text(
-                                      _canResend
-                                          ? 'Resend code'
-                                          : 'Resend code in ${_remainingSeconds}s',
-                                      style:
-                                          Theme.of(
-                                            context,
-                                          ).textTheme.bodySmall?.copyWith(
-                                            color: _canResend
-                                                ? AppColors.primaryColor
-                                                : AppColors.paleSky,
-                                            fontWeight: _canResend
-                                                ? FontWeight.w600
-                                                : FontWeight.normal,
+                                        const SizedBox(height: 16),
+                                        Text(
+                                          "Didn't receive the code?",
+                                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                                color: AppColors.liver,
+                                              ),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        GestureDetector(
+                                          onTap: _canResend ? _handleResend : null,
+                                          child: Text(
+                                            _canResend ? 'Resend code' : 'Resend code in ${_remainingSeconds}s',
+                                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                                  color: _canResend ? AppColors.primaryColor : AppColors.paleSky,
+                                                  fontWeight: _canResend ? FontWeight.w600 : FontWeight.normal,
+                                                ),
                                           ),
-                                    ),
+                                        ),
+                                        if (isKeyboardVisible) ...[
+                                          const SizedBox(height: 20),
+                                          _buildActionButtons(context, state.status),
+                                        ],
+                                      ],
+                                    );
+                                  },
+                                ),
+                              ),
+                              if (!isKeyboardVisible) const Spacer(),
+                              if (!isKeyboardVisible)
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                                  child: BlocBuilder<SignupCubit, SignupState>(
+                                    builder: (context, state) {
+                                      return _buildActionButtons(context, state.status);
+                                    },
                                   ),
-                                  if (isKeyboardVisible) ...[
-                                    const SizedBox(height: 20),
-                                    _buildActionButtons(context),
-                                  ],
-                                ],
-                              ),
-                            ),
-                            if (!isKeyboardVisible) const Spacer(),
-                            if (!isKeyboardVisible)
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 24),
-                                child: _buildActionButtons(context),
-                              ),
-                          ],
+                                ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -411,9 +366,9 @@ class _OtpBox extends StatelessWidget {
         maxLength: 1,
         inputFormatters: [FilteringTextInputFormatter.digitsOnly],
         style: Theme.of(context).textTheme.titleMedium?.copyWith(
-          fontWeight: FontWeight.w600,
-          color: AppColors.eerieBlack,
-        ),
+              fontWeight: FontWeight.w600,
+              color: AppColors.eerieBlack,
+            ),
         decoration: InputDecoration(
           counterText: '',
           filled: true,

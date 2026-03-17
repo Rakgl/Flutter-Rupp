@@ -29,12 +29,16 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const HomeView();
+    return HomeView(
+      userRepository: context.read<UserRepository>(),
+    );
   }
 }
 
 class HomeView extends StatefulWidget {
-  const HomeView({super.key});
+  const HomeView({super.key, required this.userRepository});
+
+  final UserRepository userRepository;
 
   @override
   State<HomeView> createState() => _HomeViewState();
@@ -44,10 +48,22 @@ class _HomeViewState extends State<HomeView> {
   @override
   void initState() {
     super.initState();
+    _initData();
+  }
+
+  Future<void> _initData() async {
+    final token = await widget.userRepository.readToken();
+    final isLoggedIn =
+        token.isNotEmpty && token[0] != null && token[0]!.isNotEmpty;
+
     context.read<ServicesCubit>().fetchServices();
     context.read<ProductsCubit>().fetchProducts();
     context.read<PetListingsCubit>().fetchListings(); // Marketplace
-    context.read<PetsCubit>().fetchPets(); // User pets (for booking etc)
+
+    if (isLoggedIn) {
+      context.read<PetsCubit>().fetchPets(); // User pets (for booking etc)
+      context.read<FavoriteCubit>().fetchFavorites(); // User favorites
+    }
   }
 
   @override

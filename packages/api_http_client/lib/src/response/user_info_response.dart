@@ -11,26 +11,29 @@ class UserInfoResponse extends BaseResponse {
 
 class UserInfo {
   final String id;
-  final String name;
-  final String email;
+  final String? name;
+  final String? email;
   final String? image;
   final String? phone;
+  final String? deliveryAddress;
 
   UserInfo({
     required this.id,
-    required this.name,
-    required this.email,
+    this.name,
+    this.email,
     this.image,
     this.phone,
+    this.deliveryAddress,
   });
 
   factory UserInfo.fromJson(Map<String, dynamic> json) {
     return UserInfo(
-      id: json['id'],
-      name: json['name'],
-      email: json['email'],
-      image: json['image'],
-      phone: json['phone'],
+      id: json['id'] as String? ?? '',
+      name: json['name'] as String?,
+      email: json['email'] as String?,
+      image: json['image'] as String?,
+      phone: json['phone'] as String?,
+      deliveryAddress: json['delivery_address'] as String?,
     );
   }
 }

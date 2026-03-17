@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_methgo_app/app/view/main_view.dart';
+import 'package:flutter_methgo_app/features/auth/signup/cubit/signup_cubit.dart';
 import 'package:flutter_methgo_app/features/auth/signup/view/business_verification_page.dart';
 import 'package:flutter_methgo_app/features/auth/signup/view/payment_setup_page.dart';
 import 'package:flutter_methgo_app/features/auth/login/view/login_page.dart';
@@ -11,6 +13,7 @@ import 'package:flutter_methgo_app/features/profile/view/transaction_history_pag
 import 'package:flutter_methgo_app/features/profile/view/working_hours_page.dart';
 import 'package:flutter_methgo_app/features/profile/view/settings_page.dart';
 import 'package:flutter_methgo_app/features/appointments/view/appointments_page.dart';
+import 'package:flutter_methgo_app/features/auth/signup/view/signup_details_page.dart';
 import 'package:flutter_methgo_app/features/auth/signup/view/signup_page.dart';
 import 'package:flutter_methgo_app/features/products/view/products_page.dart';
 import 'package:flutter_methgo_app/features/products/view/product_detail_page.dart';
@@ -19,9 +22,9 @@ import 'package:flutter_methgo_app/features/pets/view/pet_detail_page.dart';
 import 'package:flutter_methgo_app/features/categories/view/categories_page.dart';
 import 'package:flutter_methgo_app/features/categories/view/category_detail_page.dart';
 import 'package:flutter_methgo_app/features/services/view/services_page.dart';
-import 'package:flutter_methgo_app/features/welcome/view/welcome_page.dart';
 import 'package:flutter_methgo_app/splash/view/splash_page.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_methgo_app/features/auth/signup/view/phone_verification_page.dart';
 import 'package:flutter_methgo_app/features/auth/signup/view/insurance_information_page.dart';
 
 import 'package:flutter_methgo_app/features/appointments/view/booking_success_page.dart';
@@ -31,7 +34,7 @@ GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 class GlobalRouter {
   static final GoRouter instance = GoRouter(
-    initialLocation: SplashPage.path,
+    initialLocation: LoginPage.path,
     navigatorKey: navigatorKey,
     routes: [
       GoRoute(
@@ -71,16 +74,32 @@ class GlobalRouter {
         builder: (context, state) => const TransactionHistoryPage(),
       ),
       GoRoute(
-        path: WelcomePage.path,
-        builder: (context, state) => const WelcomePage(),
-      ),
-      GoRoute(
         path: '/login',
         builder: (context, state) => const LoginPage(),
       ),
       GoRoute(
         path: SignupPage.path,
         builder: (context, state) => const SignupPage(),
+      ),
+      GoRoute(
+        path: PhoneVerificationPage.path,
+        builder: (context, state) {
+          final cubit = state.extra as SignupCubit;
+          return BlocProvider.value(
+            value: cubit,
+            child: const PhoneVerificationPage(),
+          );
+        },
+      ),
+      GoRoute(
+        path: SignupDetailsPage.path,
+        builder: (context, state) {
+          final cubit = state.extra as SignupCubit;
+          return BlocProvider.value(
+            value: cubit,
+            child: const SignupDetailsPage(),
+          );
+        },
       ),
       GoRoute(
         path: AppointmentsPage.path,

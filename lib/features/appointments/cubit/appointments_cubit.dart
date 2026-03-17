@@ -62,7 +62,11 @@ class AppointmentsCubit extends Cubit<AppointmentsState> {
   }
 
   Future<void> bookAppointment(BookAppointmentRequest request) async {
-    emit(state.copyWith(status: AppointmentsStatus.loading));
+    emit(state.copyWith(
+      status: AppointmentsStatus.loading,
+      clearErrorMessage: true,
+      clearLastBookedAppointment: true,
+    ));
     final response = await _appointmentRepository.bookAppointment(request);
     await response.when<void>(
       success: (AppointmentDetailResponse res) async {

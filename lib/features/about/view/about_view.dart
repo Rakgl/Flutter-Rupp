@@ -68,7 +68,7 @@ class _AboutPageState extends State<AboutPage> {
 
             final aboutUs = state.settingsData?.aboutUs;
             final description = aboutUs?.description ?? 
-                "Methgo is a pet shop and animal shelter that have been dedicated for years into taking care of animals and turn then into a good lovely pet, For animal lover who interested and in need of a compainion.";
+                "Pet Shop is a pet shop and animal shelter that have been dedicated for years into taking care of animals and turn then into a good lovely pet, For animal lover who interested and in need of a compainion.";
             final footerNote = aboutUs?.footerNote ?? "Have a great day\nfrom Ferry";
 
             if (aboutUs?.location != null && aboutUs!.location!.latitude != null && aboutUs.location!.longitude != null) {
