@@ -17,6 +17,7 @@ import 'package:flutter_methgo_app/features/services/cubit/services_cubit.dart';
 import 'package:flutter_methgo_app/features/card/cubit/card_cubit.dart';
 import 'package:flutter_methgo_app/features/appointments/cubit/appointments_cubit.dart';
 import 'package:flutter_methgo_app/features/favorite/cubit/favorite_cubit.dart';
+import 'package:flutter_methgo_app/features/ai_chat/cubit/ai_chat_cubit.dart';
 import 'package:repository/repository.dart';
 import 'package:api_http_client/api_http_client.dart';
 import 'package:http_client/http_client.dart';
@@ -45,6 +46,7 @@ class _AppState extends State<App> {
   ServiceRepository? _serviceRepository;
   PetRepository? _petRepository;
   PetListingRepository? _petListingRepository;
+  AiRepository? _aiRepository;
 
   StreamSubscription<bool>? _authSubscription;
 
@@ -102,6 +104,9 @@ class _AppState extends State<App> {
         apiClient: apiClient,
       );
       _petListingRepository = PetListingRepository(
+        apiClient: apiClient,
+      );
+      _aiRepository = AiRepository(
         apiClient: apiClient,
       );
 
@@ -163,6 +168,9 @@ class _AppState extends State<App> {
         RepositoryProvider<PetListingRepository>(
           create: (context) => _petListingRepository!,
         ),
+        RepositoryProvider<AiRepository>(
+          create: (context) => _aiRepository!,
+        ),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -217,6 +225,11 @@ class _AppState extends State<App> {
           BlocProvider<FavoriteCubit>(
             create: (context) => FavoriteCubit(
               favoriteRepository: context.read<FavoriteRepository>(),
+            ),
+          ),
+          BlocProvider<AiChatCubit>(
+            create: (context) => AiChatCubit(
+              aiRepository: context.read<AiRepository>(),
             ),
           ),
         ],

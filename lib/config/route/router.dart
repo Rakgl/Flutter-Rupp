@@ -22,6 +22,7 @@ import 'package:flutter_methgo_app/features/pets/view/pet_detail_page.dart';
 import 'package:flutter_methgo_app/features/categories/view/categories_page.dart';
 import 'package:flutter_methgo_app/features/categories/view/category_detail_page.dart';
 import 'package:flutter_methgo_app/features/services/view/services_page.dart';
+import 'package:flutter_methgo_app/features/ai_chat/view/ai_chat_page.dart';
 import 'package:flutter_methgo_app/splash/view/splash_page.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_methgo_app/features/auth/signup/view/phone_verification_page.dart';
@@ -146,6 +147,10 @@ class GlobalRouter {
       GoRoute(
         path: ServicesPage.path,
         builder: (context, state) => const ServicesPage(),
+      ),
+      GoRoute(
+        path: AiChatPage.path,
+        builder: (context, state) => const AiChatPage(),
       ),
       GoRoute(
         path: ProductDetailPage.path,

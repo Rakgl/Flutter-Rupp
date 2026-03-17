@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:api_http_client/api_http_client.dart';
+import 'package:api_http_client/src/response/ai_response.dart';
 import 'package:http_client/http_client.dart';
 
 /// A base type for all API clients responses.
@@ -948,6 +949,104 @@ class ApiHttpClient {
       return const Left(
         'Something went wrong. Try again',
       );
+    }
+  }
+
+  // --- AI Assistant Endpoints ---
+
+  /// Send a message to AI assistant
+  /// Send a message to AI assistant
+  Response<String, AiAskResponse> askAi({
+    required String prompt,
+    String? conversationId,
+  }) async {
+    try {
+      final response = await _httpClient.post(
+        'ai/ask',
+        body: {
+          'prompt': prompt,
+          if (conversationId != null) 'conversation_id': conversationId,
+        },
+      );
+      final res = AiAskResponse.fromJson(response);
+      if (res.success) {
+        return Right(res);
+      } else {
+        return Left(res.message ?? 'Failed to get AI response');
+      }
+    } on ApiRequestFailure catch (e) {
+      return Left(e.body['message'] as String? ?? 'AI service unavailable');
+    } on SocketException {
+      return const Left('no_internet');
+    } catch (e) {
+      log('[ApiHttpClient] Error in askAi: $e');
+      return const Left('Something went wrong. Try again');
+    }
+  }
+
+  /// List AI conversations
+  Response<String, AiConversationListResponse> getAiConversations({
+    int page = 1,
+  }) async {
+    try {
+      final response = await _httpClient.get('ai/conversations?page=$page');
+      final res = AiConversationListResponse.fromJson(response);
+      if (res.success) {
+        return Right(res);
+      } else {
+        return Left(res.message ?? 'Failed to fetch conversations');
+      }
+    } on ApiRequestFailure catch (e) {
+      return Left(e.body['message'] as String? ?? 'Failed to fetch conversations');
+    } on SocketException {
+      return const Left('no_internet');
+    } catch (e) {
+      log('[ApiHttpClient] Error in getAiConversations: $e');
+      return const Left('Something went wrong. Try again');
+    }
+  }
+
+  /// Get messages for a specific AI conversation
+  Response<String, AiMessageListResponse> getAiMessages({
+    required String conversationId,
+    int page = 1,
+  }) async {
+    try {
+      final response = await _httpClient.get('ai/conversations/$conversationId?page=$page');
+      final res = AiMessageListResponse.fromJson(response);
+      if (res.success) {
+        return Right(res);
+      } else {
+        return Left(res.message ?? 'Failed to fetch messages');
+      }
+    } on ApiRequestFailure catch (e) {
+      return Left(e.body['message'] as String? ?? 'Failed to fetch messages');
+    } on SocketException {
+      return const Left('no_internet');
+    } catch (e) {
+      log('[ApiHttpClient] Error in getAiMessages: $e');
+      return const Left('Something went wrong. Try again');
+    }
+  }
+
+  /// Delete an AI conversation
+  Response<String, bool> deleteAiConversation({
+    required String conversationId,
+  }) async {
+    try {
+      final response = await _httpClient.delete('ai/conversations/$conversationId');
+      if (response['success'] == true) {
+        return const Right(true);
+      } else {
+        return Left(response['message'] as String? ?? 'Failed to delete conversation');
+      }
+    } on ApiRequestFailure catch (e) {
+      return Left(e.body['message'] as String? ?? 'Failed to delete conversation');
+    } on SocketException {
+      return const Left('no_internet');
+    } catch (e) {
+      log('[ApiHttpClient] Error in deleteAiConversation: $e');
+      return const Left('Something went wrong. Try again');
     }
   }
 }
