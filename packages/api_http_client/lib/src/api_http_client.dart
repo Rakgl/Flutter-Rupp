@@ -855,6 +855,118 @@ class ApiHttpClient {
     }
   }
 
+  // place new order (POST /orders)
+  Response<String, OrderResponse> placeNewOrder({
+    required String fulfillmentType,
+    String? paymentMethodId,
+    String? deliveryAddress,
+  }) async {
+    try {
+      final body = <String, dynamic>{
+        'fulfillment_type': fulfillmentType,
+        if (paymentMethodId != null) 'payment_method_id': paymentMethodId,
+        if (deliveryAddress != null) 'delivery_address': deliveryAddress,
+      };
+      final response = await _httpClient.post('orders', body: body);
+      final res = OrderResponse.fromJson(response);
+      if (res.success) {
+        return Right(res);
+      } else {
+        return Left(res.message ?? 'Failed to place order');
+      }
+    } on ApiRequestFailure catch (e) {
+      final msg = e.body['message'];
+      return Left(msg is String ? msg : 'Failed to place order');
+    } on SocketException {
+      return const Left('no_internet');
+    } catch (e) {
+      log('[ApiHttpClient] Error in placeNewOrder: $e');
+      return const Left('Something went wrong. Try again');
+    }
+  }
+
+  // verify payment (POST /orders/{id}/verify-payment)
+  Response<String, OrderResponse> verifyPayment({
+    required String orderId,
+  }) async {
+    try {
+      final response = await _httpClient.post('orders/$orderId/verify-payment');
+      final res = OrderResponse.fromJson(response);
+      if (res.success) {
+        return Right(res);
+      } else {
+        return Left(res.message ?? 'Payment not found or not completed yet.');
+      }
+    } on ApiRequestFailure catch (e) {
+      final msg = e.body['message'];
+      return Left(msg is String ? msg : 'Payment verification failed');
+    } on SocketException {
+      return const Left('no_internet');
+    } catch (e) {
+      log('[ApiHttpClient] Error in verifyPayment: $e');
+      return const Left('Something went wrong. Try again');
+    }
+  }
+
+  // cancel order (POST /orders/{id}/cancel)
+  Response<String, OrderResponse> cancelOrder({
+    required String orderId,
+  }) async {
+    try {
+      final response = await _httpClient.post('orders/$orderId/cancel');
+      final res = OrderResponse.fromJson(response);
+      if (res.success) {
+        return Right(res);
+      } else {
+        return Left(res.message ?? 'Failed to cancel order');
+      }
+    } on ApiRequestFailure catch (e) {
+      final msg = e.body['message'];
+      return Left(msg is String ? msg : 'Failed to cancel order');
+    } on SocketException {
+      return const Left('no_internet');
+    } catch (e) {
+      log('[ApiHttpClient] Error in cancelOrder: $e');
+      return const Left('Something went wrong. Try again');
+    }
+  }
+
+  // get single order (GET /orders/{id})
+  Response<String, OrderResponse> getOrder({
+    required String orderId,
+  }) async {
+    try {
+      final response = await _httpClient.get('orders/$orderId');
+      final res = OrderResponse.fromJson(response);
+      return Right(res);
+    } on ApiRequestFailure catch (e) {
+      final msg = e.body['message'];
+      return Left(msg is String ? msg : 'Failed to get order');
+    } on SocketException {
+      return const Left('no_internet');
+    } catch (e) {
+      log('[ApiHttpClient] Error in getOrder: $e');
+      return const Left('Something went wrong. Try again');
+    }
+  }
+
+  // list orders (GET /orders)
+  Response<String, OrderListResponse> getOrders() async {
+    try {
+      final response = await _httpClient.get('orders');
+      final res = OrderListResponse.fromJson(response);
+      return Right(res);
+    } on ApiRequestFailure catch (e) {
+      final msg = e.body['message'];
+      return Left(msg is String ? msg : 'Failed to get orders');
+    } on SocketException {
+      return const Left('no_internet');
+    } catch (e) {
+      log('[ApiHttpClient] Error in getOrders: $e');
+      return const Left('Something went wrong. Try again');
+    }
+  }
+
   // clear cart
   Response<String, CartResponse> clearCart() async {
     try {

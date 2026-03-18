@@ -29,6 +29,8 @@ import 'package:flutter_methgo_app/features/auth/signup/view/phone_verification_
 import 'package:flutter_methgo_app/features/auth/signup/view/insurance_information_page.dart';
 
 import 'package:flutter_methgo_app/features/appointments/view/booking_success_page.dart';
+import 'package:flutter_methgo_app/features/order/view/payment_screen.dart';
+import 'package:flutter_methgo_app/features/order/view/order_success_page.dart';
 import 'package:api_http_client/api_http_client.dart';
 
 GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -164,6 +166,17 @@ class GlobalRouter {
         builder: (context, state) {
           final petId = state.extra as String? ?? '';
           return PetDetailPage(petId: petId);
+        },
+      ),
+      GoRoute(
+        path: PaymentScreen.path,
+        builder: (context, state) => const PaymentScreen(),
+      ),
+      GoRoute(
+        path: OrderSuccessPage.path,
+        builder: (context, state) {
+          final order = state.extra as OrderModel?;
+          return OrderSuccessPage(order: order);
         },
       ),
     ],
