@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_methgo_app/features/profile/cubit/profile_cubit.dart';
 import 'package:flutter_methgo_app/features/profile/view/profile_page.dart';
 import 'package:flutter_methgo_app/features/card/view/card_page.dart';
 import 'package:flutter_methgo_app/features/card/cubit/card_cubit.dart';
@@ -119,11 +120,20 @@ class AppHeaderBar extends StatelessWidget {
                   MaterialPageRoute<void>(builder: (_) => const ProfilePage()),
                 );
               },
-              child: const CircleAvatar(
-                radius: 20,
-                backgroundImage: NetworkImage(
-                  'https://static.wikia.nocookie.net/spiderman-films/images/b/be/Tom_Holland_Spidey_Suit.webp/revision/latest?cb=20230914135801',
-                ),
+              child: BlocBuilder<ProfileCubit, ProfileState>(
+                builder: (context, state) {
+                  final imageUrl = state.image;
+                  return CircleAvatar(
+                    radius: 20,
+                    backgroundColor: const Color(0xFFD6E4FF),
+                    backgroundImage: imageUrl != null && imageUrl.isNotEmpty
+                        ? NetworkImage(imageUrl)
+                        : null,
+                    child: imageUrl == null || imageUrl.isEmpty
+                        ? const Icon(Icons.person, color: Color(0xFF254EDB), size: 22)
+                        : null,
+                  );
+                },
               ),
             ),
           ],

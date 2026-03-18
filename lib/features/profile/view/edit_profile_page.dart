@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -84,54 +86,62 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     // Avatar Section
                     BlocBuilder<ProfileCubit, ProfileState>(
                       builder: (context, state) {
+                        ImageProvider? imageProvider;
+                        if (state.pickedImage != null) {
+                          imageProvider = FileImage(state.pickedImage!);
+                        } else if (state.image != null) {
+                          imageProvider = NetworkImage(state.image!);
+                        }
+
                         return Center(
-                          child: Stack(
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.all(4),
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: const Color(0xFF254EDB),
-                                    width: 1.5,
-                                  ),
-                                ),
-                                child: CircleAvatar(
-                                  radius: 40,
-                                  backgroundColor: const Color(0xFFD6E4FF),
-                                  backgroundImage: state.image != null
-                                      ? NetworkImage(state.image!)
-                                      : null,
-                                  child: state.image == null
-                                      ? const Icon(
-                                          Icons.person,
-                                          size: 40,
-                                          color: Color(0xFF254EDB),
-                                        )
-                                      : null,
-                                ),
-                              ),
-                              Positioned(
-                                bottom: 0,
-                                right: 0,
-                                child: Container(
-                                  padding: const EdgeInsets.all(6),
+                          child: GestureDetector(
+                            onTap: () => unawaited(context.read<ProfileCubit>().pickImage()),
+                            child: Stack(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(4),
                                   decoration: BoxDecoration(
-                                    color: const Color(0xFF254EDB),
                                     shape: BoxShape.circle,
                                     border: Border.all(
-                                      color: Colors.white,
-                                      width: 2,
+                                      color: const Color(0xFF254EDB),
+                                      width: 1.5,
                                     ),
                                   ),
-                                  child: const Icon(
-                                    Icons.camera_alt,
-                                    color: Colors.white,
-                                    size: 16,
+                                  child: CircleAvatar(
+                                    radius: 40,
+                                    backgroundColor: const Color(0xFFD6E4FF),
+                                    backgroundImage: imageProvider,
+                                    child: imageProvider == null
+                                        ? const Icon(
+                                            Icons.person,
+                                            size: 40,
+                                            color: Color(0xFF254EDB),
+                                          )
+                                        : null,
                                   ),
                                 ),
-                              ),
-                            ],
+                                Positioned(
+                                  bottom: 0,
+                                  right: 0,
+                                  child: Container(
+                                    padding: const EdgeInsets.all(6),
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFF254EDB),
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        color: Colors.white,
+                                        width: 2,
+                                      ),
+                                    ),
+                                    child: const Icon(
+                                      Icons.camera_alt,
+                                      color: Colors.white,
+                                      size: 16,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         );
                       },
@@ -196,11 +206,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       onPressed: isLoading
                           ? null
                           : () {
-                              context.read<ProfileCubit>().updateProfile(
+                              unawaited(context.read<ProfileCubit>().updateProfile(
                                 name: _nameController.text.trim(),
                                 deliveryAddress: _addressController.text.trim(),
                                 email: _emailController.text.trim(),
-                              );
+                              ));
                             },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF254EDB),

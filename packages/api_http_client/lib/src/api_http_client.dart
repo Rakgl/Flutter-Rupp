@@ -249,14 +249,24 @@ class ApiHttpClient {
     String? name,
     String? email,
     String? deliveryAddress,
+    File? image,
   }) async {
     try {
-      final body = <String, dynamic>{
+      final fields = <String, String>{
         if (name != null) 'name': name,
         if (email != null) 'email': email,
         if (deliveryAddress != null) 'delivery_address': deliveryAddress,
       };
-      final response = await _httpClient.post('user-profile', body: body);
+      final Map<String, dynamic> response;
+      if (image != null) {
+        response = await _httpClient.postMultipart(
+          'user-profile',
+          fields: fields,
+          files: {'image': image},
+        );
+      } else {
+        response = await _httpClient.post('user-profile', body: fields);
+      }
       final res = UserInfoResponse.fromJson(response);
       if (res.success) {
         return Right(res);

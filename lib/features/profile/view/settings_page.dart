@@ -23,14 +23,12 @@ class SettingsPage extends StatelessWidget {
         backgroundColor: AppColors.white,
         elevation: 0,
         scrolledUnderElevation: 0,
-        leading: TextButton.icon(
+        leading: IconButton(
           onPressed: () => context.pop(),
           icon: const Icon(
-            IconlyLight.arrowLeft,
+            Icons.arrow_back,
             color: AppColors.black,
-            size: 20,
           ),
-          label: const Text("Back", style: TextStyle(color: AppColors.black)),
         ),
         title: Text(
           "Account Settings",

@@ -1,8 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_methgo_app/features/settings/cubit/settings_cubit.dart';
 import 'package:flutter_methgo_app/features/shared/widgets/app_header_bar.dart';
-
+import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class AboutPage extends StatefulWidget {
@@ -15,6 +17,59 @@ class AboutPage extends StatefulWidget {
   State<AboutPage> createState() => _AboutPageState();
 }
 
+class _SocialButton extends StatelessWidget {
+  const _SocialButton({
+    required this.label,
+    required this.color,
+    required this.icon,
+    required this.url,
+  });
+
+  final String label;
+  final Color color;
+  final IconData icon;
+  final String url;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () async {
+        final uri = Uri.parse(url);
+        try {
+          final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
+          if (!launched) {
+            await launchUrl(uri, mode: LaunchMode.platformDefault);
+          }
+        } catch (e) {
+          debugPrint('Could not launch $url: $e');
+        }
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, color: Colors.white, size: 18),
+            const SizedBox(width: 6),
+            Text(
+              label,
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+                fontSize: 13,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _AboutPageState extends State<AboutPage> {
   WebViewController? _webViewController;
 
@@ -23,7 +78,19 @@ class _AboutPageState extends State<AboutPage> {
     super.initState();
     final cubit = context.read<SettingsCubit>();
     if (cubit.state.status != SettingsStatus.success && cubit.state.status != SettingsStatus.loading) {
-      cubit.fetchSettings();
+      unawaited(cubit.fetchSettings());
+    }
+  }
+
+  Future<void> _launchUrl(String url) async {
+    final uri = Uri.parse(url);
+    try {
+      final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
+      if (!launched) {
+        await launchUrl(uri, mode: LaunchMode.platformDefault);
+      }
+    } catch (e) {
+      debugPrint('Could not launch $url: $e');
     }
   }
 
@@ -49,10 +116,11 @@ class _AboutPageState extends State<AboutPage> {
       </html>
     ''';
 
-    _webViewController = WebViewController()
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setBackgroundColor(const Color(0x00000000))
-      ..loadHtmlString(mapHtml);
+    final controller = WebViewController();
+    unawaited(controller.setJavaScriptMode(JavaScriptMode.unrestricted));
+    unawaited(controller.setBackgroundColor(const Color(0x00000000)));
+    unawaited(controller.loadHtmlString(mapHtml));
+    _webViewController = controller;
   }
 
   @override
@@ -67,9 +135,10 @@ class _AboutPageState extends State<AboutPage> {
             }
 
             final aboutUs = state.settingsData?.aboutUs;
-            final description = aboutUs?.description ?? 
+            final description = aboutUs?.description ??
                 "Pet Shop is a pet shop and animal shelter that have been dedicated for years into taking care of animals and turn then into a good lovely pet, For animal lover who interested and in need of a compainion.";
             final footerNote = aboutUs?.footerNote ?? "Have a great day\nfrom Ferry";
+            final socialMedia = aboutUs?.socialMedia;
 
             if (aboutUs?.location != null && aboutUs!.location!.latitude != null && aboutUs.location!.longitude != null) {
               _initMap(aboutUs.location!.latitude!, aboutUs.location!.longitude!);
@@ -170,6 +239,58 @@ class _AboutPageState extends State<AboutPage> {
                           child: WebViewWidget(controller: _webViewController!),
                         ),
                       ),
+
+                    if (socialMedia != null) ...[
+                      const SizedBox(height: 8),
+                      Container(
+                        width: double.infinity,
+                        height: 1.3,
+                        color: const Color(0xFF6FA0FF),
+                      ),
+                      const SizedBox(height: 20),
+                      const Center(
+                        child: Text(
+                          "Follow Us",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
+                            color: Color(0xFF4A7BD6),
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 14),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          if (socialMedia.facebook != null)
+                            _SocialButton(
+                              label: "Facebook",
+                              color: const Color(0xFF1877F2),
+                              icon: Icons.facebook,
+                              url: socialMedia.facebook!,
+                            ),
+                          if (socialMedia.instagram != null) ...[
+                            const SizedBox(width: 12),
+                            _SocialButton(
+                              label: "Instagram",
+                              color: const Color(0xFFE4405F),
+                              icon: Icons.camera_alt_outlined,
+                              url: socialMedia.instagram!,
+                            ),
+                          ],
+                          if (socialMedia.telegram != null) ...[
+                            const SizedBox(width: 12),
+                            _SocialButton(
+                              label: "Telegram",
+                              color: const Color(0xFF229ED9),
+                              icon: Icons.send_outlined,
+                              url: socialMedia.telegram!,
+                            ),
+                          ],
+                        ],
+                      ),
+                    ],
 
                     const SizedBox(height: 28),
 

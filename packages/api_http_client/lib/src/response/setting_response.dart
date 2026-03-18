@@ -54,22 +54,48 @@ class AboutUs extends Equatable {
     this.description,
     this.location,
     this.footerNote,
+    this.socialMedia,
   });
 
   final String? description;
   final LocationData? location;
   final String? footerNote;
+  final SocialMedia? socialMedia;
 
   factory AboutUs.fromJson(Map<String, dynamic> json) {
     return AboutUs(
       description: json['description'] as String?,
       location: json['location'] != null ? LocationData.fromJson(json['location']) : null,
       footerNote: json['footer_note'] as String?,
+      socialMedia: json['social_media'] != null ? SocialMedia.fromJson(json['social_media']) : null,
     );
   }
 
   @override
-  List<Object?> get props => [description, location, footerNote];
+  List<Object?> get props => [description, location, footerNote, socialMedia];
+}
+
+class SocialMedia extends Equatable {
+  const SocialMedia({
+    this.facebook,
+    this.instagram,
+    this.telegram,
+  });
+
+  final String? facebook;
+  final String? instagram;
+  final String? telegram;
+
+  factory SocialMedia.fromJson(Map<String, dynamic> json) {
+    return SocialMedia(
+      facebook: json['facebook'] as String?,
+      instagram: json['instagram'] as String?,
+      telegram: json['telegram'] as String?,
+    );
+  }
+
+  @override
+  List<Object?> get props => [facebook, instagram, telegram];
 }
 
 class LocationData extends Equatable {

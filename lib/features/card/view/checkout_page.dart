@@ -92,7 +92,10 @@ class _CheckoutPageState extends State<CheckoutPage> {
           ),
           title: const Text(
             'Checkout',
-            style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold),
+            style: TextStyle(
+              color: Colors.black87,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
         body: BlocBuilder<CardCubit, CardState>(
@@ -119,22 +122,29 @@ class _CheckoutPageState extends State<CheckoutPage> {
                       final isSelected = _selectedDeliveryType == type;
                       return Expanded(
                         child: GestureDetector(
-                          onTap: () => setState(() => _selectedDeliveryType = type),
+                          onTap: () =>
+                              setState(() => _selectedDeliveryType = type),
                           child: Container(
                             margin: const EdgeInsets.only(right: 8),
                             padding: const EdgeInsets.symmetric(vertical: 12),
                             decoration: BoxDecoration(
-                              color: isSelected ? const Color(0xFF3B82F6) : Colors.white,
+                              color: isSelected
+                                  ? const Color(0xFF3B82F6)
+                                  : Colors.white,
                               borderRadius: BorderRadius.circular(12),
                               border: Border.all(
-                                color: isSelected ? const Color(0xFF3B82F6) : Colors.grey.shade300,
+                                color: isSelected
+                                    ? const Color(0xFF3B82F6)
+                                    : Colors.grey.shade300,
                               ),
                             ),
                             child: Center(
                               child: Text(
                                 type,
                                 style: TextStyle(
-                                  color: isSelected ? Colors.white : Colors.black87,
+                                  color: isSelected
+                                      ? Colors.white
+                                      : Colors.black87,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -149,7 +159,10 @@ class _CheckoutPageState extends State<CheckoutPage> {
                     const SizedBox(height: 24),
                     const Text(
                       'Delivery Address',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     const SizedBox(height: 12),
                     TextField(
@@ -189,20 +202,25 @@ class _CheckoutPageState extends State<CheckoutPage> {
                     )
                   else
                     ..._paymentMethods.map((method) {
-                      final isSelected = _selectedPaymentMethod?.id == method.id;
+                      final isSelected =
+                          _selectedPaymentMethod?.id == method.id;
                       return Container(
                         margin: const EdgeInsets.only(bottom: 12),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(
-                            color: isSelected ? const Color(0xFF3B82F6) : Colors.transparent,
+                            color: isSelected
+                                ? const Color(0xFF3B82F6)
+                                : Colors.transparent,
                             width: 2,
                           ),
                         ),
                         child: ListTile(
-                          onTap: () => setState(() => _selectedPaymentMethod = method),
-                          leading: method.image != null && method.image!.isNotEmpty
+                          onTap: () =>
+                              setState(() => _selectedPaymentMethod = method),
+                          leading:
+                              method.image != null && method.image!.isNotEmpty
                               ? ClipRRect(
                                   borderRadius: BorderRadius.circular(8),
                                   child: Image.network(
@@ -213,31 +231,49 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                     errorBuilder: (_, __, ___) => Container(
                                       padding: const EdgeInsets.all(8),
                                       decoration: BoxDecoration(
-                                        color: const Color(0xFF3B82F6).withOpacity(0.1),
+                                        color: const Color(
+                                          0xFF3B82F6,
+                                        ).withOpacity(0.1),
                                         shape: BoxShape.circle,
                                       ),
-                                      child: const Icon(Icons.payment, color: Color(0xFF3B82F6)),
+                                      child: const Icon(
+                                        Icons.payment,
+                                        color: Color(0xFF3B82F6),
+                                      ),
                                     ),
                                   ),
                                 )
                               : Container(
                                   padding: const EdgeInsets.all(8),
                                   decoration: BoxDecoration(
-                                    color: const Color(0xFF3B82F6).withOpacity(0.1),
+                                    color: const Color(
+                                      0xFF3B82F6,
+                                    ).withOpacity(0.1),
                                     shape: BoxShape.circle,
                                   ),
-                                  child: const Icon(Icons.payment, color: Color(0xFF3B82F6)),
+                                  child: const Icon(
+                                    Icons.payment,
+                                    color: Color(0xFF3B82F6),
+                                  ),
                                 ),
                           title: Text(
                             method.name,
                             style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
-                          subtitle: method.description != null && method.description!.isNotEmpty
+                          subtitle:
+                              method.description != null &&
+                                  method.description!.isNotEmpty
                               ? Text(method.description!)
                               : null,
                           trailing: isSelected
-                              ? const Icon(Icons.check_circle, color: Color(0xFF3B82F6))
-                              : const Icon(Icons.circle_outlined, color: Colors.grey),
+                              ? const Icon(
+                                  Icons.check_circle,
+                                  color: Color(0xFF3B82F6),
+                                )
+                              : const Icon(
+                                  Icons.circle_outlined,
+                                  color: Colors.grey,
+                                ),
                         ),
                       );
                     }),
@@ -261,26 +297,48 @@ class _CheckoutPageState extends State<CheckoutPage> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Text('Subtotal', style: TextStyle(color: Colors.grey)),
-                            Text('\$${cart.grandTotal.toStringAsFixed(2)}',
-                              style: const TextStyle(fontWeight: FontWeight.bold)),
+                            const Text(
+                              'Subtotal',
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                            Text(
+                              '\$${cart.grandTotal.toStringAsFixed(2)}',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ],
                         ),
                         const SizedBox(height: 12),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Text('Delivery Fee', style: TextStyle(color: Colors.grey)),
-                            Text(_selectedDeliveryType == 'DELIVERY' ? '\$5.00' : 'Free',
-                              style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.green)),
+                            const Text(
+                              'Delivery Fee',
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                            Text(
+                              _selectedDeliveryType == 'DELIVERY'
+                                  ? '\$5.00'
+                                  : 'Free',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.green,
+                              ),
+                            ),
                           ],
                         ),
                         const Divider(height: 32),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Text('Total Amount',
-                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                            const Text(
+                              'Total Amount',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                             Text(
                               '\$${(cart.grandTotal + (_selectedDeliveryType == 'DELIVERY' ? 5.0 : 0.0)).toStringAsFixed(2)}',
                               style: const TextStyle(
@@ -305,7 +363,11 @@ class _CheckoutPageState extends State<CheckoutPage> {
           decoration: BoxDecoration(
             color: Colors.white,
             boxShadow: [
-              BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, -4)),
+              BoxShadow(
+                color: Colors.black.withOpacity(0.05),
+                blurRadius: 10,
+                offset: const Offset(0, -4),
+              ),
             ],
           ),
           child: SafeArea(
@@ -315,7 +377,9 @@ class _CheckoutPageState extends State<CheckoutPage> {
                 backgroundColor: const Color(0xFF3B82F6),
                 foregroundColor: Colors.white,
                 minimumSize: const Size(double.infinity, 56),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
                 elevation: 0,
               ),
               child: _isPlacingOrder
@@ -327,7 +391,13 @@ class _CheckoutPageState extends State<CheckoutPage> {
                         strokeWidth: 2,
                       ),
                     )
-                  : const Text('Confirm & Place Order', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  : const Text(
+                      'Confirm & Place Order',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
             ),
           ),
         ),
@@ -346,7 +416,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
       return;
     }
 
-    if (_selectedDeliveryType == 'DELIVERY' && _addressController.text.trim().isEmpty) {
+    if (_selectedDeliveryType == 'DELIVERY' &&
+        _addressController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Please enter a delivery address'),

@@ -10,6 +10,7 @@ class ProfileState extends Equatable {
     this.deliveryAddress,
     this.phone,
     this.image,
+    this.pickedImage,
     this.isPushEnabled = true,
     this.isDarkMode = false,
     this.errorMessage,
@@ -21,6 +22,7 @@ class ProfileState extends Equatable {
   final String? deliveryAddress;
   final String? phone;
   final String? image;
+  final File? pickedImage;
   final bool isPushEnabled;
   final bool isDarkMode;
   final String? errorMessage;
@@ -33,6 +35,7 @@ class ProfileState extends Equatable {
     deliveryAddress,
     phone,
     image,
+    pickedImage,
     isPushEnabled,
     isDarkMode,
     errorMessage,
@@ -45,6 +48,7 @@ class ProfileState extends Equatable {
     String? deliveryAddress,
     String? phone,
     String? image,
+    File? pickedImage,
     bool? isPushEnabled,
     bool? isDarkMode,
     String? errorMessage,
@@ -56,6 +60,7 @@ class ProfileState extends Equatable {
       deliveryAddress: deliveryAddress ?? this.deliveryAddress,
       phone: phone ?? this.phone,
       image: image ?? this.image,
+      pickedImage: pickedImage ?? this.pickedImage,
       isPushEnabled: isPushEnabled ?? this.isPushEnabled,
       isDarkMode: isDarkMode ?? this.isDarkMode,
       errorMessage: errorMessage ?? this.errorMessage,

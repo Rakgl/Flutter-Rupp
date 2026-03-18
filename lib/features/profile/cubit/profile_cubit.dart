@@ -1,6 +1,9 @@
 // cubit/profile_cubit.dart
+import 'dart:io';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:repository/repository.dart';
 
 part 'profile_state.dart';
@@ -34,6 +37,14 @@ class ProfileCubit extends Cubit<ProfileState> {
     );
   }
 
+  Future<void> pickImage() async {
+    final picker = ImagePicker();
+    final picked = await picker.pickImage(source: ImageSource.gallery, imageQuality: 80);
+    if (picked != null) {
+      emit(state.copyWith(pickedImage: File(picked.path)));
+    }
+  }
+
   Future<void> updateProfile({
     String? name,
     String? email,
@@ -44,6 +55,7 @@ class ProfileCubit extends Cubit<ProfileState> {
       name: name,
       email: email,
       deliveryAddress: deliveryAddress,
+      image: state.pickedImage,
     );
     await response.when(
       success: (data) async {

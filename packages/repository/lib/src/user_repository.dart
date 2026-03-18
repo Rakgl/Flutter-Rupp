@@ -1,4 +1,5 @@
 import 'dart:developer' show log;
+import 'dart:io';
 
 //
 import 'package:api_http_client/api_http_client.dart';
@@ -119,11 +120,13 @@ class UserRepository {
     String? name,
     String? email,
     String? deliveryAddress,
+    File? image,
   }) async {
     final response = await _apiClient.updateUserProfile(
       name: name,
       email: email,
       deliveryAddress: deliveryAddress,
+      image: image,
     );
     return response;
   }

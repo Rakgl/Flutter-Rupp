@@ -32,7 +32,9 @@ class EnvironmentModel extends Equatable {
       apiVersion: apiVersion,
       color: color ?? Colors.red,
       environment: Environment.development,
-      baseUrl: baseUrl ?? 'http://127.0.0.1:8000/api/v1/mobile/',
+      baseUrl:
+          baseUrl ??
+          'https://lester-jutelike-ute.ngrok-free.dev/api/v1/mobile/',
     );
   }
 

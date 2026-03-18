@@ -19,6 +19,7 @@ import 'package:flutter_methgo_app/features/products/view/products_page.dart';
 import 'package:flutter_methgo_app/features/products/view/product_detail_page.dart';
 import 'package:flutter_methgo_app/features/pets/view/pets_page.dart';
 import 'package:flutter_methgo_app/features/pets/view/pet_detail_page.dart';
+import 'package:flutter_methgo_app/features/pets/view/add_pet_page.dart';
 import 'package:flutter_methgo_app/features/categories/view/categories_page.dart';
 import 'package:flutter_methgo_app/features/categories/view/category_detail_page.dart';
 import 'package:flutter_methgo_app/features/services/view/services_page.dart';
@@ -135,6 +136,10 @@ class GlobalRouter {
       GoRoute(
         path: PetsPage.path,
         builder: (context, state) => const PetsPage(),
+      ),
+      GoRoute(
+        path: AddPetPage.path,
+        builder: (context, state) => const AddPetPage(),
       ),
       GoRoute(
         path: CategoriesPage.path,
