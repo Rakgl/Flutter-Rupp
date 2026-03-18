@@ -3,7 +3,9 @@ import 'dart:async';
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_methgo_app/app/view/main_view.dart';
 import 'package:flutter_methgo_app/config/route/router.dart';
+import 'package:flutter_methgo_app/features/auth/login/view/login_page.dart';
 import 'package:flutter_methgo_app/features/settings/cubit/settings_cubit.dart';
 import 'package:flutter_methgo_app/features/shared/export_shared.dart';
 import 'package:flutter_methgo_app/l10n/l10n.dart';
@@ -51,6 +53,7 @@ class _AppState extends State<App> {
   StreamSubscription<bool>? _authSubscription;
 
   bool _isInitialized = false;
+  bool _isAuthenticated = false;
 
   @override
   void dispose() {
@@ -68,6 +71,11 @@ class _AppState extends State<App> {
     final sharedPreferences = await SharedPreferences.getInstance();
     final storage = PersistentStorage(sharedPreferences: sharedPreferences);
     final tokenStorage = TokenStorage(storage: storage);
+    // Read token before anything else to determine auth state
+    final token = await tokenStorage.readToken();
+    final isAuthenticated =
+        token.isNotEmpty && token[0] != null && token[0]!.isNotEmpty;
+
     final httpClient = DioHttpClient(
       dio: Dio(),
       baseUrl: widget.environment.baseUrl,
@@ -75,6 +83,7 @@ class _AppState extends State<App> {
     );
     final apiClient = ApiHttpClient(httpClient: httpClient);
     setState(() {
+      _isAuthenticated = isAuthenticated;
       _userRepository = UserRepository(
         apiClient: apiClient,
         tokenStorage: tokenStorage,
@@ -120,6 +129,15 @@ class _AppState extends State<App> {
       });
 
       _isInitialized = true;
+    });
+
+    // Navigate after the router widget is built
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_isAuthenticated) {
+        GlobalRouter.instance.go(MainView.path);
+      } else {
+        GlobalRouter.instance.go(LoginPage.path);
+      }
     });
   }
 
@@ -178,9 +196,13 @@ class _AppState extends State<App> {
             create: (context) => NavigationCubit(),
           ),
           BlocProvider<ProfileCubit>(
-            create: (context) => ProfileCubit(
-              userRepository: context.read<UserRepository>(),
-            )..loadProfile(),
+            create: (context) {
+              final cubit = ProfileCubit(
+                userRepository: context.read<UserRepository>(),
+              );
+              if (_isAuthenticated) cubit.loadProfile();
+              return cubit;
+            },
           ),
           BlocProvider<ProductsCubit>(
             create: (context) => ProductsCubit(

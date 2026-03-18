@@ -35,7 +35,7 @@ GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 class GlobalRouter {
   static final GoRouter instance = GoRouter(
-    initialLocation: LoginPage.path,
+    initialLocation: SplashPage.path,
     navigatorKey: navigatorKey,
     routes: [
       GoRoute(
