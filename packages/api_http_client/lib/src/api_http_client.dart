@@ -526,7 +526,7 @@ class ApiHttpClient {
   // get payment methods
   Response<String, PaymentMethodResponse> getPaymentMethods() async {
     try {
-      final response = await _httpClient.get('checkout/payment-methods');
+      final response = await _httpClient.get('payment-methods');
       final res = PaymentMethodResponse.fromJson(response);
       if (res.success) {
         return Right(res);
@@ -963,6 +963,23 @@ class ApiHttpClient {
       return const Left('no_internet');
     } catch (e) {
       log('[ApiHttpClient] Error in getOrders: $e');
+      return const Left('Something went wrong. Try again');
+    }
+  }
+
+  // get payment history
+  Response<String, PaymentHistoryResponse> getPaymentHistory() async {
+    try {
+      final response = await _httpClient.get('payment-history');
+      final res = PaymentHistoryResponse.fromJson(response);
+      return Right(res);
+    } on ApiRequestFailure catch (e) {
+      final msg = e.body['message'];
+      return Left(msg is String ? msg : 'Failed to get payment history');
+    } on SocketException {
+      return const Left('no_internet');
+    } catch (e) {
+      log('[ApiHttpClient] Error in getPaymentHistory: $e');
       return const Left('Something went wrong. Try again');
     }
   }

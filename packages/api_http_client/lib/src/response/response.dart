@@ -14,6 +14,7 @@ export 'favorite_response.dart';
 export 'health_bot_chart_response.dart';
 export 'medical_record_response.dart';
 export 'order_response.dart';
+export 'payment_history_response.dart';
 export 'payment_method_response.dart';
 export 'pet_detail_response.dart';
 export 'pet_response.dart';

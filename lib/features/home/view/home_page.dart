@@ -468,30 +468,16 @@ class _ServiceCard extends StatelessWidget {
                               ],
                             ),
                           ),
-                          GestureDetector(
-                            onTap: () {
-                              context
-                                  .read<CardCubit>()
-                                  .addToCart(id, itemType: 'service');
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text('$name added to cart!'),
-                                  backgroundColor: const Color(0xFF7C3AED),
-                                  duration: const Duration(seconds: 2),
-                                ),
-                              );
-                            },
-                            child: Container(
-                              padding: const EdgeInsets.all(6),
-                              decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.25),
-                                borderRadius: BorderRadius.circular(8),
-                                border: Border.all(
-                                    color: Colors.white.withOpacity(0.3)),
-                              ),
-                              child: const Icon(Icons.add_shopping_cart_rounded,
-                                  size: 16, color: Colors.white),
+                          Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.25),
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(
+                                  color: Colors.white.withOpacity(0.3)),
                             ),
+                            child: const Icon(Icons.calendar_today_rounded,
+                                size: 16, color: Colors.white),
                           ),
                         ],
                       ),

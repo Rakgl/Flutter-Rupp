@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_methgo_app/features/card/cubit/card_cubit.dart';
 import 'package:flutter_methgo_app/features/card/view/checkout_page.dart';
+import 'package:flutter_methgo_app/features/order/view/payment_history_page.dart';
+import 'package:go_router/go_router.dart';
 
 class CardPage extends StatefulWidget {
   const CardPage({super.key});
@@ -34,6 +36,10 @@ class _CardPageState extends State<CardPage> {
           ),
         ),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.receipt_long_rounded, color: Color(0xFF3B82F6)),
+            onPressed: () => context.push(PaymentHistoryPage.path),
+          ),
           BlocBuilder<CardCubit, CardState>(
             builder: (context, state) {
               final cart = state.cartData;

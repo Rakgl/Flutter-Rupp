@@ -4,15 +4,14 @@ import 'package:flutter_methgo_app/features/card/cubit/card_cubit.dart';
 import 'package:flutter_methgo_app/features/order/cubit/order_cubit.dart';
 import 'package:flutter_methgo_app/features/order/view/payment_screen.dart';
 import 'package:flutter_methgo_app/features/order/view/order_success_page.dart';
+import 'package:api_http_client/api_http_client.dart';
+import 'package:repository/repository.dart';
 import 'package:go_router/go_router.dart';
 
 class CheckoutPage extends StatefulWidget {
   const CheckoutPage({super.key});
 
   static const path = '/checkout';
-
-  /// KHQR Payment Method ID from the backend
-  static const khqrPaymentMethodId = '59415cc0-4436-4aa6-ab61-79f690d1f350';
 
   @override
   State<CheckoutPage> createState() => _CheckoutPageState();
@@ -22,8 +21,37 @@ class _CheckoutPageState extends State<CheckoutPage> {
   static const _deliveryTypes = ['PICKUP', 'DELIVERY'];
 
   String _selectedDeliveryType = 'PICKUP';
+  PaymentMethod? _selectedPaymentMethod;
   final _addressController = TextEditingController();
   bool _isPlacingOrder = false;
+  bool _isLoadingPaymentMethods = true;
+  List<PaymentMethod> _paymentMethods = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchPaymentMethods();
+  }
+
+  Future<void> _fetchPaymentMethods() async {
+    final response = await context.read<CartRepository>().getPaymentMethods();
+    await response.when<void>(
+      success: (PaymentMethodResponse res) async {
+        if (mounted) {
+          setState(() {
+            _paymentMethods = res.paymentMethods;
+            _selectedPaymentMethod = res.paymentMethods.firstOrNull;
+            _isLoadingPaymentMethods = false;
+          });
+        }
+      },
+      failure: (error) async {
+        if (mounted) {
+          setState(() => _isLoadingPaymentMethods = false);
+        }
+      },
+    );
+  }
 
   @override
   void dispose() {
@@ -146,38 +174,73 @@ class _CheckoutPageState extends State<CheckoutPage> {
 
                   const SizedBox(height: 32),
 
-                  // ══ PAYMENT METHOD ═════════════════════════════════════
+                  // ══ PAYMENT METHODS ═════════════════════════════════════
                   const Text(
                     'Payment Method',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 12),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                        color: const Color(0xFF3B82F6),
-                        width: 2,
-                      ),
-                    ),
-                    child: ListTile(
-                      leading: Container(
-                        padding: const EdgeInsets.all(8),
+                  if (_isLoadingPaymentMethods)
+                    const Center(child: CircularProgressIndicator())
+                  else if (_paymentMethods.isEmpty)
+                    const Text(
+                      'No payment methods available',
+                      style: TextStyle(color: Colors.red),
+                    )
+                  else
+                    ..._paymentMethods.map((method) {
+                      final isSelected = _selectedPaymentMethod?.id == method.id;
+                      return Container(
+                        margin: const EdgeInsets.only(bottom: 12),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF3B82F6).withOpacity(0.1),
-                          shape: BoxShape.circle,
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color: isSelected ? const Color(0xFF3B82F6) : Colors.transparent,
+                            width: 2,
+                          ),
                         ),
-                        child: const Icon(Icons.qr_code_2, color: Color(0xFF3B82F6)),
-                      ),
-                      title: const Text(
-                        'KHQR',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      subtitle: const Text('Pay via ABA Mobile or scan QR'),
-                      trailing: const Icon(Icons.check_circle, color: Color(0xFF3B82F6)),
-                    ),
-                  ),
+                        child: ListTile(
+                          onTap: () => setState(() => _selectedPaymentMethod = method),
+                          leading: method.image != null && method.image!.isNotEmpty
+                              ? ClipRRect(
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: Image.network(
+                                    method.image!,
+                                    width: 40,
+                                    height: 40,
+                                    fit: BoxFit.contain,
+                                    errorBuilder: (_, __, ___) => Container(
+                                      padding: const EdgeInsets.all(8),
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFF3B82F6).withOpacity(0.1),
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: const Icon(Icons.payment, color: Color(0xFF3B82F6)),
+                                    ),
+                                  ),
+                                )
+                              : Container(
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFF3B82F6).withOpacity(0.1),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: const Icon(Icons.payment, color: Color(0xFF3B82F6)),
+                                ),
+                          title: Text(
+                            method.name,
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          subtitle: method.description != null && method.description!.isNotEmpty
+                              ? Text(method.description!)
+                              : null,
+                          trailing: isSelected
+                              ? const Icon(Icons.check_circle, color: Color(0xFF3B82F6))
+                              : const Icon(Icons.circle_outlined, color: Colors.grey),
+                        ),
+                      );
+                    }),
 
                   const SizedBox(height: 32),
 
@@ -273,7 +336,16 @@ class _CheckoutPageState extends State<CheckoutPage> {
   }
 
   void _placeOrder(BuildContext context) {
-    // Validate address for delivery orders
+    if (_selectedPaymentMethod == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please select a payment method'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
     if (_selectedDeliveryType == 'DELIVERY' && _addressController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -288,7 +360,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
 
     context.read<OrderCubit>().placeOrder(
       fulfillmentType: _selectedDeliveryType,
-      paymentMethodId: CheckoutPage.khqrPaymentMethodId,
+      paymentMethodId: _selectedPaymentMethod!.id,
       deliveryAddress: _selectedDeliveryType == 'DELIVERY'
           ? _addressController.text.trim()
           : null,

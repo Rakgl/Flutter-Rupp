@@ -251,79 +251,43 @@ class _ServiceDetailView extends StatelessWidget {
 
                       const SizedBox(height: 32),
 
-                      // Buttons
-                      Row(
-                        children: [
-                          Expanded(
-                            child: ElevatedButton.icon(
-                              onPressed: () {
-                                context.read<CardCubit>().addToCart(service.id, itemType: 'service');
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text('${service.name} added to cart!'),
-                                    backgroundColor: Colors.green,
-                                  ),
-                                );
-                              },
-                              icon: const Icon(Icons.shopping_cart_checkout_rounded),
-                              label: Text(
-                                'Add to Cart (\$${service.price})',
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                      // Book Now button
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          final petsState = context.read<PetsCubit>().state;
+                          if (petsState.status == PetsStatus.loading ||
+                              petsState.status == PetsStatus.initial) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Loading your pets, please wait...'),
+                                duration: Duration(seconds: 1),
                               ),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFF3B82F6),
-                                foregroundColor: Colors.white,
-                                minimumSize: const Size(double.infinity, 54),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16),
-                                ),
-                                elevation: 4,
-                              ),
-                            ),
+                            );
+                            return;
+                          }
+                          if (petsState.pets.isEmpty) {
+                            _showRegisterPetDialog(context);
+                          } else {
+                            _showBookingDialog(context, service);
+                          }
+                        },
+                        icon: const Icon(Icons.calendar_today_rounded),
+                        label: const Text(
+                          'Book Now',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
                           ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: ElevatedButton.icon(
-                              onPressed: () {
-                                final petsState = context.read<PetsCubit>().state;
-                                if (petsState.status == PetsStatus.loading ||
-                                    petsState.status == PetsStatus.initial) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text('Loading your pets, please wait...'),
-                                      duration: Duration(seconds: 1),
-                                    ),
-                                  );
-                                  return;
-                                }
-                                if (petsState.pets.isEmpty) {
-                                  _showRegisterPetDialog(context);
-                                } else {
-                                  _showBookingDialog(context, service);
-                                }
-                              },
-                              icon: const Icon(Icons.calendar_today_rounded),
-                              label: const Text(
-                                'Book Now',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),                              style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFF7C3AED),
-                                foregroundColor: Colors.white,
-                                minimumSize: const Size(double.infinity, 54),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16),
-                                ),
-                                elevation: 4,
-                              ),
-                            ),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF7C3AED),
+                          foregroundColor: Colors.white,
+                          minimumSize: const Size(double.infinity, 54),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
                           ),
-                        ],
+                          elevation: 4,
+                        ),
                       ),
 
                       const SizedBox(height: 32),

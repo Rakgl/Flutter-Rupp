@@ -40,4 +40,8 @@ class OrderRepository {
   Response<String, OrderListResponse> getOrders() async {
     return _apiClient.getOrders();
   }
+
+  Response<String, PaymentHistoryResponse> getPaymentHistory() async {
+    return _apiClient.getPaymentHistory();
+  }
 }
