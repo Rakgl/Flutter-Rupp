@@ -45,6 +45,7 @@ class _PaymentPendingView extends StatelessWidget {
     final order = state.order;
     final paymentInfo = state.paymentInfo;
     final qrData = paymentInfo?.qrData;
+    final hasDeeplink = paymentInfo?.abapayDeeplink != null;
 
     return Scaffold(
       backgroundColor: const Color(0xFFF9FAFB),
@@ -97,7 +98,7 @@ class _PaymentPendingView extends StatelessWidget {
 
             const SizedBox(height: 24),
 
-            // QR Code
+            // QR Code (if available)
             if (qrData != null && qrData.isNotEmpty)
               Container(
                 padding: const EdgeInsets.all(24),
@@ -121,6 +122,37 @@ class _PaymentPendingView extends StatelessWidget {
                       version: QrVersions.auto,
                       size: 220,
                       gapless: true,
+                    ),
+                  ],
+                ),
+              ),
+
+            // Waiting message when no QR and no deeplink (sandbox)
+            if ((qrData == null || qrData.isEmpty) && !hasDeeplink)
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: const Column(
+                  children: [
+                    Icon(Icons.hourglass_top_rounded, size: 48, color: Color(0xFF3B82F6)),
+                    SizedBox(height: 16),
+                    Text(
+                      'Waiting for payment...',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black54,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      'Complete the payment through your banking app.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 14, color: Colors.black38),
                     ),
                   ],
                 ),
@@ -163,15 +195,15 @@ class _PaymentPendingView extends StatelessWidget {
 
             const SizedBox(height: 24),
 
-            // Open ABA App button
-            if (paymentInfo?.abapayDeeplink != null)
+            // Open ABA App button (if deeplink available)
+            if (hasDeeplink)
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(
                   onPressed: () => _openAbaApp(context, paymentInfo!.abapayDeeplink!),
                   icon: const Icon(Icons.open_in_new),
                   label: const Text(
-                    'Open ABA App',
+                    'Pay with ABA',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   style: ElevatedButton.styleFrom(

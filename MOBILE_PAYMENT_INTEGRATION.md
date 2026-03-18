@@ -1,336 +1,407 @@
-# KHQR Payment Integration Guide (Mobile)
+# Mobile Payment Integration Guide (KHQR / ABA PayWay)
 
 ## Overview
-When a user places an order with KHQR payment method, the API returns payment data (deeplink + QR). The mobile app shows a payment screen, and polls the API until payment is confirmed.
 
----
+Users can pay for orders using KHQR (ABA PayWay). The flow:
+1. User adds items to cart
+2. User places an order with `payment_method_id` for KHQR
+3. API returns payment info (deeplink to open ABA app)
+4. User pays in ABA app
+5. Mobile app polls `verify-payment` endpoint until order is PAID
+6. Show success screen
 
-## Payment Flow
+## Base URL
 
-```
-1. User taps "Place Order"
-2. App calls POST /orders → gets payment_info (deeplink)
-3. App shows Payment Screen (QR code + "Open ABA" button + countdown timer)
-4. User pays via ABA app (deeplink) or scans QR
-5. App polls POST /orders/{id}/verify-payment every 3-5 seconds
-6. When payment_status becomes "PAID" → show success screen
-7. If timer expires (15 min) → show expired screen with retry/cancel options
-```
-
----
-
-## API Endpoints
-
-### Base URL
 ```
 {{BASE_URL}}/api/v1/mobile
 ```
 
-All endpoints require `Authorization: Bearer {token}` header.
+| Environment | BASE_URL |
+|-------------|----------|
+| Local dev | Your ngrok/tunnel URL (backend dev provides this) |
+| Staging | `https://staging.yourdomain.com` |
+| Production | `https://api.yourdomain.com` |
+
+The mobile app does NOT need to know about ngrok or callbacks. Just use the configured base URL.
+
+All authenticated endpoints require: `Authorization: Bearer {token}`
 
 ---
 
-### 1. Place Order
+## Step 1: Fetch Payment Methods
 
-**`POST /orders`**
+**Do NOT hardcode payment method IDs.** Fetch them dynamically:
 
-#### Request Body
+```
+GET {{BASE_URL}}/api/v1/mobile/payment-methods
+Authorization: Bearer {token}
+```
+
+### Response
+
 ```json
 {
-    "fulfillment_type": "PICKUP",
-    "payment_method_id": "59415cc0-4436-4aa6-ab61-79f690d1f350"
+    "data": [
+        {
+            "id": "uuid-1",
+            "name": "KHQR",
+            "description": "Scan to pay with any banking app",
+            "type": "BANK",
+            "image": "https://..."
+        },
+        {
+            "id": "uuid-2",
+            "name": "Cash on Delivery",
+            "description": "Pay with cash when your order arrives",
+            "type": "CASH",
+            "image": null
+        },
+        {
+            "id": "uuid-3",
+            "name": "Bank Transfer",
+            "description": "Transfer directly to our bank account",
+            "type": "BANK",
+            "image": null
+        }
+    ]
 }
 ```
+
+### How to use
+
+1. Call this endpoint when showing the checkout/payment method selection screen
+2. Display all methods with their `name`, `description`, and `image`
+3. When user selects one, store the `id` to send with the order
+4. If `name === "KHQR"` → after order, show the payment screen with deeplink/QR (see Step 4)
+5. If `name === "Cash on Delivery"` → after order, show order confirmation (no payment screen needed)
+
+---
+
+## Step 2: Add Items to Cart
+
+```
+POST {{BASE_URL}}/api/v1/mobile/cart/add
+Authorization: Bearer {token}
+Content-Type: application/json
+
+{
+    "item_id": "uuid-of-product",
+    "item_type": "product",
+    "quantity": 1
+}
+```
+
+### Supported `item_type` values:
+| item_type | Description |
+|-----------|-------------|
+| `product` | Store product |
+| `pet_listing` | Pet from marketplace |
+| `pet` | User's own pet |
+| `service` | Grooming/vet service |
+
+### View Cart
+
+```
+GET {{BASE_URL}}/api/v1/mobile/cart
+Authorization: Bearer {token}
+```
+
+### Update Item Quantity
+
+```
+PUT {{BASE_URL}}/api/v1/mobile/cart/items/{cart_item_id}
+Authorization: Bearer {token}
+Content-Type: application/json
+
+{
+    "quantity": 3
+}
+```
+
+### Remove Item
+
+```
+DELETE {{BASE_URL}}/api/v1/mobile/cart/items/{cart_item_id}
+Authorization: Bearer {token}
+```
+
+### Clear Cart
+
+```
+DELETE {{BASE_URL}}/api/v1/mobile/cart/clear
+Authorization: Bearer {token}
+```
+
+---
+
+## Step 3: Place Order (Checkout)
+
+```
+POST {{BASE_URL}}/api/v1/mobile/orders
+Authorization: Bearer {token}
+Content-Type: application/json
+
+{
+    "fulfillment_type": "PICKUP",
+    "payment_method_id": "{{selected_payment_method_id}}"
+}
+```
+
+### Request Fields
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
 | `fulfillment_type` | string | Yes | `"PICKUP"` or `"DELIVERY"` |
 | `delivery_address` | string | Only if DELIVERY | Max 500 chars |
-| `payment_method_id` | UUID | No | ID of payment method. Use KHQR ID for QR payment |
+| `payment_method_id` | UUID | Yes | ID from `GET /payment-methods` response |
 
-#### Response (Success - 200)
+### Success Response (with KHQR)
+
 ```json
 {
     "data": {
-        "id": "019cff25-8fb0-729b-95a7-bcf4d6189f52",
-        "order_number": "ORD-KKW7EXFI",
-        "subtotal": 15.0,
-        "delivery_fee": 0.0,
-        "total_amount": 15.0,
+        "id": "order-uuid",
+        "order_number": "ORD-XXXXXXXX",
+        "subtotal": 15,
+        "delivery_fee": 0,
+        "total_amount": 15,
         "status": "PENDING",
         "payment_status": "UNPAID",
         "fulfillment_type": "PICKUP",
         "delivery_address": null,
         "items": [
             {
-                "id": "019cff25-8fbe-70ab-b5e9-d9feb0272d93",
-                "itemable_id": "019cfaed-8715-70b2-b756-053b5a2848b0",
+                "id": "item-uuid",
+                "itemable_id": "product-uuid",
                 "itemable_type": "App\\Models\\Product",
                 "quantity": 1,
-                "unit_price": 15.0,
-                "subtotal": 15.0,
+                "unit_price": 15,
+                "subtotal": 15,
                 "item_name": "Interactive Laser Toy",
-                "image_url": "https://images.unsplash.com/..."
+                "image_url": "https://..."
             }
         ],
-        "created_at": "2026-03-18 11:12:57"
+        "created_at": "2026-03-18 08:23:57"
     },
     "success": true,
     "message": "Order placed successfully.",
     "payment_info": {
-        "transaction_no": "ORD-KKW7EXFI",
-        "qr_string": "00020101021230640016...",
+        "transaction_no": "ORD-XXXXXXXX",
+        "qr_string": "00020101021230...",
         "abapay_deeplink": "abamobilebank://ababank.com?type=payway&qrcode=...",
-        "checkout_qr_url": "https://checkout-sandbox.ababank.com/qr/..."
+        "checkout_qr_url": "https://checkout.ababank.com/qr/..."
     }
 }
 ```
 
-#### Important Notes
-- `payment_info` is **only present** when `payment_method_id` points to the KHQR payment method
-- `qr_string` may be `null` in sandbox — use `abapay_deeplink` instead
-- `checkout_qr_url` may also be `null` in sandbox
+### Key Fields in `payment_info`
+
+| Field | What to do with it |
+|-------|-------------------|
+| `abapay_deeplink` | **Primary.** Open this URL to launch ABA app for payment. Use as an "Open ABA" / "Pay Now" button. |
+| `qr_string` | Render as a QR code image on screen (user can scan with ABA app). May be `null` in sandbox. |
+| `checkout_qr_url` | Fallback web URL showing the QR. May be `null` in sandbox. |
+
+> **Note:** In sandbox mode, `qr_string` and `checkout_qr_url` may return `null`. The `abapay_deeplink` is always returned.
 
 ---
 
-### 2. Verify Payment (Polling)
+## Step 4: Payment Screen (Mobile UI)
 
-**`POST /orders/{order_id}/verify-payment`**
+After placing the order, show a **Payment Screen** with:
 
-No request body needed. Call this endpoint every 3-5 seconds after the user initiates payment.
+1. **QR Code** — if `qr_string` is not null, render it as a QR image using a QR library
+2. **"Pay with ABA" button** — opens `abapay_deeplink` using deep linking
+3. **Order summary** — show `total_amount`, `order_number`
+4. **Timer** — 15-minute countdown (QR expiry). After expiry, show "Payment expired" with option to cancel.
+5. **Auto-polling** — start polling `verify-payment` every 3-5 seconds (see Step 5)
 
-#### Response (Payment Confirmed)
+### Opening the Deeplink
+
+**Flutter:**
+```dart
+import 'package:url_launcher/url_launcher.dart';
+
+await launchUrl(Uri.parse(paymentInfo['abapay_deeplink']));
+```
+
+**React Native:**
+```javascript
+import { Linking } from 'react-native';
+
+Linking.openURL(paymentInfo.abapay_deeplink);
+```
+
+**Kotlin (Android):**
+```kotlin
+val intent = Intent(Intent.ACTION_VIEW, Uri.parse(abapayDeeplink))
+startActivity(intent)
+```
+
+**Swift (iOS):**
+```swift
+if let url = URL(string: abapayDeeplink) {
+    UIApplication.shared.open(url)
+}
+```
+
+---
+
+## Step 5: Poll for Payment Verification
+
+After showing the payment screen, poll this endpoint every **3-5 seconds**:
+
+```
+POST {{BASE_URL}}/api/v1/mobile/orders/{order_id}/verify-payment
+Authorization: Bearer {token}
+```
+
+### Payment Successful Response
+
 ```json
 {
     "data": {
-        "id": "019cff25-8fb0-729b-95a7-bcf4d6189f52",
-        "order_number": "ORD-KKW7EXFI",
-        "subtotal": 15.0,
-        "delivery_fee": 0.0,
-        "total_amount": 15.0,
+        "id": "order-uuid",
+        "order_number": "ORD-XXXXXXXX",
         "status": "PROCESSING",
         "payment_status": "PAID",
-        "fulfillment_type": "PICKUP",
-        "delivery_address": null,
-        "items": [...],
-        "created_at": "2026-03-18 11:12:57"
+        ...
     },
     "success": true,
     "message": "Payment verified successfully."
 }
 ```
 
-#### Response (Not Yet Paid)
+### Payment Not Yet Completed Response (HTTP 422)
+
 ```json
 {
     "success": false,
-    "message": "Payment not found or not completed yet.",
-    "aba_response": { ... }
+    "message": "Payment not found or not completed yet."
 }
 ```
 
-#### Response (Already Paid)
-```json
-{
-    "message": "Order is already paid."
-}
+### Polling Logic (Pseudocode)
+
+```
+maxAttempts = 180  // 15 minutes at 5-second intervals
+attempts = 0
+
+while attempts < maxAttempts:
+    response = POST /orders/{order_id}/verify-payment
+
+    if response.success == true:
+        // Payment confirmed!
+        navigateTo(OrderSuccessScreen)
+        stopPolling()
+        return
+
+    if response.status == 422:
+        // Not paid yet, keep polling
+        wait(5 seconds)
+        attempts++
+        continue
+
+    // Other error
+    showError(response.message)
+    stopPolling()
+    return
+
+// Timeout - 15 minutes passed
+showExpiredScreen()
 ```
 
 ---
 
-### 3. Cancel Order
+## Step 6: Cancel Order (Optional)
 
-**`POST /orders/{order_id}/cancel`**
+If the user wants to cancel before paying:
 
-No request body. Only works if order `status` is `"PENDING"`.
+```
+POST {{BASE_URL}}/api/v1/mobile/orders/{order_id}/cancel
+Authorization: Bearer {token}
+```
 
-#### Response
+### Response
+
 ```json
 {
-    "data": { ... },
+    "data": {
+        "id": "order-uuid",
+        "status": "CANCELLED",
+        ...
+    },
     "success": true,
     "message": "Order cancelled successfully."
 }
 ```
 
----
-
-### 4. Get Order Details
-
-**`GET /orders/{order_id}`**
-
-Returns the order with current `status` and `payment_status`.
+> Only `PENDING` orders can be cancelled.
 
 ---
 
-### 5. List Orders
+## Step 7: View Orders
 
-**`GET /orders`**
-
-Returns paginated list of the user's orders, newest first.
-
----
-
-## Mobile UI Implementation
-
-### Payment Screen (shown after placing order)
+### List All Orders
 
 ```
-┌─────────────────────────────┐
-│                             │
-│     Order: ORD-KKW7EXFI     │
-│     Amount: $15.00          │
-│                             │
-│    ┌───────────────────┐    │
-│    │                   │    │
-│    │    QR Code Image   │    │
-│    │   (from qr_string  │    │
-│    │    or deeplink     │    │
-│    │    qrcode param)   │    │
-│    │                   │    │
-│    └───────────────────┘    │
-│                             │
-│    ⏱ Expires in 14:32       │
-│                             │
-│  ┌─────────────────────┐    │
-│  │   Open ABA App      │    │
-│  └─────────────────────┘    │
-│                             │
-│  ┌─────────────────────┐    │
-│  │   Cancel Order       │    │
-│  └─────────────────────┘    │
-│                             │
-└─────────────────────────────┘
+GET {{BASE_URL}}/api/v1/mobile/orders
+Authorization: Bearer {token}
 ```
 
-### How to Use Each Field
+Returns paginated list of user's orders, newest first.
 
-| Field | What to do |
-|-------|-----------|
-| `qr_string` | If not null, render as a QR code image using a QR library. This is scannable by ABA app. |
-| `abapay_deeplink` | Use as the "Open ABA App" button URL. On tap, open this URL — it launches the ABA app with payment pre-filled. Also extract the `qrcode` query parameter and render it as a QR code if `qr_string` is null. |
-| `checkout_qr_url` | Fallback: open in a WebView if both above are unavailable. |
+### View Single Order
 
-### QR Code Extraction from Deeplink
-
-If `qr_string` is null, extract the QR data from `abapay_deeplink`:
-
-```dart
-// Dart/Flutter example
-final uri = Uri.parse(abapayDeeplink);
-final qrData = uri.queryParameters['qrcode'];
-if (qrData != null) {
-    final decodedQr = Uri.decodeComponent(qrData);
-    // Render decodedQr as QR code image
-}
 ```
-
-### Polling Logic
-
-```dart
-// Dart/Flutter example
-Timer.periodic(Duration(seconds: 4), (timer) async {
-    final response = await api.post('/orders/$orderId/verify-payment');
-
-    if (response['success'] == true) {
-        timer.cancel();
-        // Navigate to success screen
-        showPaymentSuccess(response['data']);
-    }
-});
-
-// Also set a timeout timer
-Timer(Duration(minutes: 15), () {
-    pollingTimer.cancel();
-    // Show payment expired screen
-    showPaymentExpired();
-});
-```
-
-### "Open ABA App" Button
-
-```dart
-// Dart/Flutter example using url_launcher
-final deeplink = paymentInfo['abapay_deeplink'];
-if (await canLaunchUrl(Uri.parse(deeplink))) {
-    await launchUrl(Uri.parse(deeplink), mode: LaunchMode.externalApplication);
-} else {
-    // ABA app not installed — show QR code for scanning instead
-    showQRCode();
-}
+GET {{BASE_URL}}/api/v1/mobile/orders/{order_id}
+Authorization: Bearer {token}
 ```
 
 ---
 
-## Order & Payment Status Values
+## Order Status Flow
 
-### `status`
-| Value | Meaning |
-|-------|---------|
-| `PENDING` | Order created, awaiting payment |
-| `PROCESSING` | Payment received, order being prepared |
-| `CANCELLED` | Order was cancelled |
+```
+PENDING (created, awaiting payment)
+    ├── PAID → PROCESSING (payment confirmed)
+    │           └── COMPLETED (fulfilled by store)
+    └── CANCELLED (user cancelled before paying)
+```
 
-### `payment_status`
-| Value | Meaning |
-|-------|---------|
-| `UNPAID` | No payment received yet |
-| `PAID` | Payment confirmed |
-| `FAILED` | Payment failed |
-
----
-
-## Payment Method
-
-To get the KHQR payment method ID for the order:
-
-**`GET /api/v1/web/content-blocks/{id}`** or hardcode the KHQR payment method ID if it's fixed in your environment.
-
-KHQR Payment Method ID (current): `59415cc0-4436-4aa6-ab61-79f690d1f350`
-
-> Note: In production, you should fetch available payment methods dynamically rather than hardcoding.
+| Status | Payment Status | Meaning |
+|--------|---------------|---------|
+| `PENDING` | `UNPAID` | Order created, waiting for payment |
+| `PROCESSING` | `PAID` | Payment confirmed, store is preparing |
+| `COMPLETED` | `PAID` | Order fulfilled |
+| `CANCELLED` | `UNPAID` | User cancelled the order |
 
 ---
 
 ## Error Handling
 
-| Scenario | What to show |
-|----------|-------------|
-| `payment_info` is missing from order response | Payment method is not KHQR — no QR screen needed |
-| `qr_string` and `checkout_qr_url` are both null | Extract QR from `abapay_deeplink` query param |
-| Polling returns `success: false` for 15+ minutes | Show "Payment expired" with options to retry or cancel |
-| Order cancel fails with 422 | Order is no longer PENDING (already paid or processing) |
-| Cart is empty (422) | Show "Your cart is empty" message |
-| Insufficient stock (422) | Show the product name from error message |
+| HTTP Code | Meaning | Action |
+|-----------|---------|--------|
+| 200 | Success | Process response |
+| 403 | Unauthorized (not your order) | Show error, go back |
+| 422 | Validation error / payment pending | Show message or keep polling |
+| 500 | Server error | Show generic error, retry |
 
 ---
 
-## Sequence Diagram
+## Summary of Endpoints
 
-```
-Mobile App                    API                         ABA PayWay
-    │                          │                              │
-    │  POST /orders            │                              │
-    │─────────────────────────>│                              │
-    │                          │  POST /payments/purchase     │
-    │                          │─────────────────────────────>│
-    │                          │  {qr_string, deeplink}       │
-    │                          │<─────────────────────────────│
-    │  {order + payment_info}  │                              │
-    │<─────────────────────────│                              │
-    │                          │                              │
-    │  Show QR / Open ABA      │                              │
-    │─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─>│
-    │                          │                              │
-    │                          │  POST /payway/callback       │
-    │                          │<─────────────────────────────│
-    │                          │  (order → PAID)              │
-    │                          │                              │
-    │  POST /verify-payment    │                              │
-    │─────────────────────────>│                              │
-    │  {payment_status: PAID}  │                              │
-    │<─────────────────────────│                              │
-    │                          │                              │
-    │  Show Success Screen     │                              │
-    │                          │                              │
-```
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| GET | `/payment-methods` | Yes | Fetch available payment methods |
+| GET | `/payment-history` | Yes | User's order/payment history (all statuses) |
+| GET | `/cart` | Yes | View current cart |
+| POST | `/cart/add` | Yes | Add item to cart |
+| PUT | `/cart/items/{id}` | Yes | Update item quantity |
+| DELETE | `/cart/items/{id}` | Yes | Remove item from cart |
+| DELETE | `/cart/clear` | Yes | Clear entire cart |
+| POST | `/orders` | Yes | Place order (returns payment info if KHQR) |
+| GET | `/orders` | Yes | List user's orders |
+| GET | `/orders/{id}` | Yes | View single order |
+| POST | `/orders/{id}/verify-payment` | Yes | Check if payment went through |
+| POST | `/orders/{id}/cancel` | Yes | Cancel a pending order |

@@ -361,6 +361,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
     context.read<OrderCubit>().placeOrder(
       fulfillmentType: _selectedDeliveryType,
       paymentMethodId: _selectedPaymentMethod!.id,
+      paymentMethodName: _selectedPaymentMethod!.name,
       deliveryAddress: _selectedDeliveryType == 'DELIVERY'
           ? _addressController.text.trim()
           : null,

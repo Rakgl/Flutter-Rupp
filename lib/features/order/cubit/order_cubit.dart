@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -17,12 +16,13 @@ class OrderCubit extends Cubit<OrderState> {
   Timer? _pollingTimer;
   Timer? _countdownTimer;
 
-  static const _pollingInterval = Duration(seconds: 4);
+  static const _pollingInterval = Duration(seconds: 5);
   static const _paymentTimeout = Duration(minutes: 15);
 
   Future<void> placeOrder({
     required String fulfillmentType,
-    String? paymentMethodId,
+    required String paymentMethodId,
+    required String paymentMethodName,
     String? deliveryAddress,
   }) async {
     emit(state.copyWith(status: OrderStatus.loading));
@@ -35,8 +35,10 @@ class OrderCubit extends Cubit<OrderState> {
 
     await response.when<void>(
       success: (OrderResponse res) async {
-        if (res.paymentInfo != null) {
-          // KHQR payment — navigate to payment screen
+        final isKhqr = paymentMethodName.toUpperCase() == 'KHQR';
+
+        if (isKhqr) {
+          // KHQR payment — show payment screen with deeplink/QR + start polling
           emit(state.copyWith(
             status: OrderStatus.paymentPending,
             order: res.order,
@@ -46,7 +48,7 @@ class OrderCubit extends Cubit<OrderState> {
           _startPolling(res.order!.id);
           _startCountdown();
         } else {
-          // Non-KHQR payment — order placed directly
+          // Non-KHQR (e.g. Cash on Delivery) — show order confirmation
           emit(state.copyWith(
             status: OrderStatus.success,
             order: res.order,
@@ -101,14 +103,15 @@ class OrderCubit extends Cubit<OrderState> {
               order: res.order,
             ));
           }
+          // success: true but not yet paid — keep polling
         },
         failure: (error) async {
-          // Payment not yet confirmed — keep polling
-          log('[OrderCubit] Payment not yet confirmed: $error');
+          // 422 "Payment not found or not completed yet." — keep polling
+          // Other errors — also keep polling (don't break the flow)
         },
       );
-    } catch (e) {
-      log('[OrderCubit] Error verifying payment: $e');
+    } catch (_) {
+      // Network error etc — keep polling
     }
   }
 
