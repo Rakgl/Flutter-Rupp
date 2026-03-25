@@ -31,7 +31,7 @@ dependencies:
     path: packages/storage/token_storage
   persistent_storage:
     path: packages/storage/persistent_storage
-  shared_preferences: ^2.3.4
+  shared_preferences: ^2.5.5
   dio: ^5.9.1
   cached_network_image: ^3.4.1
   shimmer: ^3.0.0
